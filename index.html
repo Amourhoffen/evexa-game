@@ -327,6 +327,7 @@
             transition: margin-left 0.3s ease;
             width: calc(100% - 60px);
             overflow-y: auto; /* Allow main content to scroll if needed */
+            min-height: calc(100vh - 60px); /* Base for desktop: 100vh - top menu button area */
         }
 
         .sidebar.expanded + .main-content {
@@ -351,6 +352,8 @@
             align-items: center;
             text-align: center;
             gap: 20px;
+            flex-grow: 1; /* Make it fill available vertical space in main-content */
+            justify-content: center; /* Center content vertically within this page */
         }
 
         .page-content.active {
@@ -436,8 +439,7 @@
             width: 100%;
             max-width: 550px;
             box-sizing: border-box;
-            margin-top: 0;
-            margin-bottom: 0;
+            /* Remove margin-top/bottom here, let parent flexbox center */
             /* Apply glass effect */
             backdrop-filter: blur(12px); /* Increased blur */
             -webkit-backdrop-filter: blur(12px);
@@ -857,6 +859,7 @@
                 margin-left: 0; /* No margin when sidebar is collapsed */
                 width: 100%; /* Take full width */
                 padding-bottom: 90px; /* Space for bottom navbar */
+                min-height: calc(100vh - 60px - 90px); /* Mobile specific height: 100vh - top menu button area - bottom nav height */
             }
 
             .menu-toggle-button {
@@ -880,8 +883,22 @@
                 color: white;
             }
 
+            /* Game container positioning on mobile */
             .game-page .game-container {
-                margin-top: 60px; /* Space for the toggle button */
+                /* Remove absolute positioning. Rely on flexbox centering from .page-content */
+                position: static;
+                top: auto;
+                left: auto;
+                transform: none; /* Reset any previous transforms */
+                transform-origin: center center; /* Default */
+                margin-top: 0; /* Reset margin from previous versions */
+                margin-bottom: 0; /* Reset margin from previous versions */
+
+                /* Default dimensions for portrait mode (before rotation choice) */
+                width: calc(100vw - (2 * 20px)); /* Maximize width in portrait */
+                height: auto; /* Let height adjust dynamically */
+                aspect-ratio: var(--game-canvas-width) / var(--game-canvas-height); /* Maintain aspect ratio */
+                max-height: calc(100vh - 150px); /* Limit total height considering top/bottom bars */
             }
 
             /* Show bottom navbar on mobile */
@@ -891,43 +908,40 @@
         }
 
         @media (max-width: 768px) and (orientation: portrait) {
-            .game-page .game-container {
-                /* Apply rotation and centering */
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%) rotate(90deg);
-                transform-origin: center center;
-
-                /* Set the height (which becomes visual width after rotation) to 100% of available viewport width */
-                height: calc(100vw - (2 * 20px)); /* 100vw minus main-content's horizontal padding */
-
-                /* Set the width (which becomes visual height after rotation) proportionally */
-                width: calc( (100vw - (2 * 20px)) * (var(--game-canvas-width) / var(--game-canvas-height)) );
-                
-                /* Ensure the visual height (controlled by 'width' property) doesn't exceed available viewport height */
-                max-width: calc(100vh - 190px); /* 100vh minus top bar, bottom nav, and main-content vertical padding */
-                
-                overflow: hidden; /* Hide any overflow from scaling */
+            .game-page .game-container.rotated {
+                transform: rotate(90deg);
+                /* When rotated, visual width is its height, visual height is its width */
+                height: calc(100vw - (2 * 20px)); /* Visual width (actual height) */
+                width: auto; /* Let width adjust based on aspect ratio and new height */
+                aspect-ratio: var(--game-canvas-height) / var(--game-canvas-width); /* Invert aspect ratio for rotation */
+                max-height: calc(100vh - 150px); /* Constrain visual height (actual width) */
             }
 
             .game-page .game-container.no-rotate {
-                /* When user opts out of rotation */
-                transform: translate(-50%, -50%) rotate(0deg); /* No rotation */
-                width: calc(100vw - (2 * 20px)); /* Full width in portrait */
-                height: calc( (100vw - (2 * 20px)) * (var(--game-canvas-height) / var(--game-canvas-width)) ); /* Maintain aspect ratio */
-                max-height: calc(100vh - 190px); /* Constrain height */
+                transform: rotate(0deg); /* Explicitly no rotation */
+                width: calc(100vw - (2 * 20px)); /* Maximize width in portrait */
+                height: auto; /* Let height adjust dynamically */
+                aspect-ratio: var(--game-canvas-width) / var(--game-canvas-height); /* Maintain original aspect ratio */
+                max-height: calc(100vh - 150px); /* Limit total height considering top/bottom bars */
             }
 
             /* For very small screens, adjust padding to maximize game area */
             @media (max-width: 400px) {
+                .main-content {
+                    padding-left: 15px; /* Adjust padding for smaller screens */
+                    padding-right: 15px;
+                }
                 .game-page .game-container {
-                    height: calc(100vw - (2 * 15px)); /* Adjusted for smaller padding */
-                    width: calc( (100vw - (2 * 15px)) * (var(--game-canvas-width) / var(--game-canvas-height)) );
+                    width: calc(100vw - (2 * 15px)); /* Adjusted for smaller padding */
+                    max-height: calc(100vh - 140px); /* Adjusted for smaller padding/bars */
+                }
+                .game-page .game-container.rotated {
+                    height: calc(100vw - (2 * 15px));
+                    max-height: calc(100vh - 140px);
                 }
                 .game-page .game-container.no-rotate {
                     width: calc(100vw - (2 * 15px));
-                    height: calc( (100vw - (2 * 15px)) * (var(--game-canvas-height) / var(--game-canvas-width)) );
+                    max-height: calc(100vh - 140px);
                 }
             }
         }
@@ -1618,74 +1632,26 @@
                     if (userPrefersRotation) {
                         // Apply CSS rotation to game-container
                         gameContainer.classList.remove('no-rotate');
-                        gameContainer.style.transform = 'translate(-50%, -50%) rotate(90deg)';
-                        gameContainer.style.transformOrigin = 'center center';
-                        gameContainer.style.position = 'absolute';
-                        gameContainer.style.top = '50%';
-                        gameContainer.style.left = '50%';
-                        
-                        // Calculate and set dimensions for the rotated container
-                        gameContainer.style.height = `calc(100vw - (2 * 20px))`; 
-                        gameContainer.style.width = `calc( (100vw - (2 * 20px)) * (var(--game-canvas-width) / var(--game-canvas-height)) )`;
-                        gameContainer.style.maxWidth = `calc(100vh - 190px)`; 
-                        gameContainer.style.overflow = 'hidden'; 
-
-                        if (window.innerWidth <= 400) {
-                            gameContainer.style.height = `calc(100vw - (2 * 15px))`; 
-                            gameContainer.style.width = `calc( (100vw - (2 * 15px)) * (var(--game-canvas-width) / var(--game-canvas-height)) )`;
-                        }
+                        gameContainer.classList.add('rotated');
                     } else {
                         // User prefers no rotation
+                        gameContainer.classList.remove('rotated');
                         gameContainer.classList.add('no-rotate');
-                        gameContainer.style.transform = 'translate(-50%, -50%) rotate(0deg)'; // No rotation
-                        gameContainer.style.transformOrigin = 'center center';
-                        gameContainer.style.position = 'absolute';
-                        gameContainer.style.top = '50%';
-                        gameContainer.style.left = '50%';
-                        
-                        // Set dimensions for non-rotated portrait mode
-                        gameContainer.style.width = `calc(100vw - (2 * 20px))`; 
-                        gameContainer.style.height = `calc( (100vw - (2 * 20px)) * (var(--game-canvas-height) / var(--game-canvas-width)) )`;
-                        gameContainer.style.maxHeight = `calc(100vh - 190px)`;
-                        gameContainer.style.overflow = 'hidden';
-
-                        if (window.innerWidth <= 400) {
-                            gameContainer.style.width = `calc(100vw - (2 * 15px))`;
-                            gameContainer.style.height = `calc( (100vw - (2 * 15px)) * (var(--game-canvas-height) / var(--game-canvas-width)) )`;
-                        }
                     }
 
                 } else {
                     // Mobile Landscape Mode
                     rotationHint.classList.remove('active');
-                    // Reset game-container styles
+                    // Reset game-container classes
+                    gameContainer.classList.remove('rotated');
                     gameContainer.classList.remove('no-rotate');
-                    gameContainer.style.transform = ''; // Reset transform
-                    gameContainer.style.transformOrigin = '';
-                    gameContainer.style.position = '';
-                    gameContainer.style.top = '';
-                    gameContainer.style.left = '';
-                    gameContainer.style.width = '100%'; // Reset to default responsive width
-                    gameContainer.style.height = '450px'; // Revert to desktop/landscape height
-                    gameContainer.style.maxWidth = '550px'; // Reapply max-width for landscape
-                    canvas.style.width = '100%';
-                    canvas.style.height = '100%'; // Canvas fills its container
                 }
             } else {
                 // Desktop Mode (or not on game page for mobile)
                 rotationHint.classList.remove('active');
-                // Ensure game-container styles are reset for desktop
+                // Ensure game-container classes are reset for desktop
+                gameContainer.classList.remove('rotated');
                 gameContainer.classList.remove('no-rotate');
-                gameContainer.style.transform = '';
-                gameContainer.style.transformOrigin = '';
-                gameContainer.style.position = '';
-                gameContainer.style.top = '';
-                gameContainer.style.left = '';
-                gameContainer.style.width = '100%';
-                gameContainer.style.height = '450px'; // Default desktop height
-                gameContainer.style.maxWidth = '550px'; // Reapply max-width for desktop
-                canvas.style.width = '100%';
-                canvas.style.height = '100%'; // Canvas fills its container
             }
             setCanvasDimensions(); // Re-set canvas internal dimensions
         }
