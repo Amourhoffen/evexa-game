@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flappy Bird Clone</title>
+    <title>Evexa Buddy</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -21,8 +21,8 @@
             --success-color: #10b981; /* Emerald */
             --warning-color: #f59e0b; /* Amber */
             --danger-color: #ef4444; /* Red */
-            --sky-blue: #70c5ce;
-            --ground-brown: #d2b48c; /* Light brown for ground */
+            --sky-blue: #70c5ce; /* Default sky blue */
+            --ground-brown: #d2b48c; /* Default ground brown */
 
             /* Sidebar specific variables (Dark Mode) - adjusted for glass effect */
             --sidebar-bg: rgba(30, 30, 30, 0.3); /* Dark background - semi-transparent */
@@ -43,6 +43,10 @@
             --bottom-nav-active-color: white;
             --bottom-nav-border: rgba(51, 51, 51, 0.4);
             --bottom-nav-shadow: 0 -5px 15px rgba(0, 0, 0, 0.3);
+
+            /* Game specific variables for canvas dimensions */
+            --game-canvas-width: 550;
+            --game-canvas-height: 450;
         }
 
         /* Light Mode Variables */
@@ -349,10 +353,11 @@
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--border-color);
             box-shadow: var(--box-shadow);
+            transition: transform 0.3s ease, width 0.3s ease, height 0.3s ease; /* Add transition for rotation */
         }
 
         canvas {
-            background-color: var(--sky-blue);
+            background-color: var(--sky-blue); /* Controlled by JS/CSS variables */
             border: 3px solid var(--border-color);
             border-radius: 15px;
             display: block;
@@ -371,7 +376,7 @@
             left: 0;
             width: 100%;
             height: 80px;
-            background-color: var(--ground-brown);
+            background-color: var(--ground-brown); /* Controlled by JS/CSS variables */
             border-top: 3px solid var(--border-color);
             border-radius: 0 0 15px 15px;
             z-index: 5;
@@ -484,27 +489,6 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
 
-        /* Ripple effect for buttons */
-        .button::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 5px;
-            height: 5px;
-            background: rgba(255, 255, 255, 0.5);
-            border-radius: 50%;
-            opacity: 0;
-            transform: scale(1) translate(-50%, -50%);
-            transition: all 0.5s ease-out;
-        }
-
-        .button:active::after {
-            transform: scale(200) translate(-50%, -50%);
-            opacity: 1;
-            transition: 0s;
-        }
-
         /* Bottom Navbar Styling */
         .bottom-navbar-container {
             position: fixed;
@@ -581,33 +565,122 @@
             color: var(--bottom-nav-active-color);
         }
 
+        /* Pre-game countdown styling */
+        #countdown-display {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 6em;
+            font-weight: 800;
+            color: white;
+            text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.7);
+            z-index: 30;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
 
-        /* Keyframe Animations */
-        @keyframes bounceIn {
-            0%, 20%, 40%, 60%, 80%, 100% {
-                transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
-            }
-            0% {
-                opacity: 0;
-                transform: scale3d(0.3, 0.3, 0.3);
-            }
-            20% {
-                transform: scale3d(1.1, 1.1, 1.1);
-            }
-            40% {
-                transform: scale3d(0.9, 0.9, 0.9);
-            }
-            60% {
-                opacity: 1;
-                transform: scale3d(1.03, 1.03, 1.03);
-            }
-            80% {
-                transform: scale3d(0.97, 0.97, 0.97);
-            }
-            100% {
-                opacity: 1;
-                transform: scale3d(1, 1, 1);
-            }
+        #countdown-display.active {
+            opacity: 1;
+            visibility: visible;
+            animation: countdownPop 0.8s ease-out forwards;
+        }
+
+        @keyframes countdownPop {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+            70% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+
+        /* Level Up message styling */
+        #level-up-display {
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3em;
+            font-weight: 800;
+            color: var(--primary-color);
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+            z-index: 40;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        #level-up-display.active {
+            opacity: 1;
+            visibility: visible;
+            animation: levelUpFade 2s forwards;
+        }
+
+        @keyframes levelUpFade {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            20% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+            80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+        }
+
+        /* Device rotation hint */
+        #rotation-hint {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5em;
+            text-align: center;
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        #rotation-hint.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #rotation-hint i {
+            font-size: 3em;
+            margin-bottom: 20px;
+            animation: rotateIcon 2s infinite ease-in-out;
+        }
+
+        #rotation-hint button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 700;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s ease, transform 0.1s ease;
+        }
+
+        #rotation-hint button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        #rotation-hint button:active {
+            transform: translateY(0);
+        }
+
+        @keyframes rotateIcon {
+            0% { transform: rotate(0deg); }
+            50% { transform: rotate(90deg); }
+            100% { transform: rotate(0deg); }
         }
 
         /* Responsive adjustments */
@@ -627,6 +700,9 @@
             /* Reset main-content padding for desktop */
             .main-content {
                 padding-bottom: 20px; /* Original padding */
+            }
+            #rotation-hint {
+                display: none; /* Hide on desktop */
             }
         }
 
@@ -680,15 +756,44 @@
             }
         }
 
+        @media (max-width: 768px) and (orientation: portrait) {
+            .game-container {
+                /* Apply rotation and centering */
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%) rotate(90deg);
+                transform-origin: center center;
+
+                /* Set the height (which becomes visual width after rotation) to 100% of available viewport width */
+                height: calc(100vw - (2 * 20px)); /* 100vw minus main-content's horizontal padding */
+
+                /* Set the width (which becomes visual height after rotation) proportionally */
+                width: calc( (100vw - (2 * 20px)) * (var(--game-canvas-width) / var(--game-canvas-height)) );
+                
+                /* Ensure the visual height (controlled by 'width' property) doesn't exceed available viewport height */
+                max-width: calc(100vh - 190px); /* 100vh minus top bar, bottom nav, and main-content vertical padding */
+                
+                overflow: hidden; /* Hide any overflow from scaling */
+            }
+
+            .game-container canvas {
+                /* The canvas itself should maintain its internal resolution (e.g., 550x450)
+                   and then be scaled to fit the rotated container. */
+                width: 100%;
+                height: 100%;
+            }
+        }
+
         @media (max-width: 600px) {
             .game-container {
                 padding: 15px;
                 width: 100%;
-                border-radius: 15px;
+                border-radius: 10px; /* Smaller radius for smaller screens */
                 gap: 15px;
             }
             canvas {
-                height: 500px; /* Increased height for mobile */
+                height: 500px; /* Increased height for mobile portrait when not rotated */
                 border-radius: 10px;
             }
             #score-display {
@@ -732,8 +837,14 @@
         }
 
         @media (max-width: 400px) {
+            .game-container {
+                /* When rotated, its visual width is its height, and its visual height is its width */
+                /* On small phones, reduce padding to maximize game area */
+                height: calc(100vw - (2 * 15px)); /* Adjusted for smaller padding */
+                width: calc( (100vw - (2 * 15px)) * (var(--game-canvas-width) / var(--game-canvas-height)) );
+            }
             canvas {
-                height: 420px; /* Further increased height for smaller mobile */
+                height: 420px; /* Further increased height for smaller mobile when not rotated */
             }
             #score-display {
                 font-size: 2.2em;
@@ -803,13 +914,15 @@
         <div class="game-container glass-effect">
             <canvas id="gameCanvas"></canvas>
             <div id="score-display">0</div>
+            <div id="countdown-display"></div>
+            <div id="level-up-display"></div>
             <div id="game-over-screen">
                 <h2>Game Over!</h2>
                 <p>Your Score: <span id="final-score">0</span></p>
                 <p>High Score: <span id="high-score">0</span></p>
                 <button id="restart-button" class="button button-primary">Restart Game</button>
             </div>
-        </div>
+            </div>
     </div>
 
     <div class="bottom-navbar-container glass-effect" id="bottomNavbar">
@@ -839,9 +952,16 @@
         </a>
     </div>
 
+    <div id="rotation-hint">
+        <i class="fas fa-mobile-alt"></i>
+        <p>Rotate Device for Best Experience</p>
+        <button id="skip-rotation-hint" class="button button-primary">Skip</button>
+    </div>
+
     <script>
         // Global variables for game state and elements
         let canvas, ctx, scoreDisplay, gameOverScreen, finalScoreDisplay, highScoreDisplay, restartButton;
+        let countdownDisplay, levelUpDisplay, rotationHint; // startScreen removed
         let birdX, birdY, birdVelocityY;
         let pipes = [];
         let score;
@@ -853,6 +973,17 @@
         let currentPipeSpeed;
         let currentPipeSpawnInterval;
         let hasPlayedGameOverSound;
+        let gameStarted = false; // Track if game has truly started (after countdown)
+        let currentLevel = 1; // New: Current game level, starts at 1 (Very Easy)
+        let rotationHintDismissed = false; // Track if user skipped rotation hint
+
+        // Game states enum
+        const GAME_STATES = {
+            COUNTDOWN: 'COUNTDOWN', // Game starts directly with countdown
+            PLAYING: 'PLAYING',
+            GAME_OVER: 'GAME_OVER'
+        };
+        let currentGameState = GAME_STATES.COUNTDOWN; // Initial state is now countdown
 
         // Game constants
         const BIRD_WIDTH = 40;
@@ -861,27 +992,47 @@
         const INITIAL_JUMP_STRENGTH = -8;
         const PIPE_WIDTH = 60;
         const PIPE_GAP = 150;
-        const INITIAL_PIPE_SPEED = 2;
-        const INITIAL_PIPE_SPAWN_INTERVAL = 1500;
-        const DIFFICULTY_INCREASE_INTERVAL = 10000;
-        const SPEED_INCREASE_FACTOR = 0.05;
-        const SPAWN_INTERVAL_DECREASE_FACTOR = 0.95;
         const GROUND_HEIGHT = 80;
 
-        // Sound effects using Tone.js
+        // Desired internal canvas resolution for game logic (landscape)
+        const GAME_CANVAS_WIDTH = 550;
+        const GAME_CANVAS_HEIGHT = 450;
+
+        // Difficulty levels (speed and spawn interval) with background themes
+        const DIFFICULTY_LEVELS = {
+            1: { speed: 2, interval: 1500, scoreThreshold: 5, name: "Very Easy", skyColor: '#70c5ce', groundColor: '#d2b48c', backgroundType: 'default' },
+            2: { speed: 2.5, interval: 1300, scoreThreshold: 10, name: "Easy", skyColor: '#87CEEB', groundColor: '#deb887', backgroundType: 'clouds' },
+            3: { speed: 3, interval: 1100, scoreThreshold: 20, name: "Medium", skyColor: '#4A90E2', groundColor: '#7a5230', backgroundType: 'mountains' },
+            4: { speed: 3.5, interval: 900, scoreThreshold: 35, name: "Hard", skyColor: '#36454F', groundColor: '#5a3a2b', backgroundType: 'night' },
+            5: { speed: 4, interval: 700, scoreThreshold: 50, name: "Very Hard", skyColor: '#2C3E50', groundColor: '#4a2a1c', backgroundType: 'stormy' }
+        };
+
+        // Bird colors (fixed, not changing per level as per user request)
+        const BIRD_COLORS = {
+            body: '#FFD700', /* Gold yellow */
+            beak: '#FFA500', /* Orange */
+            eye: 'black',
+            wing: 'rgba(255, 255, 255, 0.7)'
+        };
+
+        // Sound effects and music using Tone.js
         let jumpSynth = null;
         let gameOverSynth = null;
+        let backgroundMusicLoop = null; // Tone.Loop instance
+        let backgroundMusicSynth = null; // Tone.Synth for background music
 
         // Function to set canvas dimensions dynamically
         function setCanvasDimensions() {
-            canvas.width = canvas.offsetWidth;
-            canvas.height = canvas.offsetHeight;
+            // Always set canvas internal resolution to the desired landscape size
+            canvas.width = GAME_CANVAS_WIDTH;
+            canvas.height = GAME_CANVAS_HEIGHT;
+            // CSS will handle visual scaling and rotation of the game-container and canvas
         }
 
-        // Draw bird (stylized using Canvas API)
+        // Draw bird (stylized using Canvas API) - now uses fixed colors
         function drawBird() {
             // Bird body (oval)
-            ctx.fillStyle = '#FFD700'; /* Gold yellow */
+            ctx.fillStyle = BIRD_COLORS.body;
             ctx.beginPath();
             ctx.ellipse(birdX + BIRD_WIDTH / 2, birdY + BIRD_HEIGHT / 2, BIRD_WIDTH / 2, BIRD_HEIGHT / 2, 0, 0, Math.PI * 2);
             ctx.fill();
@@ -890,7 +1041,7 @@
             ctx.stroke();
 
             // Beak (triangle)
-            ctx.fillStyle = '#FFA500'; /* Orange */
+            ctx.fillStyle = BIRD_COLORS.beak;
             ctx.beginPath();
             ctx.moveTo(birdX + BIRD_WIDTH - 5, birdY + BIRD_HEIGHT / 2);
             ctx.lineTo(birdX + BIRD_WIDTH + 10, birdY + BIRD_HEIGHT / 2 - 5);
@@ -899,7 +1050,7 @@
             ctx.fill();
 
             // Eye (black circle with white highlight)
-            ctx.fillStyle = 'black';
+            ctx.fillStyle = BIRD_COLORS.eye;
             ctx.beginPath();
             ctx.arc(birdX + BIRD_WIDTH / 2 + 8, birdY + BIRD_HEIGHT / 2 - 5, 4, 0, Math.PI * 2);
             ctx.fill();
@@ -915,7 +1066,7 @@
             let wingRotation = Math.sin(Date.now() * 0.01) * 0.2;
             ctx.rotate(wingRotation);
 
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+            ctx.fillStyle = BIRD_COLORS.wing;
             ctx.beginPath();
             ctx.ellipse(0, 5, BIRD_WIDTH / 3, BIRD_HEIGHT / 3, Math.PI / 4, 0, Math.PI * 2);
             ctx.fill();
@@ -958,6 +1109,47 @@
             });
         }
 
+        // Draw dynamic background elements based on level
+        function drawBackgroundElements(level) {
+            const backgroundType = DIFFICULTY_LEVELS[level].backgroundType;
+
+            if (backgroundType === 'clouds' || backgroundType === 'default') {
+                // Draw simple clouds
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                ctx.beginPath();
+                ctx.arc(canvas.width * 0.2, canvas.height * 0.2, 30, 0, Math.PI * 2);
+                ctx.arc(canvas.width * 0.25, canvas.height * 0.2 + 10, 25, 0, Math.PI * 2);
+                ctx.arc(canvas.width * 0.3, canvas.height * 0.2, 30, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.arc(canvas.width * 0.7, canvas.height * 0.15, 40, 0, Math.PI * 2);
+                ctx.arc(canvas.width * 0.75, canvas.height * 0.15 + 15, 35, 0, Math.PI * 2);
+                ctx.arc(canvas.width * 0.8, canvas.height * 0.15, 40, 0, Math.PI * 2);
+                ctx.fill();
+            } else if (backgroundType === 'mountains' || backgroundType === 'night' || backgroundType === 'stormy') {
+                // Draw simple mountains
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.2)'; /* Darker overlay for mountains */
+                ctx.beginPath();
+                ctx.moveTo(0, canvas.height - GROUND_HEIGHT);
+                ctx.lineTo(canvas.width * 0.3, canvas.height - GROUND_HEIGHT - 80);
+                ctx.lineTo(canvas.width * 0.6, canvas.height - GROUND_HEIGHT - 40);
+                ctx.lineTo(canvas.width * 0.8, canvas.height - GROUND_HEIGHT - 100);
+                ctx.lineTo(canvas.width, canvas.height - GROUND_HEIGHT);
+                ctx.closePath();
+                ctx.fill();
+
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.1)'; /* Lighter overlay for mountains */
+                ctx.beginPath();
+                ctx.moveTo(canvas.width * 0.1, canvas.height - GROUND_HEIGHT);
+                ctx.lineTo(canvas.width * 0.4, canvas.height - GROUND_HEIGHT - 60);
+                ctx.lineTo(canvas.width * 0.7, canvas.height - GROUND_HEIGHT - 20);
+                ctx.lineTo(canvas.width, canvas.height - GROUND_HEIGHT);
+                ctx.closePath();
+                ctx.fill();
+            }
+        }
+
         // Draw ground
         function drawGround() {
             ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--ground-brown');
@@ -975,25 +1167,26 @@
 
         // Update game state
         function update() {
-            if (gameOver) return;
+            if (currentGameState !== GAME_STATES.PLAYING) return;
 
             birdVelocityY += INITIAL_GRAVITY;
             birdY += birdVelocityY;
 
             if (birdY + BIRD_HEIGHT > canvas.height - GROUND_HEIGHT) {
                 birdY = canvas.height - BIRD_HEIGHT - GROUND_HEIGHT;
-                gameOver = true;
+                currentGameState = GAME_STATES.GAME_OVER;
             }
             if (birdY < 0) {
                 birdY = 0;
                 birdVelocityY = 0;
             }
 
-            const elapsedTime = Date.now() - gameStartTime;
-            if (elapsedTime > DIFFICULTY_INCREASE_INTERVAL) {
-                currentPipeSpeed += SPEED_INCREASE_FACTOR;
-                currentPipeSpawnInterval = Math.max(500, currentPipeSpawnInterval * SPAWN_INTERVAL_DECREASE_FACTOR);
-                gameStartTime = Date.now();
+            // Check for level up
+            const nextLevelData = DIFFICULTY_LEVELS[currentLevel + 1];
+            if (nextLevelData && score >= DIFFICULTY_LEVELS[currentLevel].scoreThreshold) {
+                currentLevel++;
+                applyLevelDifficulty();
+                showLevelUpMessage(currentLevel);
             }
 
             const currentTime = Date.now();
@@ -1014,7 +1207,7 @@
                     birdX + BIRD_WIDTH > pipe.x &&
                     (birdY < pipe.topHeight || birdY + BIRD_HEIGHT > pipe.bottomY)
                 ) {
-                    gameOver = true;
+                    currentGameState = GAME_STATES.GAME_OVER;
                 }
 
                 if (pipe.x + PIPE_WIDTH < birdX && !pipe.passed) {
@@ -1037,12 +1230,15 @@
 
             pipes = pipes.filter(pipe => pipe.x + PIPE_WIDTH > 0);
 
-            if (gameOver) {
+            if (currentGameState === GAME_STATES.GAME_OVER) {
                 finalScoreDisplay.textContent = score;
                 gameOverScreen.classList.add('active');
                 if (!hasPlayedGameOverSound && gameOverSynth) {
                     gameOverSynth.triggerAttackRelease("8n");
                     hasPlayedGameOverSound = true;
+                }
+                if (backgroundMusicLoop && backgroundMusicLoop.state === 'started') {
+                    backgroundMusicLoop.stop();
                 }
                 cancelAnimationFrame(animationFrameId);
             }
@@ -1051,6 +1247,11 @@
         // Game loop
         function gameLoop() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // Update background colors based on current level
+            document.documentElement.style.setProperty('--sky-blue', DIFFICULTY_LEVELS[currentLevel].skyColor);
+            document.documentElement.style.setProperty('--ground-brown', DIFFICULTY_LEVELS[currentLevel].groundColor);
+
+            drawBackgroundElements(currentLevel); // Draw level-specific background elements
             drawPipes();
             drawGround();
             drawBird();
@@ -1060,17 +1261,67 @@
 
         // Bird jump function
         function jump() {
-            if (!gameOver) {
+            if (currentGameState === GAME_STATES.PLAYING) {
                 birdVelocityY = INITIAL_JUMP_STRENGTH;
                 if (jumpSynth) {
                     jumpSynth.triggerAttackRelease("C4", "8n");
                 }
+            }
+            // No action if not in PLAYING state (e.g., during countdown or on start screen)
+        }
+
+        // Apply difficulty settings based on current level
+        function applyLevelDifficulty() {
+            const levelData = DIFFICULTY_LEVELS[currentLevel];
+            if (levelData) {
+                currentPipeSpeed = levelData.speed;
+                currentPipeSpawnInterval = levelData.interval;
+                console.log(`Level ${currentLevel}: Speed ${currentPipeSpeed}, Interval ${currentPipeSpawnInterval}`);
             } else {
-                initGame();
+                // If no specific level data, use the last defined level's settings
+                const lastLevel = Object.keys(DIFFICULTY_LEVELS).pop();
+                const lastLevelData = DIFFICULTY_LEVELS[lastLevel];
+                currentPipeSpeed = lastLevelData.speed;
+                currentPipeSpawnInterval = lastLevelData.interval;
+                console.log(`Max Level Reached (${lastLevel}): Speed ${currentPipeSpeed}, Interval ${currentPipeSpawnInterval}`);
             }
         }
 
-        // Initialize game
+        // Show level up message
+        function showLevelUpMessage(level) {
+            levelUpDisplay.textContent = `Level ${level}!`;
+            levelUpDisplay.classList.add('active');
+            setTimeout(() => {
+                levelUpDisplay.classList.remove('active');
+            }, 2000); // Display for 2 seconds
+        }
+
+        // Countdown before game starts
+        function startCountdown() {
+            currentGameState = GAME_STATES.COUNTDOWN;
+            let count = 3;
+            countdownDisplay.classList.add('active');
+            const countdownInterval = setInterval(() => {
+                if (count > 0) {
+                    countdownDisplay.textContent = count;
+                    count--;
+                } else {
+                    countdownDisplay.textContent = 'Go!';
+                    clearInterval(countdownInterval);
+                    setTimeout(() => {
+                        countdownDisplay.classList.remove('active');
+                        currentGameState = GAME_STATES.PLAYING; // Allow game to start after countdown
+                        gameStartTime = Date.now(); // Start game timer
+                        gameLoop(); // Start the game loop
+                        if (backgroundMusicLoop && backgroundMusicLoop.state !== 'started') {
+                            backgroundMusicLoop.start();
+                        }
+                    }, 500); // "Go!" stays for 0.5s
+                }
+            }, 1000); // Update every 1 second
+        }
+
+        // Initialize game (starts directly now)
         function initGame() {
             setCanvasDimensions();
             birdX = 50;
@@ -1081,20 +1332,23 @@
             gameOver = false;
             hasPlayedGameOverSound = false;
             lastPipeSpawnTime = 0;
-            gameStartTime = Date.now();
-            currentPipeSpeed = INITIAL_PIPE_SPEED;
-            currentPipeSpawnInterval = INITIAL_PIPE_SPAWN_INTERVAL;
+            currentLevel = 1; // Always start at level 1 (Very Easy)
+            applyLevelDifficulty(); // Apply initial difficulty
+
+            // Ensure game elements are visible
+            canvas.style.display = 'block';
+            scoreDisplay.style.display = 'block';
+            gameOverScreen.classList.remove('active'); // Hide game over screen
 
             scoreDisplay.textContent = score;
-            gameOverScreen.classList.remove('active');
-
             highScore = parseInt(localStorage.getItem('flappyBirdHighScore') || '0');
             highScoreDisplay.textContent = highScore;
 
             if (animationFrameId) {
                 cancelAnimationFrame(animationFrameId);
             }
-            gameLoop();
+            
+            startCountdown(); // Start countdown directly
         }
 
         // Start Tone.js audio context on user interaction
@@ -1102,11 +1356,100 @@
             if (Tone.context.state !== 'running') {
                 Tone.start().then(() => {
                     console.log("Tone.js audio context started.");
+                    // Initialize synths and connect them
                     jumpSynth = new Tone.Synth().toDestination();
                     gameOverSynth = new Tone.NoiseSynth().toDestination();
+                    
+                    // Initialize a single synth for background music and connect it
+                    backgroundMusicSynth = new Tone.Synth().toDestination();
+
+                    // Background music loop setup - it schedules notes on backgroundMusicSynth
+                    backgroundMusicLoop = new Tone.Loop(time => {
+                        backgroundMusicSynth.triggerAttackRelease("C3", "4n", time);
+                        backgroundMusicSynth.triggerAttackRelease("E3", "4n", time + 0.5);
+                        backgroundMusicSynth.triggerAttackRelease("G3", "4n", time + 1);
+                        backgroundMusicSynth.triggerAttackRelease("C4", "4n", time + 1.5);
+                    }, "2n"); // Repeat every 2 notes
+                    
+                    // The loop itself will be started after the countdown
                 }).catch(e => console.error("Tone.js context failed to start:", e));
             }
         };
+
+        // Check device orientation and apply game box rotation
+        function checkOrientation() {
+            const isMobile = window.innerWidth < 769;
+            const isPortrait = window.innerHeight > window.innerWidth;
+            const gameContainer = document.querySelector('.game-container');
+
+            if (isMobile) {
+                if (isPortrait) {
+                    // Mobile Portrait Mode
+                    if (!rotationHintDismissed) {
+                        rotationHint.classList.add('active');
+                    }
+
+                    // Apply CSS rotation to game-container
+                    gameContainer.style.transform = 'translate(-50%, -50%) rotate(90deg)';
+                    gameContainer.style.transformOrigin = 'center center';
+                    gameContainer.style.position = 'absolute';
+                    gameContainer.style.top = '50%';
+                    gameContainer.style.left = '50%';
+                    
+                    // Calculate and set dimensions for the rotated container
+                    // The 'height' property of the container becomes its visual width after 90deg rotation
+                    // It should be 100% of the viewport width, minus the main-content's horizontal padding (20px left + 20px right = 40px)
+                    gameContainer.style.height = `calc(100vw - (2 * 20px))`; 
+
+                    // The 'width' property of the container becomes its visual height after 90deg rotation
+                    // This visual height should maintain the aspect ratio of the game (550/450) relative to its new visual width
+                    gameContainer.style.width = `calc( (100vw - (2 * 20px)) * (var(--game-canvas-width) / var(--game-canvas-height)) )`;
+                    
+                    // Ensure the visual height (controlled by 'width' property) doesn't exceed available viewport height
+                    // Available height for the entire main content area: 100vh - (top menu toggle + bottom nav + main-content vertical padding)
+                    // Roughly: 100vh - (60px + 70px + 2 * 20px) = 100vh - 170px
+                    gameContainer.style.maxWidth = `calc(100vh - 170px)`; 
+                    
+                    gameContainer.style.overflow = 'hidden'; // Hide any overflow from scaling
+
+                    // For very small screens, adjust padding to maximize game area
+                    if (window.innerWidth <= 400) {
+                        gameContainer.style.height = `calc(100vw - (2 * 15px))`; // Smaller padding
+                        gameContainer.style.width = `calc( (100vw - (2 * 15px)) * (var(--game-canvas-width) / var(--game-canvas-height)) )`;
+                    }
+
+                } else {
+                    // Mobile Landscape Mode
+                    rotationHint.classList.remove('active');
+                    // Reset game-container styles
+                    gameContainer.style.transform = ''; // Reset transform
+                    gameContainer.style.transformOrigin = '';
+                    gameContainer.style.position = '';
+                    gameContainer.style.top = '';
+                    gameContainer.style.left = '';
+                    gameContainer.style.width = '100%'; // Reset to default responsive width
+                    gameContainer.style.height = '450px'; // Revert to desktop/landscape height
+                    gameContainer.style.maxWidth = '550px'; // Reapply max-width for landscape
+                    canvas.style.width = '100%';
+                    canvas.style.height = '100%'; // Canvas fills its container
+                }
+            } else {
+                // Desktop Mode
+                rotationHint.classList.remove('active');
+                // Ensure game-container styles are reset for desktop
+                gameContainer.style.transform = '';
+                gameContainer.style.transformOrigin = '';
+                gameContainer.style.position = '';
+                gameContainer.style.top = '';
+                gameContainer.style.left = '';
+                gameContainer.style.width = '100%';
+                gameContainer.style.height = '450px'; // Default desktop height
+                gameContainer.style.maxWidth = '550px'; // Reapply max-width for desktop
+                canvas.style.width = '100%';
+                canvas.style.height = '100%'; // Canvas fills its container
+            }
+            setCanvasDimensions(); // Re-set canvas internal dimensions
+        }
 
         document.addEventListener('DOMContentLoaded', () => {
             // Assign DOM elements to global variables
@@ -1117,6 +1460,11 @@
             finalScoreDisplay = document.getElementById('final-score');
             highScoreDisplay = document.getElementById('high-score');
             restartButton = document.getElementById('restart-button');
+            countdownDisplay = document.getElementById('countdown-display'); // Get new countdown element
+            levelUpDisplay = document.getElementById('level-up-display'); // Get new level up element
+            rotationHint = document.getElementById('rotation-hint'); // Get rotation hint element
+
+            const skipRotationHintButton = document.getElementById('skip-rotation-hint'); // Get skip button
 
             // Sidebar elements
             const sidebar = document.getElementById('sidebar');
@@ -1142,12 +1490,14 @@
                 }
             });
 
+            // Unified click/tap handler for game jump
             canvas.addEventListener('click', jump);
             canvas.addEventListener('touchstart', (e) => {
-                e.preventDefault();
+                e.preventDefault(); // Prevent scrolling on touch
                 jump();
             });
 
+            // Restart button now directly re-initializes the game (which starts countdown)
             restartButton.addEventListener('click', initGame);
 
             // Sidebar Menu Toggle for small screens (hamburger icon)
@@ -1213,11 +1563,26 @@
                 });
             });
 
+            // Skip Rotation Hint button handler
+            if (skipRotationHintButton) {
+                skipRotationHintButton.addEventListener('click', () => {
+                    rotationHintDismissed = true;
+                    rotationHint.classList.remove('active');
+                    // Re-check orientation to ensure rotated game box is applied if still in portrait
+                    checkOrientation();
+                });
+            }
 
-            initGame(); // Initialize game after DOM is ready
+            // Initial setup: start game directly
+            initGame();
 
-            // Handle window resize
-            window.addEventListener('resize', setCanvasDimensions);
+            // Handle window resize and orientation change
+            window.addEventListener('resize', () => {
+                checkOrientation(); // Check orientation on resize
+            });
+            window.addEventListener('orientationchange', checkOrientation); // For explicit orientation changes
+
+            checkOrientation(); // Initial check on load
         });
     </script>
 </body>
