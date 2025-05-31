@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flappy Bird Clone</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* CSS Variables for theming */
+        :root {
+            --primary-color: #6366f1; /* Indigo 500 */
+            --secondary-color: #a78bfa; /* Violet 400 */
+            --bg-dark: #1a202c; /* Dark charcoal - for body background */
+            --bg-card: rgba(45, 55, 72, 0.3); /* Darker gray for cards - semi-transparent for glassmorphism */
+            --text-light: #e2e8f0; /* Light gray */
+            --text-muted: #a0aec0; /* Muted gray */
+            --border-color: rgba(74, 85, 104, 0.4); /* Semi-transparent border */
+            --box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4), 0 0 15px rgba(99, 102, 241, 0.15);
+            --success-color: #10b981; /* Emerald */
+            --warning-color: #f59e0b; /* Amber */
+            --danger-color: #ef4444; /* Red */
+            --sky-blue: #70c5ce;
+            --ground-brown: #d2b48c; /* Light brown for ground */
+
+            /* Sidebar specific variables (Dark Mode) - adjusted for glass effect */
+            --sidebar-bg: rgba(30, 30, 30, 0.3); /* Dark background - semi-transparent */
+            --sidebar-header-bg: rgba(42, 42, 42, 0.4);
+            --sidebar-item-bg-hover: rgba(58, 58, 58, 0.5);
+            --sidebar-item-text: #e0e0e0;
+            --sidebar-item-icon: #a0a0a0;
+            --sidebar-active-item-bg: rgba(51, 51, 51, 0.6);
+            --sidebar-active-item-text: white;
+            --sidebar-active-item-icon: white;
+            --sidebar-border: rgba(51, 51, 51, 0.4);
+            --sidebar-shadow: 5px 0 15px rgba(0, 0, 0, 0.5);
+
+            /* Bottom Navbar specific variables */
+            --bottom-nav-bg: rgba(30, 30, 30, 0.4);
+            --bottom-nav-item-color: #e0e0e0;
+            --bottom-nav-active-bg: #007aff; /* iOS blue */
+            --bottom-nav-active-color: white;
+            --bottom-nav-border: rgba(51, 51, 51, 0.4);
+            --bottom-nav-shadow: 0 -5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Light Mode Variables */
+        body.light-mode {
+            --primary-color: #4f46e5; /* Indigo 600 */
+            --secondary-color: #8b5cf6; /* Violet 500 */
+            --bg-dark: #f0f4f8; /* Light blue-gray - for body background */
+            --bg-card: rgba(255, 255, 255, 0.6); /* White - semi-transparent for glassmorphism */
+            --text-light: #2d3748; /* Dark gray */
+            --text-muted: #718096; /* Medium gray */
+            --border-color: rgba(203, 213, 224, 0.6); /* Light border - semi-transparent */
+            --box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15), 0 0 15px rgba(79, 70, 229, 0.08);
+            --success-color: #059669; /* Darker Emerald */
+            --warning-color: #d97706; /* Darker Amber */
+            --danger-color: #dc2626; /* Darker Red */
+            --sky-blue: #87ceeb; /* Lighter sky blue */
+            --ground-brown: #deb887; /* Slightly darker brown */
+
+            /* Sidebar specific variables (Light Mode) - adjusted for glass effect */
+            --sidebar-bg: rgba(255, 255, 255, 0.6); /* Light background - semi-transparent */
+            --sidebar-header-bg: rgba(245, 245, 245, 0.7);
+            --sidebar-item-bg-hover: rgba(224, 224, 224, 0.8);
+            --sidebar-item-text: #333;
+            --sidebar-item-icon: #666;
+            --sidebar-active-item-bg: rgba(224, 224, 224, 0.9);
+            --sidebar-active-item-text: #333;
+            --sidebar-active-item-icon: #333;
+            --sidebar-border: rgba(204, 204, 204, 0.6);
+            --sidebar-shadow: 5px 0 15px rgba(0, 0, 0, 0.1);
+
+            /* Bottom Navbar specific variables */
+            --bottom-nav-bg: rgba(255, 255, 255, 0.7);
+            --bottom-nav-item-color: #333;
+            --bottom-nav-active-bg: #007aff; /* iOS blue */
+            --bottom-nav-active-color: white;
+            --bottom-nav-border: rgba(204, 204, 204, 0.6);
+            --bottom-nav-shadow: 0 -5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #0d1117 100%);
+            color: var(--text-light);
+            transition: background 0.5s ease, color 0.5s ease;
+            overflow: hidden; /* Ensure no scrollbars on the body */
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Glassmorphism effect base */
+        .glass-effect {
+            backdrop-filter: blur(12px); /* Increased blur */
+            -webkit-backdrop-filter: blur(12px); /* For Safari support */
+            border: 1px solid var(--border-color);
+            box-shadow: var(--box-shadow);
+        }
+
+        /* Custom Scrollbar Styling (for WebKit browsers like Chrome, Safari) */
+        ::-webkit-scrollbar {
+            width: 8px; /* Thin scrollbar */
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1); /* Subtle track */
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(128, 128, 128, 0.5); /* Semi-transparent grey thumb */
+            border-radius: 10px;
+            border: 2px solid transparent; /* Creates a gap around the thumb */
+            background-clip: padding-box; /* Ensures border doesn't affect thumb size */
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(128, 128, 128, 0.7); /* Slightly darker on hover */
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 60px; /* Default collapsed width */
+            background-color: var(--sidebar-bg); /* Use semi-transparent bg for glass */
+            transition: width 0.3s ease, background-color 0.3s ease, transform 0.3s ease;
+            z-index: 50;
+            overflow-y: auto; /* Enable scrolling for long menus */
+            overflow-x: hidden; /* Hide horizontal scrollbar */
+            padding: 20px 0; /* Apply padding here */
+            box-sizing: border-box; /* Include padding in width calculation */
+            /* Apply glass effect */
+            backdrop-filter: blur(12px); /* Increased blur */
+            -webkit-backdrop-filter: blur(12px);
+            border-right: 1px solid var(--sidebar-border); /* Use semi-transparent border */
+            box-shadow: var(--sidebar-shadow);
+            display: flex; /* Ensure flex properties are applied */
+            flex-direction: column; /* Ensure flex properties are applied */
+        }
+
+        .sidebar.expanded {
+            width: 250px; /* Expanded width */
+        }
+
+        .sidebar nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar nav ul li {
+            margin-bottom: 5px;
+        }
+
+        .sidebar nav ul li a,
+        .sidebar nav ul li button {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 12px 20px;
+            color: var(--sidebar-item-text);
+            text-decoration: none;
+            font-size: 1em;
+            font-weight: 500;
+            border: none;
+            background: none;
+            cursor: pointer;
+            text-align: left;
+            transition: background-color 0.2s ease, color 0.2s ease;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .sidebar nav ul li a i,
+        .sidebar nav ul li button i {
+            margin-right: 15px;
+            color: var(--sidebar-item-icon);
+            transition: color 0.2s ease, margin-right 0.3s ease;
+            width: 20px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .sidebar:not(.expanded) .sidebar nav ul li a span,
+        .sidebar:not(.expanded) .sidebar nav ul li button span {
+            opacity: 0;
+            width: 0;
+            white-space: nowrap;
+            transition: opacity 0.3s ease, width 0.3s ease;
+        }
+
+        .sidebar:not(.expanded) .sidebar nav ul li a i,
+        .sidebar:not(.expanded) .sidebar nav ul li button i {
+            margin-right: 0;
+            justify-content: center;
+        }
+
+        .sidebar nav ul li a:hover,
+        .sidebar nav ul li button:hover {
+            background-color: var(--sidebar-item-bg-hover);
+        }
+
+        .sidebar nav ul li.active > a,
+        .sidebar nav ul li.active > button {
+            background-color: var(--sidebar-active-item-bg);
+            color: var(--sidebar-active-item-text);
+        }
+
+        .sidebar nav ul li.active > a i,
+        .sidebar nav ul li.active > button i {
+            color: var(--sidebar-active-item-icon);
+        }
+
+        /* Sub-menu styling */
+        .sidebar nav ul ul {
+            padding-left: 40px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            background-color: rgba(0, 0, 0, 0.05);
+            border-radius: 0 0 8px 8px;
+        }
+
+        body.light-mode .sidebar nav ul ul {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+
+        .sidebar nav ul li.expanded > ul {
+            max-height: 500px;
+        }
+
+        .sidebar nav ul li .sub-menu-toggle {
+            margin-left: auto;
+            font-size: 0.8em;
+            transition: transform 0.2s ease;
+        }
+
+        .sidebar nav ul li.expanded .sub-menu-toggle {
+            transform: rotate(90deg);
+        }
+
+        /* Theme toggle button in sidebar */
+        #theme-toggle {
+            margin-top: auto;
+            padding: 12px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 700;
+            margin-left: 20px;
+            margin-right: 20px;
+            transition: background-color 0.3s ease, transform 0.1s ease, opacity 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            white-space: nowrap;
+        }
+
+        .sidebar:not(.expanded) #theme-toggle {
+            opacity: 0;
+            pointer-events: none;
+            width: 0;
+            padding: 0;
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        #theme-toggle:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        #theme-toggle:active {
+            transform: translateY(0);
+        }
+
+        /* Sidebar Toggle Button for Desktop */
+        .sidebar-toggle-desktop {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: var(--bg-card);
+            color: var(--text-light);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.15s ease, box-shadow 0.3s ease;
+            box-shadow: var(--box-shadow);
+            z-index: 51;
+            display: none;
+        }
+
+        .sidebar-toggle-desktop:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        /* Main content area */
+        .main-content {
+            margin-left: 60px; /* Space for the collapsed sidebar */
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+            transition: margin-left 0.3s ease;
+            width: calc(100% - 60px);
+            overflow-y: auto; /* Allow main content to scroll if needed */
+        }
+
+        .sidebar.expanded + .main-content {
+            margin-left: 250px; /* Space for the expanded sidebar */
+            width: calc(100% - 250px);
+        }
+
+        .game-container {
+            position: relative;
+            background-color: var(--bg-card); /* Semi-transparent for glass */
+            border-radius: 20px;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+            width: 100%;
+            max-width: 550px;
+            box-sizing: border-box;
+            margin-top: 0;
+            margin-bottom: 0;
+            /* Apply glass effect */
+            backdrop-filter: blur(12px); /* Increased blur */
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--box-shadow);
+        }
+
+        canvas {
+            background-color: var(--sky-blue);
+            border: 3px solid var(--border-color);
+            border-radius: 15px;
+            display: block;
+            width: 100%;
+            height: 450px; /* Default height for larger screens */
+            touch-action: manipulation;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Ground styling */
+        .ground {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            background-color: var(--ground-brown);
+            border-top: 3px solid var(--border-color);
+            border-radius: 0 0 15px 15px;
+            z-index: 5;
+        }
+
+        #score-display {
+            position: absolute;
+            top: 35px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 3.2em;
+            font-weight: 800;
+            color: white;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.6);
+            z-index: 10;
+            transition: transform 0.1s ease-out, font-size 0.1s ease-out;
+        }
+
+        #score-display.score-pop {
+            transform: translateX(-50%) scale(1.1);
+            font-size: 3.5em;
+        }
+
+        #game-over-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85); /* Still mostly opaque for readability */
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.2em;
+            text-align: center;
+            gap: 15px;
+            z-index: 20;
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.9);
+            transition: opacity 0.4s ease, visibility 0.4s ease, transform 0.4s ease;
+            /* Apply glass effect to game over screen too */
+            backdrop-filter: blur(8px); /* Slightly less blur for readability */
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--box-shadow);
+        }
+
+        #game-over-screen.active {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1);
+        }
+
+        #game-over-screen h2 {
+            font-size: 2.8em;
+            font-weight: 800;
+            color: var(--danger-color);
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+            margin-bottom: 5px;
+            animation: bounceIn 0.8s ease-out;
+        }
+
+        #final-score {
+            font-size: 2em;
+            font-weight: 700;
+            color: var(--warning-color);
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        #high-score {
+            font-size: 1.1em;
+            color: var(--text-light);
+            margin-top: 5px;
+        }
+
+        .button {
+            padding: 14px 30px;
+            font-size: 1.2em;
+            font-weight: 700;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.15s ease, box-shadow 0.3s ease;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+            text-decoration: none;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .button-primary {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .button-primary:hover {
+            background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4), 0 0 15px var(--primary-color);
+        }
+
+        .button-primary:active {
+            transform: translateY(0) scale(0.98);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Ripple effect for buttons */
+        .button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            opacity: 0;
+            transform: scale(1) translate(-50%, -50%);
+            transition: all 0.5s ease-out;
+        }
+
+        .button:active::after {
+            transform: scale(200) translate(-50%, -50%);
+            opacity: 1;
+            transition: 0s;
+        }
+
+        /* Bottom Navbar Styling */
+        .bottom-navbar-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70px; /* Height of the bottom navbar */
+            display: none; /* Hidden by default */
+            justify-content: space-around;
+            align-items: center;
+            padding: 0 10px;
+            box-sizing: border-box;
+            z-index: 100; /* Ensure it's on top */
+            background-color: var(--bottom-nav-bg);
+            border-top: 1px solid var(--bottom-nav-border);
+            box-shadow: var(--bottom-nav-shadow);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .bottom-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            padding: 5px 0;
+            color: var(--bottom-nav-item-color);
+            font-size: 0.8em;
+            text-decoration: none;
+            transition: color 0.3s ease, background-color 0.3s ease, transform 0.1s ease;
+            border-radius: 10px;
+            cursor: pointer;
+            position: relative; /* For active indicator */
+        }
+
+        .bottom-nav-item i {
+            font-size: 1.4em;
+            margin-bottom: 4px;
+            transition: color 0.3s ease;
+        }
+
+        .bottom-nav-item .icon-background {
+            /* This div wraps the icon to allow for the active state background */
+            width: 48px; /* Size of the active circle */
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .bottom-nav-item.active .icon-background {
+            background-color: var(--bottom-nav-active-bg);
+            color: var(--bottom-nav-active-color);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .bottom-nav-item.active i {
+            color: var(--bottom-nav-active-color);
+            z-index: 1; /* Ensure icon is above background */
+        }
+
+        .bottom-nav-item span {
+            margin-top: 2px;
+            font-size: 0.75em;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: color 0.3s ease;
+        }
+
+        .bottom-nav-item.active span {
+            color: var(--bottom-nav-active-color);
+        }
+
+
+        /* Keyframe Animations */
+        @keyframes bounceIn {
+            0%, 20%, 40%, 60%, 80%, 100% {
+                transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+            }
+            0% {
+                opacity: 0;
+                transform: scale3d(0.3, 0.3, 0.3);
+            }
+            20% {
+                transform: scale3d(1.1, 1.1, 1.1);
+            }
+            40% {
+                transform: scale3d(0.9, 0.9, 0.9);
+            }
+            60% {
+                opacity: 1;
+                transform: scale3d(1.03, 1.03, 1.03);
+            }
+            80% {
+                transform: scale3d(0.97, 0.97, 0.97);
+            }
+            100% {
+                opacity: 1;
+                transform: scale3d(1, 1, 1);
+            }
+        }
+
+        /* Responsive adjustments */
+        @media (min-width: 769px) {
+            /* Show desktop toggle button */
+            .sidebar-toggle-desktop {
+                display: block;
+            }
+            /* Hide mobile toggle button */
+            .menu-toggle-button {
+                display: none;
+            }
+            /* Hide bottom navbar on desktop */
+            .bottom-navbar-container {
+                display: none;
+            }
+            /* Reset main-content padding for desktop */
+            .main-content {
+                padding-bottom: 20px; /* Original padding */
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 0; /* Collapse sidebar by default on smaller screens */
+                transform: translateX(-100%); /* Hide it off-screen */
+                padding: 0;
+            }
+
+            .sidebar.active {
+                width: 250px; /* Expand when active */
+                transform: translateX(0%);
+                padding: 20px 0;
+            }
+
+            .main-content {
+                margin-left: 0; /* No margin when sidebar is collapsed */
+                width: 100%; /* Take full width */
+                padding-bottom: 90px; /* Space for bottom navbar */
+            }
+
+            .menu-toggle-button {
+                display: block; /* Show hamburger menu button */
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                z-index: 60; /* Above sidebar */
+                background-color: var(--bg-card);
+                color: var(--text-light);
+                border: 1px solid var(--border-color);
+                border-radius: 8px;
+                padding: 10px 15px;
+                cursor: pointer;
+                box-shadow: var(--box-shadow);
+                transition: background-color 0.3s ease, color 0.3s ease;
+            }
+
+            .menu-toggle-button:hover {
+                background-color: var(--primary-color);
+                color: white;
+            }
+
+            .game-container {
+                margin-top: 60px; /* Space for the toggle button */
+            }
+
+            /* Show bottom navbar on mobile */
+            .bottom-navbar-container {
+                display: flex;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .game-container {
+                padding: 15px;
+                width: 100%;
+                border-radius: 15px;
+                gap: 15px;
+            }
+            canvas {
+                height: 500px; /* Increased height for mobile */
+                border-radius: 10px;
+            }
+            #score-display {
+                font-size: 2.8em;
+                top: 25px;
+            }
+            #score-display.score-pop {
+                font-size: 3.1em;
+            }
+            #game-over-screen {
+                font-size: 1.1em;
+                gap: 15px;
+            }
+            #game-over-screen h2 {
+                font-size: 2.5em;
+            }
+            #final-score {
+                font-size: 1.8em;
+            }
+            #high-score {
+                font-size: 1em;
+            }
+            .button {
+                padding: 12px 25px;
+                font-size: 1.1em;
+                border-radius: 8px;
+            }
+            .bottom-navbar-container {
+                height: 80px; /* Slightly taller for better touch targets */
+            }
+            .bottom-nav-item i {
+                font-size: 1.6em;
+            }
+            .bottom-nav-item.active .icon-background {
+                width: 55px;
+                height: 55px;
+            }
+            .bottom-nav-item span {
+                font-size: 0.8em;
+            }
+        }
+
+        @media (max-width: 400px) {
+            canvas {
+                height: 420px; /* Further increased height for smaller mobile */
+            }
+            #score-display {
+                font-size: 2.2em;
+            }
+            #score-display.score-pop {
+                font-size: 2.5em;
+            }
+            #game-over-screen h2 {
+                font-size: 2em;
+            }
+            #final-score {
+                font-size: 1.5em;
+            }
+            #high-score {
+                font-size: 0.9em;
+            }
+            .button {
+                padding: 10px 20px;
+                font-size: 1em;
+            }
+            .bottom-navbar-container {
+                height: 70px;
+            }
+            .bottom-nav-item i {
+                font-size: 1.3em;
+            }
+            .bottom-nav-item.active .icon-background {
+                width: 48px;
+                height: 48px;
+            }
+            .bottom-nav-item span {
+                font-size: 0.7em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="menu-toggle-button" id="menuToggleButton"><i class="fas fa-bars"></i></button>
+
+    <div class="sidebar glass-effect" id="sidebar">
+        <button class="sidebar-toggle-desktop" id="sidebarToggleDesktop"><i class="fas fa-chevron-left"></i></button>
+        <nav>
+            <ul>
+                <li class="active"><a href="#"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+                <li><a href="#"><i class="fas fa-eye"></i> <span>View Site</span></a></li>
+                <li><a href="#"><i class="fas fa-store"></i> <span>Marketplace</span></a></li>
+                <li id="postsMenuItem">
+                    <button class="menu-item-toggle"><i class="fas fa-newspaper"></i> <span>Posts</span> <i class="fas fa-chevron-right sub-menu-toggle"></i></button>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-plus"></i> <span>Create Post</span></a></li>
+                        <li><a href="#"><i class="fas fa-file-alt"></i> <span>Drafts</span> <span style="margin-left: auto;">10</span></a></li>
+                        <li><a href="#"><i class="fas fa-clock"></i> <span>Scheduled</span> <span style="margin-left: auto;">2</span></a></li>
+                        <li><a href="#"><i class="fas fa-check-circle"></i> <span>Published</span> <span style="margin-left: auto;">28</span></a></li>
+                    </ul>
+                </li>
+                <li><a href="#"><i class="fas fa-file"></i> <span>Pages</span></a></li>
+                <li><a href="#"><i class="fas fa-chart-line"></i> <span>Performance</span></a></li>
+                <li><a href="#"><i class="fas fa-tags"></i> <span>Tags</span></a></li>
+                <li><a href="#"><i class="fas fa-users"></i> <span>Members</span></a></li>
+                <li><a href="#"><i class="fas fa-paint-brush"></i> <span>Design</span></a></li>
+            </ul>
+        </nav>
+        <button id="theme-toggle">Toggle Dark/Light Mode</button>
+    </div>
+
+    <div class="main-content">
+        <div class="game-container glass-effect">
+            <canvas id="gameCanvas"></canvas>
+            <div id="score-display">0</div>
+            <div id="game-over-screen">
+                <h2>Game Over!</h2>
+                <p>Your Score: <span id="final-score">0</span></p>
+                <p>High Score: <span id="high-score">0</span></p>
+                <button id="restart-button" class="button button-primary">Restart Game</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-navbar-container glass-effect" id="bottomNavbar">
+        <a href="#" class="bottom-nav-item" id="homeNavItem">
+            <div class="icon-background">
+                <i class="fas fa-home"></i>
+            </div>
+            <span>Home</span>
+        </a>
+        <a href="#" class="bottom-nav-item active" id="chatNavItem">
+            <div class="icon-background">
+                <i class="fas fa-comment-dots"></i>
+            </div>
+            <span>Chat</span>
+        </a>
+        <a href="#" class="bottom-nav-item" id="appsNavItem">
+            <div class="icon-background">
+                <i class="fas fa-th-large"></i>
+            </div>
+            <span>Apps</span>
+        </a>
+        <a href="#" class="bottom-nav-item" id="profileNavItem">
+            <div class="icon-background">
+                <i class="fas fa-user"></i>
+            </div>
+            <span>Profile</span>
+        </a>
+    </div>
+
+    <script>
+        // Global variables for game state and elements
+        let canvas, ctx, scoreDisplay, gameOverScreen, finalScoreDisplay, highScoreDisplay, restartButton;
+        let birdX, birdY, birdVelocityY;
+        let pipes = [];
+        let score;
+        let highScore = 0;
+        let gameOver;
+        let lastPipeSpawnTime = 0;
+        let animationFrameId;
+        let gameStartTime;
+        let currentPipeSpeed;
+        let currentPipeSpawnInterval;
+        let hasPlayedGameOverSound;
+
+        // Game constants
+        const BIRD_WIDTH = 40;
+        const BIRD_HEIGHT = 30;
+        const INITIAL_GRAVITY = 0.5;
+        const INITIAL_JUMP_STRENGTH = -8;
+        const PIPE_WIDTH = 60;
+        const PIPE_GAP = 150;
+        const INITIAL_PIPE_SPEED = 2;
+        const INITIAL_PIPE_SPAWN_INTERVAL = 1500;
+        const DIFFICULTY_INCREASE_INTERVAL = 10000;
+        const SPEED_INCREASE_FACTOR = 0.05;
+        const SPAWN_INTERVAL_DECREASE_FACTOR = 0.95;
+        const GROUND_HEIGHT = 80;
+
+        // Sound effects using Tone.js
+        let jumpSynth = null;
+        let gameOverSynth = null;
+
+        // Function to set canvas dimensions dynamically
+        function setCanvasDimensions() {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+        }
+
+        // Draw bird (stylized using Canvas API)
+        function drawBird() {
+            // Bird body (oval)
+            ctx.fillStyle = '#FFD700'; /* Gold yellow */
+            ctx.beginPath();
+            ctx.ellipse(birdX + BIRD_WIDTH / 2, birdY + BIRD_HEIGHT / 2, BIRD_WIDTH / 2, BIRD_HEIGHT / 2, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#DAA520'; /* Goldenrod */
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Beak (triangle)
+            ctx.fillStyle = '#FFA500'; /* Orange */
+            ctx.beginPath();
+            ctx.moveTo(birdX + BIRD_WIDTH - 5, birdY + BIRD_HEIGHT / 2);
+            ctx.lineTo(birdX + BIRD_WIDTH + 10, birdY + BIRD_HEIGHT / 2 - 5);
+            ctx.lineTo(birdX + BIRD_WIDTH + 10, birdY + BIRD_HEIGHT / 2 + 5);
+            ctx.closePath();
+            ctx.fill();
+
+            // Eye (black circle with white highlight)
+            ctx.fillStyle = 'black';
+            ctx.beginPath();
+            ctx.arc(birdX + BIRD_WIDTH / 2 + 8, birdY + BIRD_HEIGHT / 2 - 5, 4, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            ctx.arc(birdX + BIRD_WIDTH / 2 + 9, birdY + BIRD_HEIGHT / 2 - 6, 1.5, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Simple wing (animated, slight rotation)
+            ctx.save();
+            ctx.translate(birdX + BIRD_WIDTH / 2, birdY + BIRD_HEIGHT / 2);
+            let wingRotation = Math.sin(Date.now() * 0.01) * 0.2;
+            ctx.rotate(wingRotation);
+
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+            ctx.beginPath();
+            ctx.ellipse(0, 5, BIRD_WIDTH / 3, BIRD_HEIGHT / 3, Math.PI / 4, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
+
+        // Draw pipes
+        function drawPipes() {
+            pipes.forEach(pipe => {
+                // Top pipe
+                ctx.fillStyle = '#228B22';
+                ctx.strokeStyle = '#006400';
+                ctx.lineWidth = 3;
+
+                ctx.beginPath();
+                ctx.rect(pipe.x, 0, PIPE_WIDTH, pipe.topHeight);
+                ctx.fill();
+                ctx.stroke();
+
+                // Top pipe cap
+                ctx.fillStyle = '#3CB371';
+                ctx.beginPath();
+                ctx.rect(pipe.x - 5, pipe.topHeight - 20, PIPE_WIDTH + 10, 20);
+                ctx.fill();
+                ctx.stroke();
+
+                // Bottom pipe
+                ctx.fillStyle = '#228B22';
+                ctx.beginPath();
+                ctx.rect(pipe.x, pipe.bottomY, PIPE_WIDTH, canvas.height - pipe.bottomY - GROUND_HEIGHT);
+                ctx.fill();
+                ctx.stroke();
+
+                // Bottom pipe cap
+                ctx.fillStyle = '#3CB371';
+                ctx.beginPath();
+                ctx.rect(pipe.x - 5, pipe.bottomY, PIPE_WIDTH + 10, 20);
+                ctx.fill();
+                ctx.stroke();
+            });
+        }
+
+        // Draw ground
+        function drawGround() {
+            ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--ground-brown');
+            ctx.fillRect(0, canvas.height - GROUND_HEIGHT, canvas.width, GROUND_HEIGHT);
+
+            ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+            ctx.lineWidth = 2;
+            for (let i = 0; i < canvas.width; i += 20) {
+                ctx.beginPath();
+                ctx.moveTo(i, canvas.height - GROUND_HEIGHT);
+                ctx.lineTo(i + 10, canvas.height - GROUND_HEIGHT + 10);
+                ctx.stroke();
+            }
+        }
+
+        // Update game state
+        function update() {
+            if (gameOver) return;
+
+            birdVelocityY += INITIAL_GRAVITY;
+            birdY += birdVelocityY;
+
+            if (birdY + BIRD_HEIGHT > canvas.height - GROUND_HEIGHT) {
+                birdY = canvas.height - BIRD_HEIGHT - GROUND_HEIGHT;
+                gameOver = true;
+            }
+            if (birdY < 0) {
+                birdY = 0;
+                birdVelocityY = 0;
+            }
+
+            const elapsedTime = Date.now() - gameStartTime;
+            if (elapsedTime > DIFFICULTY_INCREASE_INTERVAL) {
+                currentPipeSpeed += SPEED_INCREASE_FACTOR;
+                currentPipeSpawnInterval = Math.max(500, currentPipeSpawnInterval * SPAWN_INTERVAL_DECREASE_FACTOR);
+                gameStartTime = Date.now();
+            }
+
+            const currentTime = Date.now();
+            if (currentTime - lastPipeSpawnTime > currentPipeSpawnInterval) {
+                const minHeight = 50;
+                const maxHeight = canvas.height - PIPE_GAP - minHeight - GROUND_HEIGHT;
+                const topHeight = Math.floor(Math.random() * (maxHeight - minHeight + 1)) + minHeight;
+                const bottomY = topHeight + PIPE_GAP;
+                pipes.push({ x: canvas.width, topHeight: topHeight, bottomY: bottomY, passed: false });
+                lastPipeSpawnTime = currentTime;
+            }
+
+            pipes.forEach(pipe => {
+                pipe.x -= currentPipeSpeed;
+
+                if (
+                    birdX < pipe.x + PIPE_WIDTH &&
+                    birdX + BIRD_WIDTH > pipe.x &&
+                    (birdY < pipe.topHeight || birdY + BIRD_HEIGHT > pipe.bottomY)
+                ) {
+                    gameOver = true;
+                }
+
+                if (pipe.x + PIPE_WIDTH < birdX && !pipe.passed) {
+                    score++;
+                    scoreDisplay.textContent = score;
+                    pipe.passed = true;
+
+                    scoreDisplay.classList.add('score-pop');
+                    setTimeout(() => {
+                        scoreDisplay.classList.remove('score-pop');
+                    }, 150);
+
+                    if (score > highScore) {
+                        highScore = score;
+                        localStorage.setItem('flappyBirdHighScore', highScore);
+                        highScoreDisplay.textContent = highScore;
+                    }
+                }
+            });
+
+            pipes = pipes.filter(pipe => pipe.x + PIPE_WIDTH > 0);
+
+            if (gameOver) {
+                finalScoreDisplay.textContent = score;
+                gameOverScreen.classList.add('active');
+                if (!hasPlayedGameOverSound && gameOverSynth) {
+                    gameOverSynth.triggerAttackRelease("8n");
+                    hasPlayedGameOverSound = true;
+                }
+                cancelAnimationFrame(animationFrameId);
+            }
+        }
+
+        // Game loop
+        function gameLoop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawPipes();
+            drawGround();
+            drawBird();
+            update();
+            animationFrameId = requestAnimationFrame(gameLoop);
+        }
+
+        // Bird jump function
+        function jump() {
+            if (!gameOver) {
+                birdVelocityY = INITIAL_JUMP_STRENGTH;
+                if (jumpSynth) {
+                    jumpSynth.triggerAttackRelease("C4", "8n");
+                }
+            } else {
+                initGame();
+            }
+        }
+
+        // Initialize game
+        function initGame() {
+            setCanvasDimensions();
+            birdX = 50;
+            birdY = canvas.height / 2 - BIRD_HEIGHT / 2;
+            birdVelocityY = 0;
+            pipes = [];
+            score = 0;
+            gameOver = false;
+            hasPlayedGameOverSound = false;
+            lastPipeSpawnTime = 0;
+            gameStartTime = Date.now();
+            currentPipeSpeed = INITIAL_PIPE_SPEED;
+            currentPipeSpawnInterval = INITIAL_PIPE_SPAWN_INTERVAL;
+
+            scoreDisplay.textContent = score;
+            gameOverScreen.classList.remove('active');
+
+            highScore = parseInt(localStorage.getItem('flappyBirdHighScore') || '0');
+            highScoreDisplay.textContent = highScore;
+
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+            }
+            gameLoop();
+        }
+
+        // Start Tone.js audio context on user interaction
+        const startAudioContext = () => {
+            if (Tone.context.state !== 'running') {
+                Tone.start().then(() => {
+                    console.log("Tone.js audio context started.");
+                    jumpSynth = new Tone.Synth().toDestination();
+                    gameOverSynth = new Tone.NoiseSynth().toDestination();
+                }).catch(e => console.error("Tone.js context failed to start:", e));
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Assign DOM elements to global variables
+            canvas = document.getElementById('gameCanvas');
+            ctx = canvas.getContext('2d');
+            scoreDisplay = document.getElementById('score-display');
+            gameOverScreen = document.getElementById('game-over-screen');
+            finalScoreDisplay = document.getElementById('final-score');
+            highScoreDisplay = document.getElementById('high-score');
+            restartButton = document.getElementById('restart-button');
+
+            // Sidebar elements
+            const sidebar = document.getElementById('sidebar');
+            const menuToggleButton = document.getElementById('menuToggleButton'); // Mobile toggle
+            const sidebarToggleDesktop = document.getElementById('sidebarToggleDesktop'); // Desktop toggle
+            const postsMenuItem = document.getElementById('postsMenuItem');
+            const themeToggleButton = document.getElementById('theme-toggle');
+
+            // Bottom Navbar elements
+            const bottomNavbar = document.getElementById('bottomNavbar');
+            const bottomNavItems = bottomNavbar.querySelectorAll('.bottom-nav-item');
+
+
+            // Attach event listeners to start audio context on first interaction
+            document.addEventListener('click', startAudioContext, { once: true });
+            document.addEventListener('keydown', startAudioContext, { once: true });
+            document.addEventListener('touchstart', startAudioContext, { once: true });
+
+            // Event Listeners for game
+            document.addEventListener('keydown', (e) => {
+                if (e.code === 'Space') {
+                    jump();
+                }
+            });
+
+            canvas.addEventListener('click', jump);
+            canvas.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                jump();
+            });
+
+            restartButton.addEventListener('click', initGame);
+
+            // Sidebar Menu Toggle for small screens (hamburger icon)
+            if (menuToggleButton) {
+                menuToggleButton.addEventListener('click', () => {
+                    sidebar.classList.toggle('active');
+                });
+            }
+
+            // Sidebar Toggle for Desktop (chevron icon)
+            if (sidebarToggleDesktop) {
+                sidebarToggleDesktop.addEventListener('click', () => {
+                    sidebar.classList.toggle('expanded');
+                    // Update icon based on state
+                    if (sidebar.classList.contains('expanded')) {
+                        sidebarToggleDesktop.innerHTML = '<i class="fas fa-chevron-left"></i>';
+                    } else {
+                        sidebarToggleDesktop.innerHTML = '<i class="fas fa-chevron-right"></i>';
+                    }
+                });
+            }
+
+            // Posts Sub-menu Toggle
+            if (postsMenuItem) {
+                const postsToggleButton = postsMenuItem.querySelector('.menu-item-toggle');
+                if (postsToggleButton) {
+                    postsToggleButton.addEventListener('click', () => {
+                        postsMenuItem.classList.toggle('expanded');
+                    });
+                }
+            }
+
+            // Theme toggle functionality
+            if (themeToggleButton) {
+                themeToggleButton.addEventListener('click', () => {
+                    document.body.classList.toggle('light-mode');
+                    if (document.body.classList.contains('light-mode')) {
+                        localStorage.setItem('theme', 'light');
+                        themeToggleButton.textContent = 'Toggle Dark Mode'; // Update button text
+                    } else {
+                        localStorage.setItem('theme', 'dark');
+                        themeToggleButton.textContent = 'Toggle Light Mode'; // Update button text
+                    }
+                });
+            }
+
+            // Apply saved theme preference on load
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-mode');
+                if (themeToggleButton) themeToggleButton.textContent = 'Toggle Dark Mode';
+            } else {
+                document.body.classList.remove('light-mode');
+                if (themeToggleButton) themeToggleButton.textContent = 'Toggle Light Mode';
+            }
+
+            // Bottom Navbar item click handler
+            bottomNavItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault(); // Prevent default link behavior
+                    bottomNavItems.forEach(navItem => navItem.classList.remove('active')); // Remove active from all
+                    item.classList.add('active'); // Add active to clicked item
+                });
+            });
+
+
+            initGame(); // Initialize game after DOM is ready
+
+            // Handle window resize
+            window.addEventListener('resize', setCanvasDimensions);
+        });
+    </script>
+</body>
+</html>
