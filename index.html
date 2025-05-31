@@ -334,6 +334,96 @@
             width: calc(100% - 250px);
         }
 
+        /* Page containers */
+        .page-content {
+            width: 100%;
+            max-width: 800px; /* Max width for content pages */
+            background-color: var(--bg-card);
+            border-radius: 20px;
+            padding: 25px;
+            box-sizing: border-box;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--box-shadow);
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 20px;
+        }
+
+        .page-content.active {
+            display: flex; /* Show active page */
+        }
+
+        #home-page h1 {
+            font-size: 2.8em;
+            font-weight: 800;
+            color: var(--primary-color);
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            margin-bottom: 15px;
+        }
+
+        #home-page h3 {
+            font-size: 1.8em;
+            color: var(--text-light);
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        #home-page p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+        }
+
+        #home-page ul {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 20px;
+            text-align: left;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        #home-page ul li {
+            margin-bottom: 8px;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+        }
+
+        #home-page ul li::before {
+            content: "\2022"; /* Bullet point */
+            color: var(--primary-color);
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+        }
+
+        #home-page .button {
+            margin-top: 20px;
+        }
+
+        #game-selection-page h2 {
+            font-size: 2.5em;
+            font-weight: 800;
+            color: var(--primary-color);
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            margin-bottom: 15px;
+        }
+
+        #game-selection-page .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            max-width: 300px;
+        }
+
         .game-container {
             position: relative;
             background-color: var(--bg-card); /* Semi-transparent for glass */
@@ -654,8 +744,14 @@
             animation: rotateIcon 2s infinite ease-in-out;
         }
 
-        #rotation-hint button {
+        #rotation-hint .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
             margin-top: 20px;
+        }
+
+        #rotation-hint .button {
             padding: 10px 20px;
             background-color: var(--primary-color);
             color: white;
@@ -668,12 +764,12 @@
             transition: background-color 0.3s ease, transform 0.1s ease;
         }
 
-        #rotation-hint button:hover {
+        #rotation-hint .button:hover {
             background-color: var(--secondary-color);
             transform: translateY(-2px);
         }
 
-        #rotation-hint button:active {
+        #rotation-hint .button:active {
             transform: translateY(0);
         }
 
@@ -681,6 +777,40 @@
             0% { transform: rotate(0deg); }
             50% { transform: rotate(90deg); }
             100% { transform: rotate(0deg); }
+        }
+
+        /* Game Start Overlay */
+        #game-start-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.8em;
+            font-weight: 700;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+            z-index: 25; /* Above canvas, below countdown/game over */
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+
+        #game-start-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        #game-start-overlay p {
+            margin: 0;
+            padding: 10px;
         }
 
         /* Responsive adjustments */
@@ -703,6 +833,10 @@
             }
             #rotation-hint {
                 display: none; /* Hide on desktop */
+            }
+            .game-page .game-container {
+                /* Center the game container on desktop */
+                margin: auto; /* Auto margins for horizontal centering */
             }
         }
 
@@ -746,7 +880,7 @@
                 color: white;
             }
 
-            .game-container {
+            .game-page .game-container {
                 margin-top: 60px; /* Space for the toggle button */
             }
 
@@ -757,7 +891,7 @@
         }
 
         @media (max-width: 768px) and (orientation: portrait) {
-            .game-container {
+            .game-page .game-container {
                 /* Apply rotation and centering */
                 position: absolute;
                 top: 50%;
@@ -777,11 +911,24 @@
                 overflow: hidden; /* Hide any overflow from scaling */
             }
 
-            .game-container canvas {
-                /* The canvas itself should maintain its internal resolution (e.g., 550x450)
-                   and then be scaled to fit the rotated container. */
-                width: 100%;
-                height: 100%;
+            .game-page .game-container.no-rotate {
+                /* When user opts out of rotation */
+                transform: translate(-50%, -50%) rotate(0deg); /* No rotation */
+                width: calc(100vw - (2 * 20px)); /* Full width in portrait */
+                height: calc( (100vw - (2 * 20px)) * (var(--game-canvas-height) / var(--game-canvas-width)) ); /* Maintain aspect ratio */
+                max-height: calc(100vh - 190px); /* Constrain height */
+            }
+
+            /* For very small screens, adjust padding to maximize game area */
+            @media (max-width: 400px) {
+                .game-page .game-container {
+                    height: calc(100vw - (2 * 15px)); /* Adjusted for smaller padding */
+                    width: calc( (100vw - (2 * 15px)) * (var(--game-canvas-width) / var(--game-canvas-height)) );
+                }
+                .game-page .game-container.no-rotate {
+                    width: calc(100vw - (2 * 15px));
+                    height: calc( (100vw - (2 * 15px)) * (var(--game-canvas-height) / var(--game-canvas-width)) );
+                }
             }
         }
 
@@ -837,12 +984,6 @@
         }
 
         @media (max-width: 400px) {
-            .game-container {
-                /* When rotated, its visual width is its height, and its visual height is its width */
-                /* On small phones, reduce padding to maximize game area */
-                height: calc(100vw - (2 * 15px)); /* Adjusted for smaller padding */
-                width: calc( (100vw - (2 * 15px)) * (var(--game-canvas-width) / var(--game-canvas-height)) );
-            }
             canvas {
                 height: 420px; /* Further increased height for smaller mobile when not rotated */
             }
@@ -888,7 +1029,8 @@
         <button class="sidebar-toggle-desktop" id="sidebarToggleDesktop"><i class="fas fa-chevron-left"></i></button>
         <nav>
             <ul>
-                <li class="active"><a href="#"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+                <li class="active"><a href="#" data-page="home-page"><i class="fas fa-home"></i> <span>Home</span></a></li>
+                <li><a href="#" data-page="game-selection-page"><i class="fas fa-gamepad"></i> <span>Play Game</span></a></li>
                 <li><a href="#"><i class="fas fa-eye"></i> <span>View Site</span></a></li>
                 <li><a href="#"><i class="fas fa-store"></i> <span>Marketplace</span></a></li>
                 <li id="postsMenuItem">
@@ -911,32 +1053,62 @@
     </div>
 
     <div class="main-content">
-        <div class="game-container glass-effect">
-            <canvas id="gameCanvas"></canvas>
-            <div id="score-display">0</div>
-            <div id="countdown-display"></div>
-            <div id="level-up-display"></div>
-            <div id="game-over-screen">
-                <h2>Game Over!</h2>
-                <p>Your Score: <span id="final-score">0</span></p>
-                <p>High Score: <span id="high-score">0</span></p>
-                <button id="restart-button" class="button button-primary">Restart Game</button>
+        <div id="home-page" class="page-content active">
+            <h1>Welcome to Evexa Buddy!</h1>
+            <h3>About This Game</h3>
+            <p>Evexa Buddy is an engaging and challenging endless runner game where you control a cute bird navigating through a treacherous world of pipes. Your goal is to fly as far as possible, collecting points by passing between pipes, and avoiding collisions. The game dynamically adjusts its difficulty as you progress, offering a fresh challenge with every level up!</p>
+            <p><strong>How to Play:</strong> Simply tap or click anywhere on the screen (or press the Spacebar on desktop) to make the bird flap its wings and ascend. Release to let gravity pull it down. Master the timing to weave through the gaps!</p>
+            <p><strong>Features:</strong></p>
+            <ul>
+                <li>Auto-adjusting difficulty (Very Easy to Very Hard)</li>
+                <li>Dynamic background changes with each level</li>
+                <li>High score tracking</li>
+                <li>Responsive design for all devices</li>
+            </ul>
+            <h3>Who Made It?</h3>
+            <p>Evexa Buddy was created by your friendly AI assistant to provide a fun and interactive gaming experience right here in your browser. Enjoy!</p>
+            <button id="play-game-button" class="button button-primary">Play Evexa Buddy!</button>
+        </div>
+
+        <div id="game-selection-page" class="page-content">
+            <h2>Choose Your Game!</h2>
+            <div class="button-group">
+                <button id="select-flappy-bird" class="button button-primary">Flappy Bird Game</button>
+                <button class="button button-primary" disabled>Other Game (Coming Soon)</button>
             </div>
+        </div>
+
+        <div id="game-page" class="page-content">
+            <div class="game-container glass-effect">
+                <canvas id="gameCanvas"></canvas>
+                <div id="score-display">0</div>
+                <div id="countdown-display"></div>
+                <div id="level-up-display"></div>
+                <div id="game-over-screen">
+                    <h2>Game Over!</h2>
+                    <p>Your Score: <span id="final-score">0</span></p>
+                    <p>High Score: <span id="high-score">0</span></p>
+                    <button id="restart-button" class="button button-primary">Restart Game</button>
+                </div>
+                <div id="game-start-overlay">
+                    <p>Tap to Play</p>
+                </div>
             </div>
+        </div>
     </div>
 
     <div class="bottom-navbar-container glass-effect" id="bottomNavbar">
-        <a href="#" class="bottom-nav-item" id="homeNavItem">
+        <a href="#" class="bottom-nav-item active" id="homeNavItem" data-page="home-page">
             <div class="icon-background">
                 <i class="fas fa-home"></i>
             </div>
             <span>Home</span>
         </a>
-        <a href="#" class="bottom-nav-item active" id="chatNavItem">
+        <a href="#" class="bottom-nav-item" id="gameNavItem" data-page="game-selection-page">
             <div class="icon-background">
-                <i class="fas fa-comment-dots"></i>
+                <i class="fas fa-gamepad"></i>
             </div>
-            <span>Chat</span>
+            <span>Game</span>
         </a>
         <a href="#" class="bottom-nav-item" id="appsNavItem">
             <div class="icon-background">
@@ -955,13 +1127,16 @@
     <div id="rotation-hint">
         <i class="fas fa-mobile-alt"></i>
         <p>Rotate Device for Best Experience</p>
-        <button id="skip-rotation-hint" class="button button-primary">Skip</button>
+        <div class="button-group">
+            <button id="play-portrait-button" class="button button-primary">Play Portrait</button>
+            <button id="rotate-and-play-button" class="button button-primary">Rotate & Play</button>
+        </div>
     </div>
 
     <script>
         // Global variables for game state and elements
         let canvas, ctx, scoreDisplay, gameOverScreen, finalScoreDisplay, highScoreDisplay, restartButton;
-        let countdownDisplay, levelUpDisplay, rotationHint; // startScreen removed
+        let countdownDisplay, levelUpDisplay, rotationHint;
         let birdX, birdY, birdVelocityY;
         let pipes = [];
         let score;
@@ -975,15 +1150,22 @@
         let hasPlayedGameOverSound;
         let gameStarted = false; // Track if game has truly started (after countdown)
         let currentLevel = 1; // New: Current game level, starts at 1 (Very Easy)
-        let rotationHintDismissed = false; // Track if user skipped rotation hint
+        
+        // New: User preference for rotation. Default to true (suggest rotation)
+        let userPrefersRotation = JSON.parse(localStorage.getItem('userPrefersRotation')) !== false; 
+        let rotationHintDismissed = false; // Track if user skipped rotation hint for the current session
 
         // Game states enum
         const GAME_STATES = {
-            COUNTDOWN: 'COUNTDOWN', // Game starts directly with countdown
+            GAME_START_OVERLAY: 'GAME_START_OVERLAY', // New initial state for game page
+            COUNTDOWN: 'COUNTDOWN',
             PLAYING: 'PLAYING',
             GAME_OVER: 'GAME_OVER'
         };
-        let currentGameState = GAME_STATES.COUNTDOWN; // Initial state is now countdown
+        let currentGameState; // Will be set by initGame or showPage
+
+        // Page elements
+        let homePage, gameSelectionPage, gamePage, gameStartOverlay;
 
         // Game constants
         const BIRD_WIDTH = 40;
@@ -1266,8 +1448,19 @@
                 if (jumpSynth) {
                     jumpSynth.triggerAttackRelease("C4", "8n");
                 }
+            } else if (currentGameState === GAME_STATES.GAME_START_OVERLAY) {
+                // If on mobile portrait and user prefers rotation, show hint
+                const isMobile = window.innerWidth < 769;
+                const isPortrait = window.innerHeight > window.innerWidth;
+
+                if (isMobile && isPortrait && userPrefersRotation && !rotationHintDismissed) {
+                    rotationHint.classList.add('active');
+                } else {
+                    // Otherwise, proceed directly to countdown
+                    gameStartOverlay.classList.add('hidden'); // Hide "Tap to Play"
+                    startCountdown();
+                }
             }
-            // No action if not in PLAYING state (e.g., during countdown or on start screen)
         }
 
         // Apply difficulty settings based on current level
@@ -1335,10 +1528,13 @@
             currentLevel = 1; // Always start at level 1 (Very Easy)
             applyLevelDifficulty(); // Apply initial difficulty
 
-            // Ensure game elements are visible
+            // Ensure game elements are visible and overlay is shown
             canvas.style.display = 'block';
             scoreDisplay.style.display = 'block';
             gameOverScreen.classList.remove('active'); // Hide game over screen
+            gameStartOverlay.classList.remove('hidden'); // Show "Tap to Play" overlay
+            
+            currentGameState = GAME_STATES.GAME_START_OVERLAY; // Set initial state for game page
 
             scoreDisplay.textContent = score;
             highScore = parseInt(localStorage.getItem('flappyBirdHighScore') || '0');
@@ -1347,8 +1543,7 @@
             if (animationFrameId) {
                 cancelAnimationFrame(animationFrameId);
             }
-            
-            startCountdown(); // Start countdown directly
+            // Do not start countdown here, it will be triggered by user interaction on overlay
         }
 
         // Start Tone.js audio context on user interaction
@@ -1376,52 +1571,95 @@
             }
         };
 
+        // Function to show/hide pages
+        function showPage(pageId) {
+            const pages = document.querySelectorAll('.page-content');
+            pages.forEach(page => page.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+
+            // Update active state in sidebar and bottom navbar
+            const navLinks = document.querySelectorAll('.sidebar nav ul li a, .bottom-navbar-container .bottom-nav-item');
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.dataset.page === pageId) {
+                    link.classList.add('active');
+                }
+            });
+
+            // If navigating to game page, initialize the game
+            if (pageId === 'game-page') {
+                initGame();
+            } else {
+                // If navigating away from game, stop game loop and music
+                if (animationFrameId) {
+                    cancelAnimationFrame(animationFrameId);
+                }
+                if (backgroundMusicLoop && backgroundMusicLoop.state === 'started') {
+                    backgroundMusicLoop.stop();
+                }
+                // Ensure rotation hint is hidden when not on game page
+                rotationHint.classList.remove('active');
+            }
+            checkOrientation(); // Re-evaluate orientation on page change
+        }
+
         // Check device orientation and apply game box rotation
         function checkOrientation() {
             const isMobile = window.innerWidth < 769;
             const isPortrait = window.innerHeight > window.innerWidth;
             const gameContainer = document.querySelector('.game-container');
+            const isOnGamePage = gamePage.classList.contains('active');
 
-            if (isMobile) {
+            if (isMobile && isOnGamePage) {
                 if (isPortrait) {
                     // Mobile Portrait Mode
-                    if (!rotationHintDismissed) {
-                        rotationHint.classList.add('active');
-                    }
-
-                    // Apply CSS rotation to game-container
-                    gameContainer.style.transform = 'translate(-50%, -50%) rotate(90deg)';
-                    gameContainer.style.transformOrigin = 'center center';
-                    gameContainer.style.position = 'absolute';
-                    gameContainer.style.top = '50%';
-                    gameContainer.style.left = '50%';
+                    // Rotation hint is managed by jump()
                     
-                    // Calculate and set dimensions for the rotated container
-                    // The 'height' property of the container becomes its visual width after 90deg rotation
-                    // It should be 100% of the viewport width, minus the main-content's horizontal padding (20px left + 20px right = 40px)
-                    gameContainer.style.height = `calc(100vw - (2 * 20px))`; 
+                    if (userPrefersRotation) {
+                        // Apply CSS rotation to game-container
+                        gameContainer.classList.remove('no-rotate');
+                        gameContainer.style.transform = 'translate(-50%, -50%) rotate(90deg)';
+                        gameContainer.style.transformOrigin = 'center center';
+                        gameContainer.style.position = 'absolute';
+                        gameContainer.style.top = '50%';
+                        gameContainer.style.left = '50%';
+                        
+                        // Calculate and set dimensions for the rotated container
+                        gameContainer.style.height = `calc(100vw - (2 * 20px))`; 
+                        gameContainer.style.width = `calc( (100vw - (2 * 20px)) * (var(--game-canvas-width) / var(--game-canvas-height)) )`;
+                        gameContainer.style.maxWidth = `calc(100vh - 190px)`; 
+                        gameContainer.style.overflow = 'hidden'; 
 
-                    // The 'width' property of the container becomes its visual height after 90deg rotation
-                    // This visual height should maintain the aspect ratio of the game (550/450) relative to its new visual width
-                    gameContainer.style.width = `calc( (100vw - (2 * 20px)) * (var(--game-canvas-width) / var(--game-canvas-height)) )`;
-                    
-                    // Ensure the visual height (controlled by 'width' property) doesn't exceed available viewport height
-                    // Available height for the entire main content area: 100vh - (top menu toggle + bottom nav + main-content vertical padding)
-                    // Roughly: 100vh - (60px + 70px + 2 * 20px) = 100vh - 170px
-                    gameContainer.style.maxWidth = `calc(100vh - 170px)`; 
-                    
-                    gameContainer.style.overflow = 'hidden'; // Hide any overflow from scaling
+                        if (window.innerWidth <= 400) {
+                            gameContainer.style.height = `calc(100vw - (2 * 15px))`; 
+                            gameContainer.style.width = `calc( (100vw - (2 * 15px)) * (var(--game-canvas-width) / var(--game-canvas-height)) )`;
+                        }
+                    } else {
+                        // User prefers no rotation
+                        gameContainer.classList.add('no-rotate');
+                        gameContainer.style.transform = 'translate(-50%, -50%) rotate(0deg)'; // No rotation
+                        gameContainer.style.transformOrigin = 'center center';
+                        gameContainer.style.position = 'absolute';
+                        gameContainer.style.top = '50%';
+                        gameContainer.style.left = '50%';
+                        
+                        // Set dimensions for non-rotated portrait mode
+                        gameContainer.style.width = `calc(100vw - (2 * 20px))`; 
+                        gameContainer.style.height = `calc( (100vw - (2 * 20px)) * (var(--game-canvas-height) / var(--game-canvas-width)) )`;
+                        gameContainer.style.maxHeight = `calc(100vh - 190px)`;
+                        gameContainer.style.overflow = 'hidden';
 
-                    // For very small screens, adjust padding to maximize game area
-                    if (window.innerWidth <= 400) {
-                        gameContainer.style.height = `calc(100vw - (2 * 15px))`; // Smaller padding
-                        gameContainer.style.width = `calc( (100vw - (2 * 15px)) * (var(--game-canvas-width) / var(--game-canvas-height)) )`;
+                        if (window.innerWidth <= 400) {
+                            gameContainer.style.width = `calc(100vw - (2 * 15px))`;
+                            gameContainer.style.height = `calc( (100vw - (2 * 15px)) * (var(--game-canvas-height) / var(--game-canvas-width)) )`;
+                        }
                     }
 
                 } else {
                     // Mobile Landscape Mode
                     rotationHint.classList.remove('active');
                     // Reset game-container styles
+                    gameContainer.classList.remove('no-rotate');
                     gameContainer.style.transform = ''; // Reset transform
                     gameContainer.style.transformOrigin = '';
                     gameContainer.style.position = '';
@@ -1434,9 +1672,10 @@
                     canvas.style.height = '100%'; // Canvas fills its container
                 }
             } else {
-                // Desktop Mode
+                // Desktop Mode (or not on game page for mobile)
                 rotationHint.classList.remove('active');
                 // Ensure game-container styles are reset for desktop
+                gameContainer.classList.remove('no-rotate');
                 gameContainer.style.transform = '';
                 gameContainer.style.transformOrigin = '';
                 gameContainer.style.position = '';
@@ -1460,22 +1699,29 @@
             finalScoreDisplay = document.getElementById('final-score');
             highScoreDisplay = document.getElementById('high-score');
             restartButton = document.getElementById('restart-button');
-            countdownDisplay = document.getElementById('countdown-display'); // Get new countdown element
-            levelUpDisplay = document.getElementById('level-up-display'); // Get new level up element
-            rotationHint = document.getElementById('rotation-hint'); // Get rotation hint element
+            countdownDisplay = document.getElementById('countdown-display');
+            levelUpDisplay = document.getElementById('level-up-display');
+            rotationHint = document.getElementById('rotation-hint');
+            homePage = document.getElementById('home-page');
+            gameSelectionPage = document.getElementById('game-selection-page'); // New
+            gamePage = document.getElementById('game-page');
+            gameStartOverlay = document.getElementById('game-start-overlay'); // New
 
-            const skipRotationHintButton = document.getElementById('skip-rotation-hint'); // Get skip button
+            const playPortraitButton = document.getElementById('play-portrait-button'); // New
+            const rotateAndPlayButton = document.getElementById('rotate-and-play-button'); // New
+            const selectFlappyBirdButton = document.getElementById('select-flappy-bird'); // New
 
             // Sidebar elements
             const sidebar = document.getElementById('sidebar');
-            const menuToggleButton = document.getElementById('menuToggleButton'); // Mobile toggle
-            const sidebarToggleDesktop = document.getElementById('sidebarToggleDesktop'); // Desktop toggle
+            const menuToggleButton = document.getElementById('menuToggleButton');
+            const sidebarToggleDesktop = document.getElementById('sidebarToggleDesktop');
             const postsMenuItem = document.getElementById('postsMenuItem');
             const themeToggleButton = document.getElementById('theme-toggle');
 
             // Bottom Navbar elements
             const bottomNavbar = document.getElementById('bottomNavbar');
-            const bottomNavItems = bottomNavbar.querySelectorAll('.bottom-nav-item');
+            const navLinks = document.querySelectorAll('.sidebar nav ul li a, .bottom-navbar-container .bottom-nav-item');
+            const playGameButton = document.getElementById('play-game-button');
 
 
             // Attach event listeners to start audio context on first interaction
@@ -1486,19 +1732,79 @@
             // Event Listeners for game
             document.addEventListener('keydown', (e) => {
                 if (e.code === 'Space') {
-                    jump();
+                    // Only jump if game is playing or on start overlay
+                    if (currentGameState === GAME_STATES.PLAYING || currentGameState === GAME_STATES.GAME_START_OVERLAY) {
+                        jump();
+                    }
                 }
             });
 
-            // Unified click/tap handler for game jump
-            canvas.addEventListener('click', jump);
-            canvas.addEventListener('touchstart', (e) => {
+            // Unified click/tap handler for game jump (now also triggers game start overlay logic)
+            gameStartOverlay.addEventListener('click', jump);
+            gameStartOverlay.addEventListener('touchstart', (e) => {
                 e.preventDefault(); // Prevent scrolling on touch
                 jump();
             });
+            // Add click/touchstart to canvas itself for when overlay is hidden
+            canvas.addEventListener('click', jump);
+            canvas.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                jump();
+            });
+
 
             // Restart button now directly re-initializes the game (which starts countdown)
             restartButton.addEventListener('click', initGame);
+
+            // Play Game button on Home page
+            if (playGameButton) {
+                playGameButton.addEventListener('click', () => showPage('game-selection-page'));
+            }
+
+            // Game Selection buttons
+            if (selectFlappyBirdButton) {
+                selectFlappyBirdButton.addEventListener('click', () => showPage('game-page'));
+            }
+
+            // Rotation hint buttons
+            if (playPortraitButton) {
+                playPortraitButton.addEventListener('click', () => {
+                    rotationHintDismissed = true;
+                    userPrefersRotation = false; // User explicitly opted out of rotation
+                    localStorage.setItem('userPrefersRotation', false); // Save preference
+                    rotationHint.classList.remove('active');
+                    checkOrientation(); // Re-check orientation to apply non-rotated view
+                    gameStartOverlay.classList.add('hidden'); // Hide "Tap to Play"
+                    startCountdown(); // Start the game
+                });
+            }
+            if (rotateAndPlayButton) {
+                rotateAndPlayButton.addEventListener('click', () => {
+                    rotationHintDismissed = true;
+                    userPrefersRotation = true; // User explicitly opted in for rotation
+                    localStorage.setItem('userPrefersRotation', true); // Save preference
+                    rotationHint.classList.remove('active');
+                    checkOrientation(); // Re-check orientation to apply rotated view
+                    gameStartOverlay.classList.add('hidden'); // Hide "Tap to Play"
+                    startCountdown(); // Start the game
+                });
+            }
+
+
+            // Navigation links
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const pageId = link.dataset.page;
+                    if (pageId) {
+                        showPage(pageId);
+                    }
+                    // For mobile, close sidebar after navigation
+                    if (window.innerWidth < 769) {
+                        sidebar.classList.remove('active');
+                    }
+                });
+            });
 
             // Sidebar Menu Toggle for small screens (hamburger icon)
             if (menuToggleButton) {
@@ -1554,27 +1860,8 @@
                 if (themeToggleButton) themeToggleButton.textContent = 'Toggle Light Mode';
             }
 
-            // Bottom Navbar item click handler
-            bottomNavItems.forEach(item => {
-                item.addEventListener('click', (e) => {
-                    e.preventDefault(); // Prevent default link behavior
-                    bottomNavItems.forEach(navItem => navItem.classList.remove('active')); // Remove active from all
-                    item.classList.add('active'); // Add active to clicked item
-                });
-            });
-
-            // Skip Rotation Hint button handler
-            if (skipRotationHintButton) {
-                skipRotationHintButton.addEventListener('click', () => {
-                    rotationHintDismissed = true;
-                    rotationHint.classList.remove('active');
-                    // Re-check orientation to ensure rotated game box is applied if still in portrait
-                    checkOrientation();
-                });
-            }
-
-            // Initial setup: start game directly
-            initGame();
+            // Initial setup: show home page
+            showPage('home-page');
 
             // Handle window resize and orientation change
             window.addEventListener('resize', () => {
@@ -1582,7 +1869,8 @@
             });
             window.addEventListener('orientationchange', checkOrientation); // For explicit orientation changes
 
-            checkOrientation(); // Initial check on load
+            // Initial check on load, after all elements are ready
+            checkOrientation(); 
         });
     </script>
 </body>
