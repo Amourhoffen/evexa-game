@@ -85,6 +85,10 @@
             --bottom-nav-border: rgba(204, 204, 204, 0.6);
             --bottom-nav-shadow: 0 -5px 15px rgba(0, 0, 0, 0.1);
         }
+      html {
+            scroll-behavior: smooth;
+            height: 100%; /* Ensure html takes full height */
+                    }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -96,9 +100,10 @@
             background: linear-gradient(135deg, var(--bg-dark) 0%, #0d1117 100%);
             color: var(--text-light);
             transition: background 0.5s ease, color 0.5s ease;
-            overflow: hidden; /* Ensure no scrollbars on the body */
+            overflow-y: auto; /* Allow body to scroll */
             padding: 0;
             box-sizing: border-box;
+            height: 100%; /* Ensure body takes full height */
         }
 
         /* Glassmorphism effect base */
@@ -314,6 +319,91 @@
             color: white;
         }
 
+        /* User Info in Sidebar */
+        .user-info {
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 5px;
+            border-bottom: 1px solid var(--sidebar-border);
+            text-align: left;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar:not(.expanded) .user-info {
+            opacity: 0;
+            height: 0;
+            overflow: hidden;
+            padding: 0;
+            margin: 0;
+            border: none;
+        }
+
+        .user-info h4 {
+            margin: 0;
+            font-size: 1.1em;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .user-info .user-id {
+            font-size: 0.85em;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        .pro-badge {
+            background-color: gold;
+            color: #333;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 0.7em;
+            font-weight: 700;
+            text-transform: uppercase;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: none; /* Hidden by default */
+        }
+
+        .pro-badge.active {
+            display: inline-block;
+        }
+
+        #toggle-pro-button {
+            margin-top: 10px;
+            padding: 8px 15px;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            white-space: nowrap;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar:not(.expanded) #toggle-pro-button {
+            opacity: 0;
+            pointer-events: none;
+            width: 0;
+            padding: 0;
+            margin: 0;
+        }
+
+        #toggle-pro-button:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-1px);
+        }
+
         /* Main content area */
         .main-content {
             margin-left: 60px; /* Space for the collapsed sidebar */
@@ -321,13 +411,14 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start; /* Changed to flex-start to allow scrolling from top */
             padding: 20px;
             box-sizing: border-box;
             transition: margin-left 0.3s ease;
             width: calc(100% - 60px);
             overflow-y: auto; /* Allow main content to scroll if needed */
             min-height: calc(100vh - 60px); /* Base for desktop: 100vh - top menu button area */
+            scroll-behavior: smooth; /* Added for smooth scrolling */
         }
 
         .sidebar.expanded + .main-content {
@@ -352,8 +443,11 @@
             align-items: center;
             text-align: center;
             gap: 20px;
-            flex-grow: 1; /* Make it fill available vertical space in main-content */
-            justify-content: center; /* Center content vertically within this page */
+            /* Remove flex-grow and justify-content from here to allow content to push down */
+            /* flex-grow: 1; */
+            /* justify-content: center; */
+            min-height: calc(100vh - 100px); /* Ensure page content is tall enough to allow scrolling if needed */
+            margin-bottom: 20px; /* Space before the ad or end of content */
         }
 
         .page-content.active {
@@ -815,6 +909,99 @@
             padding: 10px;
         }
 
+        /* Game Controls */
+        .game-controls {
+            display: flex;
+            flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px; /* Space between canvas and buttons */
+            width: 100%;
+            max-width: 550px; /* Match game container max-width */
+        }
+
+        .game-controls .button {
+            flex: 1 1 auto; /* Allow buttons to grow and shrink */
+            min-width: 120px; /* Minimum width for buttons */
+            padding: 12px 20px;
+            font-size: 1.1em;
+        }
+
+        /* Ad Placement Styling */
+        .ad-placement {
+            width: 100%;
+            max-width: 728px; /* Typical leaderboard ad width */
+            min-height: 90px; /* Typical leaderboard ad height */
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-size: 1.1em;
+            color: var(--text-muted);
+            margin-top: 40px; /* Space above the ad */
+            padding: 20px;
+            box-sizing: border-box;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            box-shadow: var(--box-shadow);
+            overflow: hidden; /* Ensure ad content doesn't overflow */
+        }
+
+        /* Specific ad sizes for different pages/types (adjust as needed for actual ads) */
+        #game-ad {
+            max-width: 300px; /* Smaller ad for game page */
+            min-height: 250px; /* Medium rectangle */
+            margin-top: 20px; /* Closer to game controls */
+        }
+
+        #game-selection-ad {
+            max-width: 336px; /* Another common ad size */
+            min-height: 280px; /* Large rectangle */
+        }
+
+        /* Live Updates Section Styling */
+        .live-updates-section {
+            width: 100%;
+            max-width: 800px;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 20px;
+            box-sizing: border-box;
+            margin-top: 40px;
+            text-align: left;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            box-shadow: var(--box-shadow);
+        }
+
+        .live-updates-section h3 {
+            font-size: 1.5em;
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .live-updates-message {
+            font-size: 1em;
+            color: var(--text-light);
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            background-color: rgba(99, 102, 241, 0.1); /* Light primary color background */
+            border-left: 4px solid var(--primary-color);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .live-updates-message:empty::before {
+            content: "No recent updates.";
+            color: var(--text-muted);
+        }
+
+
         /* Responsive adjustments */
         @media (min-width: 769px) {
             /* Show desktop toggle button */
@@ -832,6 +1019,7 @@
             /* Reset main-content padding for desktop */
             .main-content {
                 padding-bottom: 20px; /* Original padding */
+                min-height: calc(100vh - 60px); /* Adjust min-height for desktop */
             }
             #rotation-hint {
                 display: none; /* Hide on desktop */
@@ -860,8 +1048,8 @@
                 width: 100%; /* Take full width */
                 padding-top: 80px; /* Space for fixed menu button at top */
                 padding-bottom: 90px; /* Space for fixed bottom navbar */
-                min-height: 100vh; /* Ensure it takes full viewport height */
-                justify-content: center; /* Center content vertically in main-content */
+                min-height: calc(100vh - 80px - 90px); /* Adjusted min-height for mobile fixed elements */
+                justify-content: flex-start; /* Ensure content starts from top for scrolling */
             }
 
             .menu-toggle-button {
@@ -899,7 +1087,8 @@
                 width: 90vw; /* User requested 90% width */
                 height: auto; /* Let height be determined by aspect ratio */
                 max-width: calc(100vw - (2 * 20px)); /* Ensure it doesn't exceed main-content width */
-                max-height: calc(100vh - 170px); /* Adjusted for top button (60px) + bottom nav (80px) + main-content padding (2*20px) = 160px. Let's use 170px for safety */
+                /* Adjusted max-height to account for new game controls and padding */
+                max-height: calc(100vh - 80px - 90px - 20px - 80px); /* 100vh - top menu - bottom nav - main-content vertical padding - estimated game controls height */
                 
                 /* Ensure content within game-container is centered if it has flex properties */
                 display: flex;
@@ -921,7 +1110,7 @@
                 height: auto; /* Let height be determined by aspect ratio */
                 width: 90vw; /* Still aim for 90vw for the rotated 'width' */
                 aspect-ratio: var(--game-canvas-height) / var(--game-canvas-width); /* Invert aspect ratio */
-                max-height: calc(100vh - 170px); /* Still constrain by available vertical space */
+                max-height: calc(100vh - 80px - 90px - 20px - 80px); /* Still constrain by available vertical space */
             }
 
             .game-page .game-container.no-rotate {
@@ -929,7 +1118,7 @@
                 width: 90vw; /* Maximize width in portrait */
                 height: auto; /* Let height adjust dynamically */
                 aspect-ratio: var(--game-canvas-width) / var(--game-canvas-height); /* Maintain original aspect ratio */
-                max-height: calc(100vh - 170px); /* Limit total height considering top/bottom bars */
+                max-height: calc(100vh - 80px - 90px - 20px - 80px); /* Limit total height considering top/bottom bars */
             }
 
             /* For very small screens, adjust padding to maximize game area */
@@ -942,16 +1131,16 @@
                 }
                 .game-page .game-container {
                     width: 95vw; /* Slightly more width for tiny screens */
-                    max-height: calc(100vh - 160px); /* Adjusted for new padding */
+                    max-height: calc(100vh - 70px - 80px - 10px - 70px); /* Adjusted for new padding and smaller controls */
                 }
                 .game-page .game-container.rotated {
                     height: auto;
                     width: 95vw;
-                    max-height: calc(100vh - 160px);
+                    max-height: calc(100vh - 70px - 80px - 10px - 70px);
                 }
                 .game-page .game-container.no-rotate {
                     width: 95vw;
-                    max-height: calc(100vh - 160px);
+                    max-height: calc(100vh - 70px - 80px - 10px - 70px);
                 }
             }
         }
@@ -1051,6 +1240,10 @@
 
     <div class="sidebar glass-effect" id="sidebar">
         <button class="sidebar-toggle-desktop" id="sidebarToggleDesktop"><i class="fas fa-chevron-left"></i></button>
+        <div class="user-info">
+            <h4>User ID: <span id="user-id-display"></span> <span id="pro-badge" class="pro-badge">Pro</span></h4>
+            <button id="toggle-pro-button">Toggle Pro Status</button>
+        </div>
         <nav>
             <ul>
                 <li class="active"><a href="#" data-page="home-page"><i class="fas fa-home"></i> <span>Home</span></a></li>
@@ -1091,7 +1284,39 @@
             </ul>
             <h3>Who Made It?</h3>
             <p>Evexa Buddy was created by your friendly AI assistant to provide a fun and interactive gaming experience right here in your browser. Enjoy!</p>
+
+            <p>This section provides more details about the game's development and future plans. We aim to continuously improve the game based on user feedback and introduce new features regularly. Stay tuned for exciting updates!</p>
+            <p>Our team is dedicated to creating enjoyable and accessible gaming experiences for everyone. We believe in the power of simple yet addictive gameplay, and Flappy Bird is a testament to that philosophy. We hope you find it as fun to play as we did creating it.</p>
+            <p>Future enhancements might include new bird characters, different pipe designs, and even competitive leaderboards to challenge your friends. Your feedback is invaluable in shaping the future of Evexa Buddy, so please don't hesitate to share your thoughts and suggestions.</p>
+            <p>Thank you for being a part of the Evexa Buddy community. We appreciate your support and look forward to seeing your high scores!</p>
+            <p>Happy flapping!</p>
+            <p>The Evexa Buddy Development Team.</p>
+            <p>This is some more dummy content to ensure the page is scrollable. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p>Another paragraph of dummy text to extend the page length. Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius, turpis et commodo pharetra, est eros bibendum elit, nec luctus magna felis sollicitudin mauris. Integer in mauris eu nibh euismod gravida. Duis ac tellus et risus auctor iaculis. Mauris vel nisl quis ipsum sollicitudin dignissim. Proin a leo vel lectus egestas aliquet. Aenean facilisis leo vel diam. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nam sed nulla sed sapien.</p>
+            <p>Final dummy paragraph. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hymenaeos. Curabitur sodales ligula in libero. Sed dignissim lacinia nunc. Curabitur tortor. Pellentesque nibh. Aenean quam. In scelerisque sem at dolor. Maecenas mattis. Sed convallis tristique sem. Proin ut ligula vel nunc egestas porttitor. Morbi lectus risus, iaculis vel, suscipit quis, luctus non, massa. Fusce ac turpis quis ligula lacinia aliquet. Mauris ipsum. Nulla metus metus, ullamcorper vel, tincidunt sed, euismod in, turpis. Curabitur a felis in nunc fringilla tristique. Lorem ipsum dolor sit amet.</p>
+            <p>More content to ensure scrolling. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p>Even more content. Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius, turpis et commodo pharetra, est eros bibendum elit, nec luctus magna felis sollicitudin mauris. Integer in mauris eu nibh euismod gravida. Duis ac tellus et risus auctor iaculis. Mauris vel nisl quis ipsum sollicitudin dignissim. Proin a leo vel lectus egestas aliquet. Aenean facilisis leo vel diam. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nam sed nulla sed sapien.</p>
+            <p>Final content for scrolling. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hymenaeos. Curabitur sodales ligula in libero. Sed dignissim lacinia nunc. Curabitur tortor. Pellentesque nibh. Aenean quam. In scelerisque sem at dolor. Maecenas mattis. Sed convallis tristique sem. Proin ut ligula vel nunc egestas porttitor. Morbi lectus risus, iaculis vel, suscipit quis, luctus non, massa. Fusce ac turpis quis ligula lacinia aliquet. Mauris ipsum. Nulla metus metus, ullamcorper vel, tincidunt sed, euismod in, turpis. Curabitur a felis in nunc fringilla tristique. Lorem ipsum dolor sit amet.</p>
+            <p>This is the first of many dummy paragraphs to ensure the page is very long. We are committed to providing a seamless experience for all our users, and that includes making sure all content, including advertisements, is easily accessible. Your feedback is crucial in helping us achieve this goal. We appreciate your patience and understanding as we continue to refine the user interface and overall functionality of Evexa Buddy. Our development roadmap includes exciting new features, enhanced game modes, and further optimizations to ensure smooth performance across all devices. We encourage you to explore all sections of the website and provide us with your thoughts.</p>
+            <p>The journey of Evexa Buddy is just beginning. We envision a platform where users can enjoy a variety of engaging games, connect with a vibrant community, and discover new and exciting content. Our team is constantly working behind the scenes to bring these visions to life. We believe that a great user experience is paramount, and every design decision is made with that in mind. From the intuitive navigation to the visually appealing glassmorphism theme, we strive to create an environment that is both functional and aesthetically pleasing. Thank you for being an early adopter and for your continued support.</p>
+            <p>We are also actively exploring partnerships to bring even more diverse content and features to Evexa Buddy. This includes collaborations with independent game developers and content creators to expand our offerings. Our goal is to become a go-to destination for casual gaming and interactive experiences. Stay tuned for announcements regarding new game releases, special events, and community challenges. We are building this platform for you, and your engagement drives our innovation. Don't forget to check out the "Live Updates" section for the latest news and announcements!</p>
+            <p>Furthermore, we are dedicated to maintaining a fair and balanced in-game economy, ensuring that both free and Pro users have an enjoyable experience. The "Pro" status offers additional benefits and exclusive content, but the core game remains accessible to everyone. We believe in transparency and will always communicate any changes to our policies or features clearly. Your trust is important to us, and we are committed to upholding the highest standards of quality and integrity. Feel free to reach out to our support team if you have any questions or encounter any issues.</p>
+            <p>Finally, we want to extend our gratitude to the entire community for their enthusiasm and support. It's your passion for gaming that inspires us to push the boundaries and deliver exceptional experiences. We look forward to many more updates, new games, and memorable moments together on Evexa Buddy. Keep flapping, keep exploring, and most importantly, keep having fun!</p>
+            <p>This paragraph is specifically added to make the page even longer and ensure scrolling. It's important for us to test the full extent of the scrollability, especially on different screen sizes and orientations. We are committed to ensuring that all elements, including the very bottom of the page and any future additions, are easily reachable by the user. This extended content serves as a robust test case for the scrolling mechanism. We anticipate that with these changes, the page will now scroll smoothly and reveal all areas as intended, providing a complete and uninterrupted user experience. We value your feedback and encourage you to let us know if any further adjustments are needed to enhance your browsing and gaming experience on Evexa Buddy.</p>
+
+
             <button id="play-game-button" class="button button-primary">Play Evexa Buddy!</button>
+            <button id="scroll-down-button" class="button button-primary" style="margin-top: 15px;">Scroll Down This Window</button>
+
+            <div class="live-updates-section glass-effect">
+                <h3>Live Updates</h3>
+                <div id="live-updates-message" class="live-updates-message">Welcome to Evexa Buddy! Stay tuned for exciting updates!</div>
+                <button id="generate-update-button" class="button button-primary" style="margin-top: 10px; padding: 10px 20px; font-size: 1em;">Generate New Update</button>
+            </div>
+
+            <div id="home-ad" class="ad-placement glass-effect">
+                <p>Google Ad Placeholder: Home Page Banner (e.g., 728x90)</p>
+                </div>
         </div>
 
         <div id="game-selection-page" class="page-content">
@@ -1100,6 +1325,9 @@
                 <button id="select-flappy-bird" class="button button-primary">Flappy Bird Game</button>
                 <button class="button button-primary" disabled>Other Game (Coming Soon)</button>
             </div>
+            <div id="game-selection-ad" class="ad-placement glass-effect">
+                <p>Google Ad Placeholder: Game Selection Page Ad (e.g., 336x280)</p>
+                </div>
         </div>
 
         <div id="game-page" class="page-content">
@@ -1118,6 +1346,14 @@
                     <p>Tap to Play</p>
                 </div>
             </div>
+            <div class="game-controls">
+                <button id="pause-resume-button" class="button button-primary"><i class="fas fa-pause"></i> Pause</button>
+                <button id="stop-button" class="button button-primary"><i class="fas fa-stop"></i> Stop</button>
+                <button id="rotate-button" class="button button-primary" style="display: none;"><i class="fas fa-mobile-alt"></i> Rotate</button>
+            </div>
+            <div id="game-ad" class="ad-placement glass-effect">
+                <p>Google Ad Placeholder: Game Page Ad (e.g., 300x250)</p>
+                </div>
         </div>
     </div>
 
@@ -1174,7 +1410,8 @@
         let hasPlayedGameOverSound;
         let gameStarted = false; // Track if game has truly started (after countdown)
         let currentLevel = 1; // New: Current game level, starts at 1 (Very Easy)
-        
+        let gamePaused = false; // New: Track if game is paused
+
         // New: User preference for rotation. Default to true (suggest rotation)
         let userPrefersRotation = JSON.parse(localStorage.getItem('userPrefersRotation')) !== false; 
         let rotationHintDismissed = false; // Track if user skipped rotation hint for the current session
@@ -1184,12 +1421,23 @@
             GAME_START_OVERLAY: 'GAME_START_OVERLAY', // New initial state for game page
             COUNTDOWN: 'COUNTDOWN',
             PLAYING: 'PLAYING',
+            PAUSED: 'PAUSED', // New state
             GAME_OVER: 'GAME_OVER'
         };
         let currentGameState; // Will be set by initGame or showPage
 
         // Page elements
         let homePage, gameSelectionPage, gamePage, gameStartOverlay;
+
+        // Game control buttons
+        let pauseResumeButton, stopButton, rotateButton;
+
+        // User profile elements
+        let userIdDisplay, proBadge, toggleProButton;
+        let isProUser = false; // Initial state for Pro user
+
+        // Live Updates elements
+        let liveUpdatesMessage, generateUpdateButton;
 
         // Game constants
         const BIRD_WIDTH = 40;
@@ -1452,6 +1700,10 @@
 
         // Game loop
         function gameLoop() {
+            if (currentGameState === GAME_STATES.PAUSED) {
+                animationFrameId = requestAnimationFrame(gameLoop); // Keep requesting frame even if paused
+                return; // Don't update game state if paused
+            }
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             // Update background colors based on current level
             document.documentElement.style.setProperty('--sky-blue', DIFFICULTY_LEVELS[currentLevel].skyColor);
@@ -1486,6 +1738,68 @@
                 }
             }
         }
+
+        // Pause Game
+        function pauseGame() {
+            if (currentGameState === GAME_STATES.PLAYING) {
+                currentGameState = GAME_STATES.PAUSED;
+                pauseResumeButton.innerHTML = '<i class="fas fa-play"></i> Resume';
+                if (backgroundMusicLoop && backgroundMusicLoop.state === 'started') {
+                    backgroundMusicLoop.pause();
+                }
+            }
+        }
+
+        // Resume Game
+        function resumeGame() {
+            if (currentGameState === GAME_STATES.PAUSED) {
+                currentGameState = GAME_STATES.PLAYING;
+                pauseResumeButton.innerHTML = '<i class="fas fa-pause"></i> Pause';
+                if (backgroundMusicLoop && backgroundMusicLoop.state === 'paused') {
+                    backgroundMusicLoop.start();
+                }
+                gameLoop(); // Restart the animation loop
+            }
+        }
+
+        // Toggle Pause/Resume
+        function togglePauseResume() {
+            if (currentGameState === GAME_STATES.PLAYING) {
+                pauseGame();
+            } else if (currentGameState === GAME_STATES.PAUSED) {
+                resumeGame();
+            }
+        }
+
+        // Stop Game
+        function stopGame() {
+            if (currentGameState !== GAME_STATES.GAME_OVER) { // Prevent stopping if already over
+                currentGameState = GAME_STATES.GAME_OVER;
+                finalScoreDisplay.textContent = score;
+                gameOverScreen.classList.add('active');
+                if (backgroundMusicLoop && backgroundMusicLoop.state === 'started') {
+                    backgroundMusicLoop.stop();
+                }
+                cancelAnimationFrame(animationFrameId);
+                // Reset pause/resume button state
+                pauseResumeButton.innerHTML = '<i class="fas fa-pause"></i> Pause';
+                gamePaused = false;
+            }
+        }
+
+        // Toggle Rotation (for mobile portrait)
+        function toggleRotation() {
+            userPrefersRotation = !userPrefersRotation;
+            localStorage.setItem('userPrefersRotation', userPrefersRotation);
+            checkOrientation(); // Apply new rotation preference
+            // Update button text
+            if (userPrefersRotation) {
+                rotateButton.innerHTML = '<i class="fas fa-mobile-alt"></i> Play Portrait';
+            } else {
+                rotateButton.innerHTML = '<i class="fas fa-mobile-alt"></i> Rotate';
+            }
+        }
+
 
         // Apply difficulty settings based on current level
         function applyLevelDifficulty() {
@@ -1559,6 +1873,8 @@
             gameStartOverlay.classList.remove('hidden'); // Show "Tap to Play" overlay
             
             currentGameState = GAME_STATES.GAME_START_OVERLAY; // Set initial state for game page
+            gamePaused = false; // Reset pause state
+            pauseResumeButton.innerHTML = '<i class="fas fa-pause"></i> Pause'; // Reset button text
 
             scoreDisplay.textContent = score;
             highScore = parseInt(localStorage.getItem('flappyBirdHighScore') || '0');
@@ -1623,6 +1939,10 @@
                 }
                 // Ensure rotation hint is hidden when not on game page
                 rotationHint.classList.remove('active');
+                // Hide rotate button if not on game page
+                if (rotateButton) {
+                    rotateButton.style.display = 'none';
+                }
             }
             checkOrientation(); // Re-evaluate orientation on page change
         }
@@ -1635,6 +1955,17 @@
             const isOnGamePage = gamePage.classList.contains('active');
 
             if (isMobile && isOnGamePage) {
+                // Show rotate button on mobile game page
+                if (rotateButton) {
+                    rotateButton.style.display = 'inline-block';
+                    // Update button text based on current preference
+                    if (userPrefersRotation) {
+                        rotateButton.innerHTML = '<i class="fas fa-mobile-alt"></i> Play Portrait';
+                    } else {
+                        rotateButton.innerHTML = '<i class="fas fa-mobile-alt"></i> Rotate';
+                    }
+                }
+
                 if (isPortrait) {
                     // Mobile Portrait Mode
                     // Rotation hint is managed by jump()
@@ -1662,8 +1993,52 @@
                 // Ensure game-container classes are reset for desktop
                 gameContainer.classList.remove('rotated');
                 gameContainer.classList.remove('no-rotate');
+                // Hide rotate button on desktop
+                if (rotateButton) {
+                    rotateButton.style.display = 'none';
+                }
             }
             setCanvasDimensions(); // Re-set canvas internal dimensions
+        }
+
+        // Function to scroll the main content area to the bottom
+        function scrollMainContentToBottom() {
+            const mainContent = document.querySelector('.main-content');
+            if (mainContent) {
+                mainContent.scrollTop = mainContent.scrollHeight;
+            }
+        }
+
+        // Function to generate a simple user ID
+        function generateUserId() {
+            return 'user_' + Math.random().toString(36).substring(2, 9);
+        }
+
+        // Function to toggle Pro status
+        function toggleProStatus() {
+            isProUser = !isProUser;
+            if (isProUser) {
+                proBadge.classList.add('active');
+                toggleProButton.textContent = 'Downgrade to Free';
+            } else {
+                proBadge.classList.remove('active');
+                toggleProButton.textContent = 'Upgrade to Pro';
+            }
+            localStorage.setItem('isProUser', isProUser); // Save preference
+        }
+
+        // Function to display a live update message
+        function displayLiveUpdate() {
+            const updates = [
+                "New game mode 'Time Attack' coming soon!",
+                "Server maintenance scheduled for 2 AM UTC.",
+                "Top player 'FlappyMaster' achieved 1000 points!",
+                "Minor bug fixes and performance improvements deployed.",
+                "Join our Discord for exclusive sneak peeks!",
+                "Happy Hour: Double coins for the next 2 hours!"
+            ];
+            const randomIndex = Math.floor(Math.random() * updates.length);
+            liveUpdatesMessage.textContent = updates[randomIndex];
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -1683,9 +2058,24 @@
             gamePage = document.getElementById('game-page');
             gameStartOverlay = document.getElementById('game-start-overlay'); // New
 
+            // Game control buttons
+            pauseResumeButton = document.getElementById('pause-resume-button');
+            stopButton = document.getElementById('stop-button');
+            rotateButton = document.getElementById('rotate-button'); // New rotate button
+
             const playPortraitButton = document.getElementById('play-portrait-button'); // New
             const rotateAndPlayButton = document.getElementById('rotate-and-play-button'); // New
             const selectFlappyBirdButton = document.getElementById('select-flappy-bird'); // New
+            const scrollDownButton = document.getElementById('scroll-down-button'); // New scroll button
+
+            // User profile elements
+            userIdDisplay = document.getElementById('user-id-display');
+            proBadge = document.getElementById('pro-badge');
+            toggleProButton = document.getElementById('toggle-pro-button');
+
+            // Live Updates elements
+            liveUpdatesMessage = document.getElementById('live-updates-message');
+            generateUpdateButton = document.getElementById('generate-update-button');
 
             // Sidebar elements
             const sidebar = document.getElementById('sidebar');
@@ -1707,6 +2097,11 @@
 
             // Event Listeners for game
             document.addEventListener('keydown', (e) => {
+                // Prevent default scrolling for Space and Enter keys
+                if (e.code === 'Space' || e.key === 'Enter') {
+                    e.preventDefault();
+                }
+
                 if (e.code === 'Space') {
                     // Only jump if game is playing or on start overlay
                     if (currentGameState === GAME_STATES.PLAYING || currentGameState === GAME_STATES.GAME_START_OVERLAY) {
@@ -1731,6 +2126,52 @@
 
             // Restart button now directly re-initializes the game (which starts countdown)
             restartButton.addEventListener('click', initGame);
+
+            // Game control button event listeners
+            if (pauseResumeButton) {
+                pauseResumeButton.addEventListener('click', togglePauseResume);
+            }
+            if (stopButton) {
+                stopButton.addEventListener('click', stopGame);
+            }
+            if (rotateButton) {
+                rotateButton.addEventListener('click', toggleRotation);
+            }
+
+            // Scroll Down button event listener
+            if (scrollDownButton) {
+                scrollDownButton.addEventListener('click', scrollMainContentToBottom);
+            }
+
+            // Generate Update button event listener
+            if (generateUpdateButton) {
+                generateUpdateButton.addEventListener('click', displayLiveUpdate);
+            }
+
+            // User Profile and Pro status
+            if (userIdDisplay) {
+                // Load or generate user ID
+                let storedUserId = localStorage.getItem('userId');
+                if (!storedUserId) {
+                    storedUserId = generateUserId();
+                    localStorage.setItem('userId', storedUserId);
+                }
+                userIdDisplay.textContent = storedUserId;
+
+                // Load Pro status
+                isProUser = JSON.parse(localStorage.getItem('isProUser')) || false;
+                if (isProUser) {
+                    proBadge.classList.add('active');
+                    toggleProButton.textContent = 'Downgrade to Free';
+                } else {
+                    proBadge.classList.remove('active');
+                    toggleProButton.textContent = 'Upgrade to Pro';
+                }
+            }
+            if (toggleProButton) {
+                toggleProButton.addEventListener('click', toggleProStatus);
+            }
+
 
             // Play Game button on Home page
             if (playGameButton) {
