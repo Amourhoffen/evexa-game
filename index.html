@@ -858,8 +858,10 @@
             .main-content {
                 margin-left: 0; /* No margin when sidebar is collapsed */
                 width: 100%; /* Take full width */
-                padding-bottom: 90px; /* Space for bottom navbar */
-                min-height: calc(100vh - 60px - 90px); /* Mobile specific height: 100vh - top menu button area - bottom nav height */
+                padding-top: 80px; /* Space for fixed menu button at top */
+                padding-bottom: 90px; /* Space for fixed bottom navbar */
+                min-height: 100vh; /* Ensure it takes full viewport height */
+                justify-content: center; /* Center content vertically in main-content */
             }
 
             .menu-toggle-button {
@@ -894,11 +896,16 @@
                 margin-top: 0; /* Reset margin from previous versions */
                 margin-bottom: 0; /* Reset margin from previous versions */
 
-                /* Default dimensions for portrait mode (before rotation choice) */
-                width: calc(100vw - (2 * 20px)); /* Maximize width in portrait */
-                height: auto; /* Let height adjust dynamically */
-                aspect-ratio: var(--game-canvas-width) / var(--game-canvas-height); /* Maintain aspect ratio */
-                max-height: calc(100vh - 150px); /* Limit total height considering top/bottom bars */
+                width: 90vw; /* User requested 90% width */
+                height: auto; /* Let height be determined by aspect ratio */
+                max-width: calc(100vw - (2 * 20px)); /* Ensure it doesn't exceed main-content width */
+                max-height: calc(100vh - 170px); /* Adjusted for top button (60px) + bottom nav (80px) + main-content padding (2*20px) = 160px. Let's use 170px for safety */
+                
+                /* Ensure content within game-container is centered if it has flex properties */
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
             }
 
             /* Show bottom navbar on mobile */
@@ -911,37 +918,40 @@
             .game-page .game-container.rotated {
                 transform: rotate(90deg);
                 /* When rotated, visual width is its height, visual height is its width */
-                height: calc(100vw - (2 * 20px)); /* Visual width (actual height) */
-                width: auto; /* Let width adjust based on aspect ratio and new height */
-                aspect-ratio: var(--game-canvas-height) / var(--game-canvas-width); /* Invert aspect ratio for rotation */
-                max-height: calc(100vh - 150px); /* Constrain visual height (actual width) */
+                height: auto; /* Let height be determined by aspect ratio */
+                width: 90vw; /* Still aim for 90vw for the rotated 'width' */
+                aspect-ratio: var(--game-canvas-height) / var(--game-canvas-width); /* Invert aspect ratio */
+                max-height: calc(100vh - 170px); /* Still constrain by available vertical space */
             }
 
             .game-page .game-container.no-rotate {
                 transform: rotate(0deg); /* Explicitly no rotation */
-                width: calc(100vw - (2 * 20px)); /* Maximize width in portrait */
+                width: 90vw; /* Maximize width in portrait */
                 height: auto; /* Let height adjust dynamically */
                 aspect-ratio: var(--game-canvas-width) / var(--game-canvas-height); /* Maintain original aspect ratio */
-                max-height: calc(100vh - 150px); /* Limit total height considering top/bottom bars */
+                max-height: calc(100vh - 170px); /* Limit total height considering top/bottom bars */
             }
 
             /* For very small screens, adjust padding to maximize game area */
             @media (max-width: 400px) {
                 .main-content {
-                    padding-left: 15px; /* Adjust padding for smaller screens */
-                    padding-right: 15px;
+                    padding-left: 10px; /* Reduce padding for tiny screens */
+                    padding-right: 10px;
+                    padding-top: 70px; /* Adjust top padding */
+                    padding-bottom: 80px; /* Adjust bottom padding */
                 }
                 .game-page .game-container {
-                    width: calc(100vw - (2 * 15px)); /* Adjusted for smaller padding */
-                    max-height: calc(100vh - 140px); /* Adjusted for smaller padding/bars */
+                    width: 95vw; /* Slightly more width for tiny screens */
+                    max-height: calc(100vh - 160px); /* Adjusted for new padding */
                 }
                 .game-page .game-container.rotated {
-                    height: calc(100vw - (2 * 15px));
-                    max-height: calc(100vh - 140px);
+                    height: auto;
+                    width: 95vw;
+                    max-height: calc(100vh - 160px);
                 }
                 .game-page .game-container.no-rotate {
-                    width: calc(100vw - (2 * 15px));
-                    max-height: calc(100vh - 140px);
+                    width: 95vw;
+                    max-height: calc(100vh - 160px);
                 }
             }
         }
