@@ -513,15 +513,78 @@
             margin-bottom: 15px;
         }
 
-        #game-selection-page .button-group {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+        #game-selection-page .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Responsive grid */
+            gap: 20px;
             width: 100%;
-            max-width: 300px;
+            max-width: 700px; /* Adjust max-width for the grid */
+            margin-top: 20px;
         }
 
-        .game-container {
+        .game-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            text-decoration: none; /* Ensure it looks like a card, not a link */
+            color: var(--text-light);
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            background-color: rgba(45, 55, 72, 0.5); /* Slightly darker on hover */
+        }
+
+        body.light-mode .game-card:hover {
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+        .game-card i {
+            font-size: 3em;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .game-card h3 {
+            font-size: 1.1em;
+            font-weight: 700;
+            margin: 0;
+            color: var(--text-light);
+        }
+
+        /* Styles for the dynamically loaded Tic Tac Toe game */
+        #dynamic-game-container {
+            width: 100%;
+            height: 100%; /* Changed from min-height */
+            max-width: none; /* Removed max-width constraint */
+            display: flex;
+            flex-direction: column; /* Ensure content stacks vertically */
+            justify-content: center;
+            align-items: center;
+            /* Removed min-height: 400px; */
+        }
+
+        /* Specific styles for Flappy Bird game elements (when active) */
+        .flappy-bird-game-elements {
+            display: none; /* Hidden by default, shown when Flappy Bird is active */
+        }
+
+        #game-page.flappy-bird-active .flappy-bird-game-elements {
+            display: flex; /* Or block, based on element type */
+        }
+
+        /* Flappy Bird Game Container */
+        #game-page .game-container {
             position: relative;
             background-color: var(--bg-card); /* Semi-transparent for glass */
             border-radius: 20px;
@@ -533,9 +596,7 @@
             width: 100%;
             max-width: 550px;
             box-sizing: border-box;
-            /* Remove margin-top/bottom here, let parent flexbox center */
-            /* Apply glass effect */
-            backdrop-filter: blur(12px); /* Increased blur */
+            backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--border-color);
             box-shadow: var(--box-shadow);
@@ -547,8 +608,8 @@
             border: 3px solid var(--border-color);
             border-radius: 15px;
             display: block;
-            width: 100%;
-            height: 450px; /* Default height for larger screens */
+            width: 100%; /* Set width to 100% */
+            height: 100%; /* Set height to 100% */
             touch-action: manipulation;
             box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
             position: relative;
@@ -948,6 +1009,8 @@
             -webkit-backdrop-filter: blur(8px);
             box-shadow: var(--box-shadow);
             overflow: hidden; /* Ensure ad content doesn't overflow */
+            margin-left: auto; /* Explicitly center */
+            margin-right: auto; /* Explicitly center */
         }
 
         /* Specific ad sizes for different pages/types (adjust as needed for actual ads) */
@@ -959,7 +1022,7 @@
 
         #game-selection-ad {
             max-width: 336px; /* Another common ad size */
-            min-height: 280px; /* Large rectangle */
+            min-height: 280px;
         }
 
         /* Live Updates Section Styling */
@@ -1000,7 +1063,6 @@
             content: "No recent updates.";
             color: var(--text-muted);
         }
-
 
         /* Responsive adjustments */
         @media (min-width: 769px) {
@@ -1161,6 +1223,7 @@
                 top: 25px;
             }
             #score-display.score-pop {
+                transform: translateX(-50%) scale(1.1);
                 font-size: 3.1em;
             }
             #game-over-screen {
@@ -1174,7 +1237,7 @@
                 font-size: 1.8em;
             }
             #high-score {
-                font-size: 1em;
+                font-size: 1.1em;
             }
             .button {
                 padding: 12px 25px;
@@ -1197,8 +1260,15 @@
         }
 
         @media (max-width: 400px) {
+            .game-container {
+                padding: 15px;
+                width: 100%;
+                border-radius: 10px; /* Smaller radius for smaller screens */
+                gap: 15px;
+            }
             canvas {
                 height: 420px; /* Further increased height for smaller mobile when not rotated */
+                border-radius: 10px;
             }
             #score-display {
                 font-size: 2.2em;
@@ -1233,6 +1303,357 @@
                 font-size: 0.7em;
             }
         }
+
+        /* Whack-a-Mole Specific Styles */
+        .whack-a-mole-game {
+            width: 100%; /* Changed from max-width */
+            height: 100%; /* Added */
+            padding: 20px;
+            background-color: var(--bg-card);
+            border-radius: 20px;
+            box-shadow: var(--box-shadow);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            margin-left: auto; /* Explicitly center */
+            margin-right: auto; /* Explicitly center */
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centers horizontally */
+            justify-content: center; /* Centers vertically */
+        }
+
+        .whack-a-mole-game h1 {
+            font-size: 2.5em;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .game-stats {
+            display: flex;
+            justify-content: space-around;
+            width: 100%; /* Ensure it takes full width to distribute items */
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .game-stats div span {
+            color: var(--secondary-color);
+            font-size: 1.5em;
+            font-weight: 800;
+            margin-left: 5px;
+        }
+
+        .mole-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 15px;
+            width: 100%; /* Changed from max-width */
+            max-width: 500px; /* Slightly increased max-width */
+            aspect-ratio: 1 / 1;
+            margin: 0 auto;
+            padding: 15px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+            position: relative;
+            flex-grow: 1; /* Allow it to grow and take available space */
+            box-sizing: border-box;
+        }
+
+        .hole {
+            width: 100%;
+            height: 100%;
+            background-color: #5a3a2b; /* Brown soil */
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end; /* Moles pop from bottom */
+            overflow: hidden;
+            position: relative;
+            border: 5px solid #3a251c; /* Darker soil border */
+            box-shadow: inset 0 5px 10px rgba(0, 0, 0, 0.4), 0 2px 5px rgba(0, 0, 0, 0.3);
+            /* 3D effect for holes */
+            transform-style: preserve-3d;
+            transform: perspective(200px) rotateX(10deg);
+            transition: transform 0.1s ease-out;
+        }
+
+        .hole:active {
+            transform: perspective(200px) rotateX(0deg); /* Flatten on click */
+        }
+
+        .mole {
+            width: 80%;
+            height: 80%;
+            background-color: #8B4513; /* SaddleBrown */
+            border-radius: 50%;
+            position: absolute;
+            bottom: -100%; /* Start hidden below the hole */
+            transition: bottom 0.2s ease-out, background-color 0.1s ease, transform 0.1s ease;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.5em; /* Mole emoji size */
+            color: #fff;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+            border: 3px solid #6b3e1a;
+            user-select: none; /* Prevent text selection on rapid clicks */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+        }
+
+        .mole.up {
+            bottom: 0; /* Pop up */
+        }
+
+        .mole.hit {
+            transform: scale(0.9);
+        }
+
+        /* Specific mole type colors */
+        .mole[data-type="NORMAL"] { background-color: #8B4513; }
+        .mole[data-type="NORMAL"].hit { background-color: var(--success-color); } /* Green on hit */
+
+        .mole[data-type="FAST"] { background-color: #FFD700; color: #333; } /* Gold */
+        .mole[data-type="FAST"].hit { background-color: #4A90E2; } /* Blue on hit */
+
+        .mole[data-type="BOMB"] { background-color: #333333; } /* Dark Gray */
+        .mole[data-type="BOMB"].hit { background-color: var(--danger-color); } /* Red on hit */
+
+
+        /* Score feedback animation */
+        .score-feedback {
+            position: absolute;
+            font-size: 1.5em;
+            font-weight: 800;
+            color: var(--success-color); /* Default green for positive score */
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+            pointer-events: none; /* Allow clicks to pass through */
+            animation: scorePop 1s forwards;
+            white-space: nowrap;
+            z-index: 10; /* Above moles */
+        }
+
+        .score-feedback.negative {
+            color: var(--danger-color); /* Red for negative score */
+        }
+
+        @keyframes scorePop {
+            0% { transform: translate(-50%, 0); opacity: 1; }
+            100% { transform: translate(-50%, -50px); opacity: 0; }
+        }
+
+
+        .whack-a-mole-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .whack-a-mole-game-over {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.2em;
+            text-align: center;
+            gap: 15px;
+            z-index: 20;
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.9);
+            transition: opacity 0.4s ease, visibility 0.4s ease, transform 0.4s ease;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--box-shadow);
+        }
+
+        .whack-a-mole-game-over.active {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1);
+        }
+
+        .whack-a-mole-game-over h2 {
+            font-size: 2.8em;
+            font-weight: 800;
+            color: var(--danger-color);
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+            margin-bottom: 5px;
+        }
+
+        .whack-a-mole-game-over p {
+            font-size: 1.5em;
+            color: var(--warning-color);
+        }
+
+        /* Space Miner specific styles */
+        .space-miner-game .game-canvas {
+            background-color: #0d1117; /* Deep space background */
+            border: 3px solid #4a0e6e; /* Purple border */
+            border-radius: 15px;
+            touch-action: none; /* Prevent scrolling/zooming */
+        }
+
+        .space-miner-game .game-stats {
+            margin-top: 15px;
+            font-size: 1.3em;
+            color: #a78bfa; /* Violet */
+            font-weight: 700;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        }
+
+        .space-miner-game-over {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.2em;
+            text-align: center;
+            gap: 15px;
+            z-index: 20;
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.9);
+            transition: opacity 0.4s ease, visibility 0.4s ease, transform 0.4s ease;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--box-shadow);
+        }
+
+        .space-miner-game-over.active {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1);
+        }
+
+        .space-miner-game-over h2 {
+            font-size: 2.8em;
+            font-weight: 800;
+            color: #f59e0b; /* Amber */
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+            margin-bottom: 5px;
+        }
+
+        .space-miner-game-over p {
+            font-size: 1.5em;
+            color: #e2e8f0;
+        }
+
+        /* Subway Sprint specific styles */
+        .subway-sprint-game .game-canvas {
+            background-color: #333; /* Dark track */
+            border: 3px solid #666;
+            border-radius: 15px;
+            touch-action: none; /* Prevent scrolling/zooming */
+        }
+
+        .subway-sprint-game .game-stats {
+            margin-top: 15px;
+            font-size: 1.3em;
+            color: #00bcd4; /* Subway blue */
+            font-weight: 700;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        }
+
+        .subway-sprint-game-over {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.2em;
+            text-align: center;
+            gap: 15px;
+            z-index: 20;
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.9);
+            transition: opacity 0.4s ease, visibility 0.4s ease, transform 0.4s ease;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--box-shadow);
+        }
+
+        .subway-sprint-game-over.active {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1);
+        }
+
+        .subway-sprint-game-over h2 {
+            font-size: 2.8em;
+            font-weight: 800;
+            color: #ff3d00; /* Orange-red for game over */
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+            margin-bottom: 5px;
+        }
+
+        .subway-sprint-game-over p {
+            font-size: 1.5em;
+            color: #e2e8f0;
+        }
+
+        @media (max-width: 400px) {
+            .whack-a-mole-game {
+                padding: 15px;
+            }
+            .whack-a-mole-game h1 {
+                font-size: 2em;
+            }
+            .game-stats {
+                font-size: 1em;
+            }
+            .game-stats div span {
+                font-size: 1.2em;
+            }
+            .mole-grid {
+                max-width: 300px;
+                gap: 10px;
+            }
+            .mole {
+                font-size: 2em;
+            }
+            .whack-a-mole-game-over h2 {
+                font-size: 2.2em;
+            }
+            .whack-a-mole-game-over p {
+                font-size: 1.2em;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1241,7 +1662,7 @@
     <div class="sidebar glass-effect" id="sidebar">
         <button class="sidebar-toggle-desktop" id="sidebarToggleDesktop"><i class="fas fa-chevron-left"></i></button>
         <div class="user-info">
-            <h4>User ID: <span id="user-id-display"></span> <span id="pro-badge" class="pro-badge">Pro</span></h4>
+            <h4><span id="pro-badge" class="pro-badge">Pro</span></h4>
             <button id="toggle-pro-button">Toggle Pro Status</button>
         </div>
         <nav>
@@ -1304,16 +1725,8 @@
             <p>Finally, we want to extend our gratitude to the entire community for their enthusiasm and support. It's your passion for gaming that inspires us to push the boundaries and deliver exceptional experiences. We look forward to many more updates, new games, and memorable moments together on Evexa Buddy. Keep flapping, keep exploring, and most importantly, keep having fun!</p>
             <p>This paragraph is specifically added to make the page even longer and ensure scrolling. It's important for us to test the full extent of the scrollability, especially on different screen sizes and orientations. We are committed to ensuring that all elements, including the very bottom of the page and any future additions, are easily reachable by the user. This extended content serves as a robust test case for the scrolling mechanism. We anticipate that with these changes, the page will now scroll smoothly and reveal all areas as intended, providing a complete and uninterrupted user experience. We value your feedback and encourage you to let us know if any further adjustments are needed to enhance your browsing and gaming experience on Evexa Buddy.</p>
 
-
             <button id="play-game-button" class="button button-primary">Play Evexa Buddy!</button>
-            <button id="scroll-down-button" class="button button-primary" style="margin-top: 15px;">Scroll Down This Window</button>
-
-            <div class="live-updates-section glass-effect">
-                <h3>Live Updates</h3>
-                <div id="live-updates-message" class="live-updates-message">Welcome to Evexa Buddy! Stay tuned for exciting updates!</div>
-                <button id="generate-update-button" class="button button-primary" style="margin-top: 10px; padding: 10px 20px; font-size: 1em;">Generate New Update</button>
-            </div>
-
+            
             <div id="home-ad" class="ad-placement glass-effect">
                 <p>Google Ad Placeholder: Home Page Banner (e.g., 728x90)</p>
                 </div>
@@ -1321,17 +1734,100 @@
 
         <div id="game-selection-page" class="page-content">
             <h2>Choose Your Game!</h2>
-            <div class="button-group">
-                <button id="select-flappy-bird" class="button button-primary">Flappy Bird Game</button>
-                <button class="button button-primary" disabled>Other Game (Coming Soon)</button>
+            <div class="game-grid">
+                <a href="#" class="game-card" data-game="flappy-bird">
+                    <i class="fas fa-feather-alt"></i> <h3>Evexa Buddy</h3>
+                </a>
+                <a href="#" class="game-card" data-game="subway-sprint">
+                    <i class="fas fa-train"></i> <h3>Subway Sprint</h3>
+                </a>
+                <a href="#" class="game-card" data-game="whack-a-mole">
+                    <i class="fas fa-mouse"></i> <h3>Whack-a-Mole</h3>
+                </a>
+                <a href="#" class="game-card" data-game="space-pinball">
+                    <i class="fas fa-space-shuttle"></i>
+                    <h3>Space Pinball</h3>
+                </a>
+                <a href="#" class="game-card" data-game="dominoes">
+                    <i class="fas fa-dice-five"></i>
+                    <h3>Dominoes</h3>
+                </a>
+                <a href="#" class="game-card" data-game="hexaboard">
+                    <i class="fas fa-chess-board"></i>
+                    <h3>Hexaboard</h3>
+                </a>
+                <a href="#" class="game-card" data-game="rainbow-bead">
+                    <i class="fas fa-gem"></i>
+                    <h3>Rainbow Bead</h3>
+                </a>
+                <a href="#" class="game-card" data-game="goose-game">
+                    <i class="fas fa-duck"></i>
+                    <h3>Goose Game</h3>
+                </a>
+                <a href="#" class="game-card" data-game="marble-blast">
+                    <i class="fas fa-circle"></i>
+                    <h3>Marble Blast</h3>
+                </a>
+                <a href="#" class="game-card" data-game="four-colors">
+                    <i class="fas fa-palette"></i>
+                    <h3>Four Colors</h3>
+                </a>
+                <a href="#" class="game-card" data-game="mini-golf-world">
+                    <i class="fas fa-golf-ball"></i>
+                    <h3>Mini Golf World</h3>
+                </a>
+                <a href="#" class="game-card" data-game="going-nuts">
+                    <i class="fas fa-squirrel"></i>
+                    <h3>Going Nuts</h3>
+                </a>
+                <a href="#" class="game-card" data-game="darts">
+                    <i class="fas fa-bullseye"></i>
+                    <h3>Darts</h3>
+                </a>
+                <a href="#" class="game-card" data-game="nine-mens-morris">
+                    <i class="fas fa-braille"></i>
+                    <h3>Nine Men's Morris</h3>
+                </a>
+                <a href="#" class="game-card" data-game="space-miner">
+                    <i class="fas fa-meteor"></i>
+                    <h3>Space Miner</h3>
+                </a>
+                <a href="#" class="game-card" data-game="checkers">
+                    <i class="fas fa-chess-pawn"></i>
+                    <h3>Checkers</h3>
+                </a>
+                <a href="#" class="game-card" data-game="chess">
+                    <i class="fas fa-chess-king"></i>
+                    <h3>Chess</h3>
+                </a>
+                <a href="#" class="game-card" data-game="solitaire">
+                    <i class="fas fa-hand-sparkles"></i>
+                    <h3>Solitaire</h3>
+                </a>
+                <a href="#" class="game-card" data-game="quest">
+                    <i class="fas fa-scroll"></i>
+                    <h3>Quest</h3>
+                </a>
+                <a href="#" class="game-card" data-game="miniature-golf-game">
+                    <i class="fas fa-flag-checkered"></i>
+                    <h3>Miniature Golf Game</h3>
+                </a>
+                <a href="#" class="game-card" data-game="backgammon">
+                    <i class="fas fa-dice"></i>
+                    <h3>Backgammon</h3>
+                </a>
+                <a href="#" class="game-card" data-game="hercules">
+                    <i class="fas fa-dumbbell"></i>
+                    <h3>Hercules</h3>
+                </a>
             </div>
             <div id="game-selection-ad" class="ad-placement glass-effect">
                 <p>Google Ad Placeholder: Game Selection Page Ad (e.g., 336x280)</p>
-                </div>
+            </div>
         </div>
 
         <div id="game-page" class="page-content">
-            <div class="game-container glass-effect">
+            <div class="game-container glass-effect flappy-bird-game-elements">
                 <canvas id="gameCanvas"></canvas>
                 <div id="score-display">0</div>
                 <div id="countdown-display"></div>
@@ -1346,14 +1842,16 @@
                     <p>Tap to Play</p>
                 </div>
             </div>
-            <div class="game-controls">
+            <div class="game-controls flappy-bird-game-elements">
                 <button id="pause-resume-button" class="button button-primary"><i class="fas fa-pause"></i> Pause</button>
                 <button id="stop-button" class="button button-primary"><i class="fas fa-stop"></i> Stop</button>
                 <button id="rotate-button" class="button button-primary" style="display: none;"><i class="fas fa-mobile-alt"></i> Rotate</button>
             </div>
-            <div id="game-ad" class="ad-placement glass-effect">
+            <div id="game-ad" class="ad-placement glass-effect flappy-bird-game-elements">
                 <p>Google Ad Placeholder: Game Page Ad (e.g., 300x250)</p>
                 </div>
+
+            <div id="dynamic-game-container"></div>
         </div>
     </div>
 
@@ -1394,7 +1892,7 @@
     </div>
 
     <script>
-        // Global variables for game state and elements
+        // Global variables for game state and elements (Flappy Bird)
         let canvas, ctx, scoreDisplay, gameOverScreen, finalScoreDisplay, highScoreDisplay, restartButton;
         let countdownDisplay, levelUpDisplay, rotationHint;
         let birdX, birdY, birdVelocityY;
@@ -1403,14 +1901,14 @@
         let highScore = 0;
         let gameOver;
         let lastPipeSpawnTime = 0;
-        let animationFrameId;
+        let animationFrameId; // For Flappy Bird
         let gameStartTime;
         let currentPipeSpeed;
         let currentPipeSpawnInterval;
         let hasPlayedGameOverSound;
-        let gameStarted = false; // Track if game has truly started (after countdown)
-        let currentLevel = 1; // New: Current game level, starts at 1 (Very Easy)
-        let gamePaused = false; // New: Track if game is paused
+        let gameStarted = false; // Track if Flappy Bird has truly started (after countdown)
+        let currentLevel = 1; // Flappy Bird: Current game level, starts at 1 (Very Easy)
+        let gamePaused = false; // Flappy Bird: Track if game is paused
 
         // New: User preference for rotation. Default to true (suggest rotation)
         let userPrefersRotation = JSON.parse(localStorage.getItem('userPrefersRotation')) !== false; 
@@ -1427,19 +1925,17 @@
         let currentGameState; // Will be set by initGame or showPage
 
         // Page elements
-        let homePage, gameSelectionPage, gamePage, gameStartOverlay;
+        let homePage, gamePage, gameSelectionPage, gameStartOverlay;
+        let dynamicGameContainer; // New: Reference to the dynamic game container
 
-        // Game control buttons
+        // Game control buttons (Flappy Bird)
         let pauseResumeButton, stopButton, rotateButton;
+        let flappyBirdGameElements; // New: Group of Flappy Bird specific elements
 
         // User profile elements
-        let userIdDisplay, proBadge, toggleProButton;
-        let isProUser = false; // Initial state for Pro user
+        let proBadge, toggleProButton;
 
-        // Live Updates elements
-        let liveUpdatesMessage, generateUpdateButton;
-
-        // Game constants
+        // Game constants (Flappy Bird)
         const BIRD_WIDTH = 40;
         const BIRD_HEIGHT = 30;
         const INITIAL_GRAVITY = 0.5;
@@ -1452,7 +1948,7 @@
         const GAME_CANVAS_WIDTH = 550;
         const GAME_CANVAS_HEIGHT = 450;
 
-        // Difficulty levels (speed and spawn interval) with background themes
+        // Difficulty levels (speed and spawn interval) with background themes (Flappy Bird)
         const DIFFICULTY_LEVELS = {
             1: { speed: 2, interval: 1500, scoreThreshold: 5, name: "Very Easy", skyColor: '#70c5ce', groundColor: '#d2b48c', backgroundType: 'default' },
             2: { speed: 2.5, interval: 1300, scoreThreshold: 10, name: "Easy", skyColor: '#87CEEB', groundColor: '#deb887', backgroundType: 'clouds' },
@@ -1470,12 +1966,38 @@
         };
 
         // Sound effects and music using Tone.js
-        let jumpSynth = null;
-        let gameOverSynth = null;
-        let backgroundMusicLoop = null; // Tone.Loop instance
-        let backgroundMusicSynth = null; // Tone.Synth for background music
+        let jumpSynth = null; // Flappy Bird
+        let gameOverSynth = null; // Flappy Bird
+        let backgroundMusicLoop = null; // Flappy Bird
+        let backgroundMusicSynth = null; // Flappy Bird
 
-        // Function to set canvas dimensions dynamically
+        // Whack-a-Mole specific audio
+        let whackAMoleBackgroundMusicLoop = null;
+        let whackAMoleBackgroundMusicSynth = null;
+        let molePopSound = null;
+        let moleWhackSound = null;
+        let whackAMoleGameOverSound = null;
+        let whackAMoleBombSound = null; // New sound for bomb mole
+
+        // Space Miner specific audio
+        let spaceMinerBackgroundMusicLoop = null;
+        let spaceMinerBackgroundMusicSynth = null;
+        let shootSound = null;
+        let explosionSound = null;
+
+        // Subway Sprint specific audio
+        let subwaySprintBackgroundMusicLoop = null;
+        let subwaySprintBackgroundMusicSynth = null;
+        let subwayJumpSound = null;
+        let subwaySlideSound = null;
+        let subwayCoinSound = null;
+        let subwayCollisionSound = null;
+
+
+        // Flag to ensure audio context and synths are ready
+        let isAudioReady = false;
+
+        // Function to set canvas dimensions dynamically (Flappy Bird)
         function setCanvasDimensions() {
             // Always set canvas internal resolution to the desired landscape size
             canvas.width = GAME_CANVAS_WIDTH;
@@ -1604,7 +2126,7 @@
             }
         }
 
-        // Draw ground
+        // Draw ground (Flappy Bird)
         function drawGround() {
             ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--ground-brown');
             ctx.fillRect(0, canvas.height - GROUND_HEIGHT, canvas.width, GROUND_HEIGHT);
@@ -1619,7 +2141,7 @@
             }
         }
 
-        // Update game state
+        // Update game state (Flappy Bird)
         function update() {
             if (currentGameState !== GAME_STATES.PLAYING) return;
 
@@ -1656,10 +2178,11 @@
             pipes.forEach(pipe => {
                 pipe.x -= currentPipeSpeed;
 
+                // Collision detection: Check if bird overlaps with pipe horizontally and vertically
                 if (
-                    birdX < pipe.x + PIPE_WIDTH &&
-                    birdX + BIRD_WIDTH > pipe.x &&
-                    (birdY < pipe.topHeight || birdY + BIRD_HEIGHT > pipe.bottomY)
+                    birdX < pipe.x + PIPE_WIDTH && // Bird's left edge is to the left of pipe's right edge
+                    birdX + BIRD_HEIGHT > pipe.x && // Bird's right edge is to the right of pipe's left edge (FIXED BUG HERE)
+                    (birdY < pipe.topHeight || birdY + BIRD_HEIGHT > pipe.bottomY) // Bird's top or bottom edge overlaps with pipe's top/bottom opening
                 ) {
                     currentGameState = GAME_STATES.GAME_OVER;
                 }
@@ -1687,7 +2210,7 @@
             if (currentGameState === GAME_STATES.GAME_OVER) {
                 finalScoreDisplay.textContent = score;
                 gameOverScreen.classList.add('active');
-                if (!hasPlayedGameOverSound && gameOverSynth) {
+                if (isAudioReady && gameOverSynth && Tone.context.state === 'running' && !hasPlayedGameOverSound) {
                     gameOverSynth.triggerAttackRelease("8n");
                     hasPlayedGameOverSound = true;
                 }
@@ -1698,7 +2221,7 @@
             }
         }
 
-        // Game loop
+        // Game loop (Flappy Bird)
         function gameLoop() {
             if (currentGameState === GAME_STATES.PAUSED) {
                 animationFrameId = requestAnimationFrame(gameLoop); // Keep requesting frame even if paused
@@ -1721,7 +2244,7 @@
         function jump() {
             if (currentGameState === GAME_STATES.PLAYING) {
                 birdVelocityY = INITIAL_JUMP_STRENGTH;
-                if (jumpSynth) {
+                if (isAudioReady && jumpSynth && Tone.context.state === 'running') {
                     jumpSynth.triggerAttackRelease("C4", "8n");
                 }
             } else if (currentGameState === GAME_STATES.GAME_START_OVERLAY) {
@@ -1739,7 +2262,7 @@
             }
         }
 
-        // Pause Game
+        // Pause Game (Flappy Bird)
         function pauseGame() {
             if (currentGameState === GAME_STATES.PLAYING) {
                 currentGameState = GAME_STATES.PAUSED;
@@ -1750,7 +2273,7 @@
             }
         }
 
-        // Resume Game
+        // Resume Game (Flappy Bird)
         function resumeGame() {
             if (currentGameState === GAME_STATES.PAUSED) {
                 currentGameState = GAME_STATES.PLAYING;
@@ -1762,7 +2285,7 @@
             }
         }
 
-        // Toggle Pause/Resume
+        // Toggle Pause/Resume (Flappy Bird)
         function togglePauseResume() {
             if (currentGameState === GAME_STATES.PLAYING) {
                 pauseGame();
@@ -1771,7 +2294,7 @@
             }
         }
 
-        // Stop Game
+        // Stop Game (Flappy Bird)
         function stopGame() {
             if (currentGameState !== GAME_STATES.GAME_OVER) { // Prevent stopping if already over
                 currentGameState = GAME_STATES.GAME_OVER;
@@ -1801,7 +2324,7 @@
         }
 
 
-        // Apply difficulty settings based on current level
+        // Apply difficulty settings based on current level (Flappy Bird)
         function applyLevelDifficulty() {
             const levelData = DIFFICULTY_LEVELS[currentLevel];
             if (levelData) {
@@ -1818,7 +2341,7 @@
             }
         }
 
-        // Show level up message
+        // Show level up message (Flappy Bird)
         function showLevelUpMessage(level) {
             levelUpDisplay.textContent = `Level ${level}!`;
             levelUpDisplay.classList.add('active');
@@ -1827,7 +2350,7 @@
             }, 2000); // Display for 2 seconds
         }
 
-        // Countdown before game starts
+        // Countdown before game starts (Flappy Bird)
         function startCountdown() {
             currentGameState = GAME_STATES.COUNTDOWN;
             let count = 3;
@@ -1835,7 +2358,6 @@
             const countdownInterval = setInterval(() => {
                 if (count > 0) {
                     countdownDisplay.textContent = count;
-                    count--;
                 } else {
                     countdownDisplay.textContent = 'Go!';
                     clearInterval(countdownInterval);
@@ -1849,11 +2371,13 @@
                         }
                     }, 500); // "Go!" stays for 0.5s
                 }
+                count--; // Decrement after displaying
             }, 1000); // Update every 1 second
         }
 
-        // Initialize game (starts directly now)
-        function initGame() {
+        // Initialize game (Flappy Bird)
+        async function initGame() {
+            await startAudioContext(); // Ensure audio context is ready and synths are initialized
             setCanvasDimensions();
             birdX = 50;
             birdY = canvas.height / 2 - BIRD_HEIGHT / 2;
@@ -1867,6 +2391,9 @@
             applyLevelDifficulty(); // Apply initial difficulty
 
             // Ensure game elements are visible and overlay is shown
+            // The display property for flappyBirdGameElements is handled by CSS class 'flappy-bird-active'
+            // when gameId === 'flappy-bird'.
+            
             canvas.style.display = 'block';
             scoreDisplay.style.display = 'block';
             gameOverScreen.classList.remove('active'); // Hide game over screen
@@ -1886,33 +2413,120 @@
             // Do not start countdown here, it will be triggered by user interaction on overlay
         }
 
-        // Start Tone.js audio context on user interaction
-        const startAudioContext = () => {
-            if (Tone.context.state !== 'running') {
-                Tone.start().then(() => {
-                    console.log("Tone.js audio context started.");
-                    // Initialize synths and connect them
-                    jumpSynth = new Tone.Synth().toDestination();
-                    gameOverSynth = new Tone.NoiseSynth().toDestination();
-                    
-                    // Initialize a single synth for background music and connect it
-                    backgroundMusicSynth = new Tone.Synth().toDestination();
+        // --------------------------------------------------------------------
+        // Common Functions
+        // --------------------------------------------------------------------
 
-                    // Background music loop setup - it schedules notes on backgroundMusicSynth
-                    backgroundMusicLoop = new Tone.Loop(time => {
-                        backgroundMusicSynth.triggerAttackRelease("C3", "4n", time);
-                        backgroundMusicSynth.triggerAttackRelease("E3", "4n", time + 0.5);
-                        backgroundMusicSynth.triggerAttackRelease("G3", "4n", time + 1);
-                        backgroundMusicSynth.triggerAttackRelease("C4", "4n", time + 1.5);
-                    }, "2n"); // Repeat every 2 notes
-                    
-                    // The loop itself will be started after the countdown
-                }).catch(e => console.error("Tone.js context failed to start:", e));
+        // Stop all game-specific music loops
+        function stopAllGameMusic() {
+            if (backgroundMusicLoop && backgroundMusicLoop.state === 'started') {
+                backgroundMusicLoop.stop();
             }
+            if (whackAMoleBackgroundMusicLoop && whackAMoleBackgroundMusicLoop.state === 'started') {
+                whackAMoleBackgroundMusicLoop.stop();
+            }
+            if (spaceMinerBackgroundMusicLoop && spaceMinerBackgroundMusicLoop.state === 'started') {
+                spaceMinerBackgroundMusicLoop.stop();
+            }
+            if (subwaySprintBackgroundMusicLoop && subwaySprintBackgroundMusicLoop.state === 'started') {
+                subwaySprintBackgroundMusicLoop.stop();
+            }
+        }
+
+        // Start Tone.js audio context on user interaction
+        const startAudioContext = async () => {
+            if (isAudioReady) return true; // Already ready
+
+            if (Tone.context.state !== 'running') {
+                try {
+                    await Tone.start();
+                    console.log("Tone.js audio context started.");
+                } catch (e) {
+                    console.error("Tone.js context failed to start:", e);
+                    return false; // Indicate failure
+                }
+            }
+            
+            // Initialize synths if they are not already initialized
+            if (!jumpSynth) { 
+                jumpSynth = new Tone.Synth().toDestination();
+                gameOverSynth = new Tone.NoiseSynth().toDestination();
+                backgroundMusicSynth = new Tone.Synth().toDestination();
+                backgroundMusicLoop = new Tone.Loop(time => {
+                    backgroundMusicSynth.triggerAttackRelease("C3", "4n", time);
+                    backgroundMusicSynth.triggerAttackRelease("E3", "4n", time + 0.5);
+                    backgroundMusicSynth.triggerAttackRelease("G3", "4n", time + 1);
+                    backgroundMusicSynth.triggerAttackRelease("C4", "4n", time + 1.5);
+                }, "2n");
+            }
+
+            // Initialize Whack-a-Mole synths
+            if (!whackAMoleBackgroundMusicSynth) {
+                whackAMoleBackgroundMusicSynth = new Tone.Synth().toDestination();
+                whackAMoleBackgroundMusicLoop = new Tone.Loop(time => {
+                    whackAMoleBackgroundMusicSynth.triggerAttackRelease("C3", "8n", time);
+                    whackAMoleBackgroundMusicSynth.triggerAttackRelease("G3", "8n", time + 0.5);
+                }, "1n"); // Play every 1 second
+                molePopSound = new Tone.Synth({
+                    oscillator: { type: "sine" },
+                    envelope: { attack: 0.01, decay: 0.1, sustain: 0.05, release: 0.1 }
+                }).toDestination();
+                moleWhackSound = new Tone.MembraneSynth().toDestination();
+                whackAMoleGameOverSound = new Tone.NoiseSynth({
+                    noise: { type: "brown" },
+                    envelope: { attack: 0.01, decay: 0.5, sustain: 0 }
+                }).toDestination();
+                whackAMoleBombSound = new Tone.NoiseSynth({ // New: Bomb sound
+                    noise: { type: "white" },
+                    envelope: { attack: 0.01, decay: 0.3, sustain: 0, release: 0.1 }
+                }).toDestination();
+            }
+
+            // Initialize Space Miner synths
+            if (!spaceMinerBackgroundMusicSynth) {
+                spaceMinerBackgroundMusicSynth = new Tone.Synth().toDestination();
+                spaceMinerBackgroundMusicLoop = new Tone.Loop(time => {
+                    spaceMinerBackgroundMusicSynth.triggerAttackRelease("C3", "8n", time);
+                    spaceMinerBackgroundMusicSynth.triggerAttackRelease("G3", "8n", time + 0.5);
+                    spaceMinerBackgroundMusicSynth.triggerAttackRelease("C4", "8n", time + 1);
+                }, "1n");
+                shootSound = new Tone.PolySynth(Tone.Synth, {
+                    oscillator: { type: "triangle" },
+                    envelope: { attack: 0.001, decay: 0.1, sustain: 0.01, release: 0.05 }
+                }).toDestination();
+                explosionSound = new Tone.NoiseSynth({
+                    noise: { type: "pink" },
+                    envelope: { attack: 0.005, decay: 0.2, sustain: 0, release: 0.1 }
+                }).toDestination();
+            }
+
+            // Initialize Subway Sprint synths
+            if (!subwaySprintBackgroundMusicSynth) {
+                subwaySprintBackgroundMusicSynth = new Tone.Synth().toDestination();
+                subwaySprintBackgroundMusicLoop = new Tone.Loop(time => {
+                    subwaySprintBackgroundMusicSynth.triggerAttackRelease("C4", "8n", time);
+                    subwaySprintBackgroundMusicSynth.triggerAttackRelease("E4", "8n", time + 0.25);
+                    subwaySprintBackgroundMusicSynth.triggerAttackRelease("G4", "8n", time + 0.5);
+                    subwaySprintBackgroundMusicSynth.triggerAttackRelease("C5", "8n", time + 0.75);
+                }, "1n"); // Play every 1 second
+                subwayJumpSound = new Tone.Synth().toDestination();
+                subwaySlideSound = new Tone.NoiseSynth({
+                    noise: { type: "white" },
+                    envelope: { attack: 0.01, decay: 0.1, sustain: 0 }
+                }).toDestination();
+                subwayCoinSound = new Tone.Synth({
+                    oscillator: { type: "sine" },
+                    envelope: { attack: 0.001, decay: 0.05, sustain: 0.01, release: 0.05 }
+                }).toDestination();
+                subwayCollisionSound = new Tone.MembraneSynth().toDestination();
+            }
+
+            isAudioReady = true; // Set flag to true after successful initialization
+            return true; // Indicate success
         };
 
         // Function to show/hide pages
-        function showPage(pageId) {
+        async function showPage(pageId) {
             const pages = document.querySelectorAll('.page-content');
             pages.forEach(page => page.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
@@ -1926,17 +2540,33 @@
                 }
             });
 
-            // If navigating to game page, initialize the game
-            if (pageId === 'game-page') {
-                initGame();
+            // Stop all game loops and music when changing pages
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+                animationFrameId = null;
+            }
+            if (animationFrameIdSpaceMiner) { // Stop Space Miner animation loop
+                cancelAnimationFrame(animationFrameIdSpaceMiner);
+                animationFrameIdSpaceMiner = null;
+            }
+            if (animationFrameIdSubwaySprint) { // Stop Subway Sprint animation loop
+                cancelAnimationFrame(animationFrameIdSubwaySprint);
+                animationFrameIdSubwaySprint = null;
+            }
+            stopAllGameMusic(); // Stop all background music
+
+            // Clear dynamic game container and hide Flappy Bird elements when not on game-page
+            if (pageId !== 'game-page') {
+                dynamicGameContainer.innerHTML = ''; // Clear any loaded game
+                flappyBirdGameElements.forEach(el => el.style.display = 'none'); // Hide Flappy Bird elements
+                gamePage.classList.remove('flappy-bird-active'); // Remove class to hide Flappy Bird elements
+            }
+
+            // Initialize specific game if navigating to its page
+            if (pageId === 'game-page') { 
+                // Initialization for Flappy Bird happens when its card is clicked.
+                // If navigating directly to game-page, it will just show the last loaded game or empty.
             } else {
-                // If navigating away from game, stop game loop and music
-                if (animationFrameId) {
-                    cancelAnimationFrame(animationFrameId);
-                }
-                if (backgroundMusicLoop && backgroundMusicLoop.state === 'started') {
-                    backgroundMusicLoop.stop();
-                }
                 // Ensure rotation hint is hidden when not on game page
                 rotationHint.classList.remove('active');
                 // Hide rotate button if not on game page
@@ -1951,14 +2581,13 @@
         function checkOrientation() {
             const isMobile = window.innerWidth < 769;
             const isPortrait = window.innerHeight > window.innerWidth;
-            const gameContainer = document.querySelector('.game-container');
-            const isOnGamePage = gamePage.classList.contains('active');
+            const flappyBirdGameContainer = document.querySelector('#game-page .game-container');
+            const isOnFlappyBirdPage = gamePage.classList.contains('active') && gamePage.classList.contains('flappy-bird-active');
 
-            if (isMobile && isOnGamePage) {
-                // Show rotate button on mobile game page
+            // Handle Flappy Bird rotation
+            if (isMobile && isOnFlappyBirdPage) {
                 if (rotateButton) {
                     rotateButton.style.display = 'inline-block';
-                    // Update button text based on current preference
                     if (userPrefersRotation) {
                         rotateButton.innerHTML = '<i class="fas fa-mobile-alt"></i> Play Portrait';
                     } else {
@@ -1967,51 +2596,31 @@
                 }
 
                 if (isPortrait) {
-                    // Mobile Portrait Mode
-                    // Rotation hint is managed by jump()
-                    
                     if (userPrefersRotation) {
-                        // Apply CSS rotation to game-container
-                        gameContainer.classList.remove('no-rotate');
-                        gameContainer.classList.add('rotated');
+                        flappyBirdGameContainer.classList.remove('no-rotate');
+                        flappyBirdGameContainer.classList.add('rotated');
                     } else {
-                        // User prefers no rotation
-                        gameContainer.classList.remove('rotated');
-                        gameContainer.classList.add('no-rotate');
+                        flappyBirdGameContainer.classList.remove('rotated');
+                        flappyBirdGameContainer.classList.add('no-rotate');
                     }
-
                 } else {
-                    // Mobile Landscape Mode
                     rotationHint.classList.remove('active');
-                    // Reset game-container classes
-                    gameContainer.classList.remove('rotated');
-                    gameContainer.classList.remove('no-rotate');
+                    flappyBirdGameContainer.classList.remove('rotated');
+                    flappyBirdGameContainer.classList.remove('no-rotate');
                 }
             } else {
-                // Desktop Mode (or not on game page for mobile)
                 rotationHint.classList.remove('active');
-                // Ensure game-container classes are reset for desktop
-                gameContainer.classList.remove('rotated');
-                gameContainer.classList.remove('no-rotate');
-                // Hide rotate button on desktop
+                if (flappyBirdGameContainer) {
+                    flappyBirdGameContainer.classList.remove('rotated');
+                    flappyBirdGameContainer.classList.remove('no-rotate');
+                }
                 if (rotateButton) {
                     rotateButton.style.display = 'none';
                 }
             }
-            setCanvasDimensions(); // Re-set canvas internal dimensions
-        }
-
-        // Function to scroll the main content area to the bottom
-        function scrollMainContentToBottom() {
-            const mainContent = document.querySelector('.main-content');
-            if (mainContent) {
-                mainContent.scrollTop = mainContent.scrollHeight;
-            }
-        }
-
-        // Function to generate a simple user ID
-        function generateUserId() {
-            return 'user_' + Math.random().toString(36).substring(2, 9);
+            
+            // Re-set canvas internal dimensions for Flappy Bird
+            if (canvas) setCanvasDimensions();
         }
 
         // Function to toggle Pro status
@@ -2027,22 +2636,1254 @@
             localStorage.setItem('isProUser', isProUser); // Save preference
         }
 
-        // Function to display a live update message
-        function displayLiveUpdate() {
-            const updates = [
-                "New game mode 'Time Attack' coming soon!",
-                "Server maintenance scheduled for 2 AM UTC.",
-                "Top player 'FlappyMaster' achieved 1000 points!",
-                "Minor bug fixes and performance improvements deployed.",
-                "Join our Discord for exclusive sneak peeks!",
-                "Happy Hour: Double coins for the next 2 hours!"
-            ];
-            const randomIndex = Math.floor(Math.random() * updates.length);
-            liveUpdatesMessage.textContent = updates[randomIndex];
+        // Whack-a-Mole Game Logic
+        let moles = [];
+        let whackAMoleScore = 0;
+        let whackAMoleTimeLeft = 30; // seconds
+        let whackAMoleGameActive = false;
+        let molePopInterval;
+        let timerInterval;
+        let whackAMoleScoreDisplay, whackAMoleTimerDisplay, whackAMoleGameOverScreen, whackAMoleFinalScoreDisplay, whackAMoleHighScoreDisplay, whackAMoleStartButton, whackAMoleResetButton, whackAMoleBackToGamesButton;
+        let whackAMoleHighScore = 0; // New variable for Whack-a-Mole high score
+        let whackAMoleLevel = 1; // New: Whack-a-Mole difficulty level
+
+        // New: Mole type definitions for Whack-a-Mole
+        const MOLE_TYPES = {
+            NORMAL: {
+                content: '🦔', // Hedgehog
+                points: 10,
+                baseMinDuration: 800,
+                baseMaxDuration: 1500,
+                spawnChance: 0.7, // 70% chance
+                sound: 'moleWhackSound'
+            },
+            FAST: {
+                content: '⚡', // Lightning bolt
+                points: 25,
+                baseMinDuration: 400,
+                baseMaxDuration: 800,
+                spawnChance: 0.2, // 20% chance
+                sound: 'moleWhackSound'
+            },
+            BOMB: {
+                content: '💣', // Bomb
+                points: -50,
+                baseMinDuration: 1000,
+                baseMaxDuration: 2000,
+                spawnChance: 0.1, // 10% chance
+                sound: 'whackAMoleBombSound'
+            }
+        };
+
+        // New: Difficulty levels for Whack-a-Mole
+        const WHACK_A_MOLE_DIFFICULTY = {
+            1: { name: "Easy", scoreThreshold: 50, speedMultiplier: 1, bombChanceIncrease: 0 },
+            2: { name: "Medium", scoreThreshold: 150, speedMultiplier: 0.9, bombChanceIncrease: 0.02 },
+            3: { name: "Hard", scoreThreshold: 300, speedMultiplier: 0.8, bombChanceIncrease: 0.05 },
+            4: { name: "Very Hard", scoreThreshold: 500, speedMultiplier: 0.7, bombChanceIncrease: 0.08 },
+            5: { name: "Insane", scoreThreshold: 9999, speedMultiplier: 0.6, bombChanceIncrease: 0.1 }
+        };
+
+        function initializeWhackAMoleGame() {
+            stopAllGameMusic();
+            if (isAudioReady && whackAMoleBackgroundMusicLoop && whackAMoleBackgroundMusicLoop.state !== 'started') {
+                whackAMoleBackgroundMusicLoop.start();
+            }
+
+            const whackAMoleHtmlFragment = `
+                <div class="game-container whack-a-mole-game">
+                    <h1>Whack-a-Mole</h1>
+                    <div class="game-stats">
+                        <div>Score: <span id="whack-a-mole-score">0</span></div>
+                        <div>Time: <span id="whack-a-mole-timer">30s</span></div>
+                    </div>
+                    <div class="mole-grid" id="mole-grid">
+                        <div class="hole"><div class="mole" data-index="0"></div></div>
+                        <div class="hole"><div class="mole" data-index="1"></div></div>
+                        <div class="hole"><div class="mole" data-index="2"></div></div>
+                        <div class="hole"><div class="mole" data-index="3"></div></div>
+                        <div class="hole"><div class="mole" data-index="4"></div></div>
+                        <div class="hole"><div class="mole" data-index="5"></div></div>
+                        <div class="hole"><div class="mole" data-index="6"></div></div>
+                        <div class="hole"><div class="mole" data-index="7"></div></div>
+                        <div class="hole"><div class="mole" data-index="8"></div></div>
+                    </div>
+                    <div class="whack-a-mole-controls">
+                        <button id="whack-a-mole-start-button" class="button button-primary">Start Game</button>
+                        <button id="whack-a-mole-reset-button" class="button button-primary">Reset</button>
+                    </div>
+                    <button id="whack-a-mole-back-to-games-button" class="button button-primary" style="margin-top: 20px;">Back to Games</button>
+
+                    <div class="ad-placement glass-effect" style="margin-top: 20px;">
+                        <p>Google Ad Placeholder: Whack-a-Mole Ad (e.g., 300x250)</p>
+                    </div>
+
+                    <div class="whack-a-mole-game-over" id="whack-a-mole-game-over">
+                        <h2>Time's Up!</h2>
+                        <p>Final Score: <span id="whack-a-mole-final-score">0</span></p>
+                        <p>High Score: <span id="whack-a-mole-high-score-display">0</span></p> <button id="whack-a-mole-restart-button" class="button button-primary">Play Again</button>
+                    </div>
+                </div>
+            `;
+            dynamicGameContainer.innerHTML = whackAMoleHtmlFragment;
+
+            whackAMoleScoreDisplay = dynamicGameContainer.querySelector('#whack-a-mole-score');
+            whackAMoleTimerDisplay = dynamicGameContainer.querySelector('#whack-a-mole-timer');
+            whackAMoleGameOverScreen = dynamicGameContainer.querySelector('#whack-a-mole-game-over');
+            whackAMoleFinalScoreDisplay = dynamicGameContainer.querySelector('#whack-a-mole-final-score');
+            whackAMoleHighScoreDisplay = dynamicGameContainer.querySelector('#whack-a-mole-high-score-display'); // Get the new element
+            whackAMoleStartButton = dynamicGameContainer.querySelector('#whack-a-mole-start-button');
+            whackAMoleResetButton = dynamicGameContainer.querySelector('#whack-a-mole-reset-button');
+            whackAMoleBackToGamesButton = dynamicGameContainer.querySelector('#whack-a-mole-back-to-games-button');
+            moles = dynamicGameContainer.querySelectorAll('.mole');
+
+            moles.forEach(mole => {
+                mole.addEventListener('click', whackMole);
+            });
+
+            whackAMoleStartButton.addEventListener('click', startGame);
+            whackAMoleResetButton.addEventListener('click', resetWhackAMoleGame);
+            whackAMoleGameOverScreen.querySelector('#whack-a-mole-restart-button').addEventListener('click', resetWhackAMoleGame);
+            whackAMoleBackToGamesButton.addEventListener('click', () => {
+                stopAllGameMusic(); // Stop Whack-a-Mole music
+                if (typeof showPage === 'function') {
+                    showPage('game-selection-page');
+                } else {
+                    console.warn("showPage function not found. Cannot navigate back to game selection.");
+                    dynamicGameContainer.innerHTML = '';
+                }
+            });
+
+            // Load high score on initialization
+            whackAMoleHighScore = parseInt(localStorage.getItem('whackAMoleHighScore') || '0');
+            whackAMoleHighScoreDisplay.textContent = whackAMoleHighScore;
+
+            resetWhackAMoleGame(); // Initial state setup
         }
 
+        // Helper to show score feedback
+        function showScoreFeedback(moleElement, scoreChange) {
+            const feedback = document.createElement('div');
+            feedback.textContent = (scoreChange > 0 ? '+' : '') + scoreChange;
+            feedback.classList.add('score-feedback');
+            if (scoreChange < 0) {
+                feedback.classList.add('negative');
+            }
+
+            // Position the feedback above the mole
+            const moleRect = moleElement.getBoundingClientRect();
+            const gridRect = moleElement.closest('.mole-grid').getBoundingClientRect();
+
+            feedback.style.left = `${moleRect.left - gridRect.left + moleRect.width / 2}px`;
+            feedback.style.top = `${moleRect.top - gridRect.top + moleRect.height / 2}px`;
+            feedback.style.transform = 'translateX(-50%) translateY(0)'; // Initial position
+
+            moleElement.closest('.hole').appendChild(feedback);
+
+            feedback.addEventListener('animationend', () => {
+                feedback.remove();
+            });
+        }
+
+
+        function randomTime(min, max) {
+            // Apply difficulty multiplier
+            const multiplier = WHACK_A_MOLE_DIFFICULTY[whackAMoleLevel].speedMultiplier;
+            return Math.round(Math.random() * (max - min) + min) * multiplier;
+        }
+
+        function randomMole(molesArray) {
+            const upMoles = Array.from(molesArray).filter(m => m.classList.contains('up'));
+            let availableMoles = Array.from(molesArray).filter(m => !m.classList.contains('up'));
+
+            if (availableMoles.length === 0) {
+                // If all moles are up, pick one that's already up to re-pop or just return null
+                if (upMoles.length > 0) {
+                    return upMoles[Math.floor(Math.random() * upMoles.length)];
+                }
+                return null; // No moles available
+            }
+
+            const idx = Math.floor(Math.random() * availableMoles.length);
+            return availableMoles[idx];
+        }
+
+        function popRandomMole() {
+            if (!whackAMoleGameActive) return;
+
+            const moleElement = randomMole(moles);
+            if (!moleElement) {
+                // If no available moles, try again shortly
+                setTimeout(popRandomMole, 200);
+                return;
+            }
+
+            // Determine mole type based on spawn chances and current difficulty
+            let moleTypeKey = 'NORMAL';
+            const rand = Math.random();
+            const currentBombChance = MOLE_TYPES.BOMB.spawnChance + WHACK_A_MOLE_DIFFICULTY[whackAMoleLevel].bombChanceIncrease;
+
+            if (rand < currentBombChance) {
+                moleTypeKey = 'BOMB';
+            } else if (rand < currentBombChance + MOLE_TYPES.FAST.spawnChance) {
+                moleTypeKey = 'FAST';
+            }
+            // If none of the above, it defaults to NORMAL (due to spawnChance sum being 1)
+
+            const moleType = MOLE_TYPES[moleTypeKey];
+
+            moleElement.textContent = moleType.content; // Set emoji/content
+            moleElement.dataset.type = moleTypeKey; // Store type in data attribute
+            moleElement.style.backgroundColor = moleType.color; // Set initial color
+
+            moleElement.classList.add('up');
+            if (isAudioReady && molePopSound && Tone.context.state === 'running') {
+                molePopSound.triggerAttackRelease("C5", "16n");
+            }
+
+            const duration = randomTime(moleType.baseMinDuration, moleType.baseMaxDuration);
+            moleElement.moleTimeout = setTimeout(() => { // Store timeout ID on the mole element
+                moleElement.classList.remove('up');
+                moleElement.classList.remove('hit'); // Ensure hit class is removed
+                if (whackAMoleGameActive) {
+                    popRandomMole(); // Keep moles popping if game is active
+                }
+            }, duration);
+        }
+
+        function whackMole(e) {
+            const moleElement = e.target;
+            if (!whackAMoleGameActive || !moleElement.classList.contains('up')) return;
+
+            clearTimeout(moleElement.moleTimeout); // Clear the mole's auto-hide timeout
+
+            const moleTypeKey = moleElement.dataset.type;
+            const moleType = MOLE_TYPES[moleTypeKey];
+
+            whackAMoleScore += moleType.points;
+            whackAMoleScoreDisplay.textContent = whackAMoleScore;
+            
+            showScoreFeedback(moleElement, moleType.points); // Show score pop-up
+
+            moleElement.classList.remove('up'); // Hide mole immediately
+            moleElement.classList.add('hit'); // Add hit animation
+            moleElement.style.backgroundColor = moleType.color; // Change color on hit
+
+            if (isAudioReady && Tone.context.state === 'running') {
+                if (moleType.sound === 'whackAMoleBombSound' && whackAMoleBombSound) {
+                    whackAMoleBombSound.triggerAttackRelease("8n");
+                } else if (moleType.sound === 'moleWhackSound' && moleWhackSound) {
+                    moleWhackSound.triggerAttackRelease("C2", "8n");
+                }
+            }
+
+            setTimeout(() => {
+                moleElement.classList.remove('hit'); // Remove hit class after animation
+                moleElement.style.backgroundColor = moleType.color; // Reset color
+                if (whackAMoleGameActive) {
+                    popRandomMole(); // Pop a new mole
+                }
+            }, 100); // Short delay for hit animation
+
+            updateWhackAMoleDifficulty(); // Check for difficulty update
+        }
+
+        function updateWhackAMoleDifficulty() {
+            const nextLevel = whackAMoleLevel + 1;
+            if (WHACK_A_MOLE_DIFFICULTY[nextLevel] && whackAMoleScore >= WHACK_A_MOLE_DIFFICULTY[whackAMoleLevel].scoreThreshold) {
+                whackAMoleLevel = nextLevel;
+                showMessageBox(`Whack-a-Mole Level Up! Now ${WHACK_A_MOLE_DIFFICULTY[whackAMoleLevel].name}!`, 'info', 2000);
+            }
+        }
+
+        function startGame() {
+            if (whackAMoleGameActive) return; // Prevent multiple starts
+            
+            whackAMoleGameActive = true;
+            whackAMoleScore = 0;
+            whackAMoleTimeLeft = 30;
+            whackAMoleLevel = 1; // Reset level on new game start
+            whackAMoleScoreDisplay.textContent = whackAMoleScore;
+            whackAMoleTimerDisplay.textContent = `${whackAMoleTimeLeft}s`;
+            whackAMoleGameOverScreen.classList.remove('active');
+            whackAMoleStartButton.disabled = true; // Disable start button once game begins
+            whackAMoleResetButton.disabled = false; // Enable reset button
+
+            if (isAudioReady && whackAMoleBackgroundMusicLoop && whackAMoleBackgroundMusicLoop.state !== 'started') {
+                whackAMoleBackgroundMusicLoop.start();
+            }
+
+            popRandomMole(); // Start moles popping
+            timerInterval = setInterval(updateWhackAMoleTimer, 1000); // Start game timer
+        }
+
+        function updateWhackAMoleTimer() {
+            whackAMoleTimeLeft--;
+            whackAMoleTimerDisplay.textContent = `${whackAMoleTimeLeft}s`;
+
+            if (whackAMoleTimeLeft <= 0) {
+                endWhackAMoleGame();
+            }
+        }
+
+        function endWhackAMoleGame() {
+            whackAMoleGameActive = false;
+            clearInterval(molePopInterval); // Stop moles from popping
+            clearInterval(timerInterval); // Stop the timer
+            moles.forEach(mole => {
+                mole.classList.remove('up'); // Hide all moles
+                mole.classList.remove('hit'); // Remove hit class
+                clearTimeout(mole.moleTimeout); // Clear any pending mole timeouts
+            });
+            
+            whackAMoleFinalScoreDisplay.textContent = whackAMoleScore;
+            whackAMoleGameOverScreen.classList.add('active');
+            whackAMoleStartButton.disabled = false; // Re-enable start button
+            whackAMoleResetButton.disabled = false; // Ensure reset button is enabled
+
+            // Update high score if current score is higher
+            if (whackAMoleScore > whackAMoleHighScore) {
+                whackAMoleHighScore = whackAMoleScore;
+                localStorage.setItem('whackAMoleHighScore', whackAMoleHighScore);
+            }
+            whackAMoleHighScoreDisplay.textContent = whackAMoleHighScore; // Display the high score
+
+            if (isAudioReady && whackAMoleGameOverSound && Tone.context.state === 'running') {
+                whackAMoleGameOverSound.triggerAttackRelease("1n");
+            }
+            if (whackAMoleBackgroundMusicLoop && whackAMoleBackgroundMusicLoop.state === 'started') {
+                whackAMoleBackgroundMusicLoop.stop();
+            }
+        }
+
+        function resetWhackAMoleGame() {
+            endWhackAMoleGame(); // Ensure all intervals are cleared and moles are hidden
+            whackAMoleScore = 0;
+            whackAMoleTimeLeft = 30;
+            whackAMoleLevel = 1; // Reset level
+            whackAMoleScoreDisplay.textContent = whackAMoleScore;
+            whackAMoleTimerDisplay.textContent = `${whackAMoleTimeLeft}s`;
+            whackAMoleGameOverScreen.classList.remove('active');
+            whackAMoleStartButton.disabled = false; // Enable start button
+            whackAMoleResetButton.disabled = false; // Enable reset button
+            whackAMoleHighScore = parseInt(localStorage.getItem('whackAMoleHighScore') || '0'); // Reload high score on reset
+            whackAMoleHighScoreDisplay.textContent = whackAMoleHighScore; // Update display
+        }
+
+        // Space Miner Game Logic
+        let spaceMinerCanvas, spaceMinerCtx;
+        let spaceship;
+        let asteroids = [];
+        let bullets = [];
+        let spaceMinerScore = 0;
+        let spaceMinerHighScore = 0;
+        let spaceMinerGameActive = false;
+        let animationFrameIdSpaceMiner;
+        let keys = {}; // To track pressed keys
+        let lastShotTime = 0;
+        const SHOOT_COOLDOWN = 200; // milliseconds
+        let asteroidSpawnInterval = 1000; // Initial asteroid spawn interval
+        let lastAsteroidSpawnTime = 0;
+        let spaceMinerScoreDisplay, spaceMinerHighScoreDisplay, spaceMinerGameOverScreen, spaceMinerFinalScoreDisplay, spaceMinerStartButton, spaceMinerResetButton, spaceMinerBackToGamesButton;
+        let touchStartX = 0;
+        let touchMoveX = 0;
+        let touchMoving = false;
+        let touchShootTimer = null;
+
+        const SPACESHIP_WIDTH = 40;
+        const SPACESHIP_HEIGHT = 40;
+        const BULLET_RADIUS = 5;
+        const BULLET_SPEED = 7;
+        const ASTEROID_RADIUS_MIN = 15;
+        const ASTEROID_RADIUS_MAX = 30;
+        const ASTEROID_SPEED_MIN = 0.5;
+        const ASTEROID_SPEED_MAX = 2;
+
+        function initializeSpaceMinerGame() {
+            stopAllGameMusic();
+            if (isAudioReady && spaceMinerBackgroundMusicLoop && spaceMinerBackgroundMusicLoop.state !== 'started') {
+                spaceMinerBackgroundMusicLoop.start();
+            }
+
+            const spaceMinerHtmlFragment = `
+                <div class="game-container space-miner-game">
+                    <h1>Space Miner</h1>
+                    <div class="game-stats">
+                        <div>Score: <span id="space-miner-score">0</span></div>
+                        <div>High Score: <span id="space-miner-high-score">0</span></div>
+                    </div>
+                    <canvas id="spaceMinerCanvas" class="game-canvas" width="550" height="450"></canvas>
+                    <div class="game-controls">
+                        <button id="space-miner-start-button" class="button button-primary">Start Game</button>
+                        <button id="space-miner-reset-button" class="button button-primary">Reset</button>
+                    </div>
+                    <button id="space-miner-back-to-games-button" class="button button-primary" style="margin-top: 20px;">Back to Games</button>
+
+                    <div class="ad-placement glass-effect" style="margin-top: 20px;">
+                        <p>Google Ad Placeholder: Space Miner Ad (e.g., 300x250)</p>
+                    </div>
+
+                    <div class="space-miner-game-over" id="space-miner-game-over">
+                        <h2>Game Over!</h2>
+                        <p>Final Score: <span id="space-miner-final-score">0</span></p>
+                        <p>High Score: <span id="space-miner-game-over-high-score">0</span></p>
+                        <button id="space-miner-restart-button" class="button button-primary">Play Again</button>
+                    </div>
+                </div>
+            `;
+            dynamicGameContainer.innerHTML = spaceMinerHtmlFragment;
+
+            spaceMinerCanvas = dynamicGameContainer.querySelector('#spaceMinerCanvas');
+            spaceMinerCtx = spaceMinerCanvas.getContext('2d');
+            spaceMinerScoreDisplay = dynamicGameContainer.querySelector('#space-miner-score');
+            spaceMinerHighScoreDisplay = dynamicGameContainer.querySelector('#space-miner-high-score');
+            spaceMinerGameOverScreen = dynamicGameContainer.querySelector('#space-miner-game-over');
+            spaceMinerFinalScoreDisplay = dynamicGameContainer.querySelector('#space-miner-final-score');
+            spaceMinerStartButton = dynamicGameContainer.querySelector('#space-miner-start-button');
+            spaceMinerResetButton = dynamicGameContainer.querySelector('#space-miner-reset-button');
+            spaceMinerBackToGamesButton = dynamicGameContainer.querySelector('#space-miner-back-to-games-button');
+
+            spaceMinerStartButton.addEventListener('click', startSpaceMinerGame);
+            spaceMinerResetButton.addEventListener('click', resetSpaceMinerGame);
+            spaceMinerGameOverScreen.querySelector('#space-miner-restart-button').addEventListener('click', resetSpaceMinerGame);
+            spaceMinerBackToGamesButton.addEventListener('click', () => {
+                stopAllGameMusic();
+                if (typeof showPage === 'function') {
+                    showPage('game-selection-page');
+                } else {
+                    console.warn("showPage function not found. Cannot navigate back to game selection.");
+                    dynamicGameContainer.innerHTML = '';
+                }
+            });
+
+            // Keyboard controls
+            document.addEventListener('keydown', handleSpaceMinerKeyDown);
+            document.addEventListener('keyup', handleSpaceMinerKeyUp);
+
+            // Touch controls
+            spaceMinerCanvas.addEventListener('touchstart', handleSpaceMinerTouchStart);
+            spaceMinerCanvas.addEventListener('touchmove', handleSpaceMinerTouchMove);
+            spaceMinerCanvas.addEventListener('touchend', handleSpaceMinerTouchEnd);
+
+            resetSpaceMinerGame(); // Initial setup
+        }
+
+        function resetSpaceMinerGame() {
+            if (animationFrameIdSpaceMiner) {
+                cancelAnimationFrame(animationFrameIdSpaceMiner);
+            }
+            spaceMinerGameActive = false;
+            spaceship = {
+                x: spaceMinerCanvas.width / 2 - SPACESHIP_WIDTH / 2,
+                y: spaceMinerCanvas.height - SPACESHIP_HEIGHT - 20,
+                width: SPACESHIP_WIDTH,
+                height: SPACESHIP_HEIGHT,
+                speed: 5
+            };
+            asteroids = [];
+            bullets = [];
+            spaceMinerScore = 0;
+            spaceMinerScoreDisplay.textContent = spaceMinerScore;
+            spaceMinerHighScore = parseInt(localStorage.getItem('spaceMinerHighScore') || '0');
+            spaceMinerHighScoreDisplay.textContent = spaceMinerHighScore;
+            spaceMinerGameOverScreen.classList.remove('active');
+            spaceMinerStartButton.disabled = false;
+            spaceMinerResetButton.disabled = false;
+            asteroidSpawnInterval = 1000; // Reset difficulty
+            lastAsteroidSpawnTime = 0;
+            keys = {}; // Clear any held keys
+            touchMoving = false;
+            if (touchShootTimer) {
+                clearInterval(touchShootTimer);
+                touchShootTimer = null;
+            }
+
+            if (spaceMinerBackgroundMusicLoop && spaceMinerBackgroundMusicLoop.state === 'started') {
+                spaceMinerBackgroundMusicLoop.stop();
+            }
+        }
+
+        function startSpaceMinerGame() {
+            if (spaceMinerGameActive) return;
+            spaceMinerGameActive = true;
+            spaceMinerStartButton.disabled = true;
+            spaceMinerResetButton.disabled = false;
+            spaceMinerGameOverScreen.classList.remove('active');
+            spaceMinerScore = 0;
+            spaceMinerScoreDisplay.textContent = spaceMinerScore;
+            asteroids = [];
+            bullets = [];
+            asteroidSpawnInterval = 1000;
+            lastAsteroidSpawnTime = Date.now();
+
+            if (isAudioReady && spaceMinerBackgroundMusicLoop && spaceMinerBackgroundMusicLoop.state !== 'started') {
+                spaceMinerBackgroundMusicLoop.start();
+            }
+
+            gameLoopSpaceMiner();
+        }
+
+        function gameLoopSpaceMiner() {
+            if (!spaceMinerGameActive) return;
+
+            updateSpaceMinerGame();
+            drawSpaceMinerGame();
+
+            animationFrameIdSpaceMiner = requestAnimationFrame(gameLoopSpaceMiner);
+        }
+
+        function drawSpaceMinerGame() {
+            spaceMinerCtx.clearRect(0, 0, spaceMinerCanvas.width, spaceMinerCanvas.height);
+
+            // Draw spaceship
+            spaceMinerCtx.fillStyle = '#00BFFF'; // Deep Sky Blue
+            spaceMinerCtx.beginPath();
+            spaceMinerCtx.moveTo(spaceship.x + spaceship.width / 2, spaceship.y);
+            spaceMinerCtx.lineTo(spaceship.x, spaceship.y + spaceship.height);
+            spaceMinerCtx.lineTo(spaceship.x + spaceship.width, spaceship.y + spaceship.height);
+            spaceMinerCtx.closePath();
+            spaceMinerCtx.fill();
+            spaceMinerCtx.strokeStyle = '#87CEEB';
+            spaceMinerCtx.lineWidth = 2;
+            spaceMinerCtx.stroke();
+
+            // Draw bullets
+            bullets.forEach(bullet => {
+                spaceMinerCtx.fillStyle = '#FFD700'; // Gold
+                spaceMinerCtx.beginPath();
+                spaceMinerCtx.arc(bullet.x, bullet.y, bullet.radius, 0, Math.PI * 2);
+                spaceMinerCtx.fill();
+            });
+
+            // Draw asteroids
+            asteroids.forEach(asteroid => {
+                spaceMinerCtx.fillStyle = '#A9A9A9'; // DarkGray
+                spaceMinerCtx.beginPath();
+                // Draw a simple polygon for asteroid
+                const sides = Math.floor(Math.random() * 3) + 5; // 5 to 7 sides
+                const angleIncrement = (Math.PI * 2) / sides;
+                for (let i = 0; i < sides; i++) {
+                    const angle = i * angleIncrement;
+                    const x = asteroid.x + asteroid.radius * Math.cos(angle);
+                    const y = asteroid.y + asteroid.radius * Math.sin(angle);
+                    if (i === 0) {
+                        spaceMinerCtx.moveTo(x, y);
+                    } else {
+                        spaceMinerCtx.lineTo(x, y);
+                    }
+                }
+                spaceMinerCtx.closePath();
+                spaceMinerCtx.fill();
+                spaceMinerCtx.strokeStyle = '#696969'; // DimGray
+                spaceMinerCtx.lineWidth = 2;
+                spaceMinerCtx.stroke();
+            });
+        }
+
+        function updateSpaceMinerGame() {
+            // Move spaceship
+            if (keys['ArrowLeft'] || keys['a']) {
+                spaceship.x -= spaceship.speed;
+            }
+            if (keys['ArrowRight'] || keys['d']) {
+                spaceship.x += spaceship.speed;
+            }
+            // Clamp spaceship position
+            if (spaceship.x < 0) spaceship.x = 0;
+            if (spaceship.x + spaceship.width > spaceMinerCanvas.width) spaceship.x = spaceMinerCanvas.width - spaceship.width;
+
+            // Move bullets
+            bullets.forEach(bullet => {
+                bullet.y -= BULLET_SPEED;
+            });
+            bullets = bullets.filter(bullet => bullet.y + bullet.radius > 0); // Remove off-screen bullets
+
+            // Spawn asteroids
+            const currentTime = Date.now();
+            if (currentTime - lastAsteroidSpawnTime > asteroidSpawnInterval) {
+                spawnAsteroid();
+                lastAsteroidSpawnTime = currentTime;
+                // Gradually decrease spawn interval to increase difficulty
+                asteroidSpawnInterval = Math.max(200, asteroidSpawnInterval * 0.98);
+            }
+
+            // Move asteroids
+            asteroids.forEach(asteroid => {
+                asteroid.y += asteroid.speed;
+            });
+            asteroids = asteroids.filter(asteroid => {
+                // Check if asteroid hits bottom
+                if (asteroid.y - asteroid.radius > spaceMinerCanvas.height) {
+                    endSpaceMinerGame(); // Game over if asteroid reaches bottom
+                    return false;
+                }
+                return true;
+            });
+
+            // Collision detection: Bullets vs Asteroids
+            for (let i = bullets.length - 1; i >= 0; i--) {
+                for (let j = asteroids.length - 1; j >= 0; j--) {
+                    const bullet = bullets[i];
+                    const asteroid = asteroids[j];
+
+                    const dx = bullet.x - asteroid.x;
+                    const dy = bullet.y - asteroid.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < bullet.radius + asteroid.radius) {
+                        // Collision!
+                        bullets.splice(i, 1); // Remove bullet
+                        asteroids.splice(j, 1); // Remove asteroid
+                        spaceMinerScore += 10; // Increase score
+                        spaceMinerScoreDisplay.textContent = spaceMinerScore;
+                        if (isAudioReady && explosionSound && Tone.context.state === 'running') {
+                            explosionSound.triggerAttackRelease("8n");
+                        }
+                        // Ensure i doesn't go out of bounds if a bullet was removed
+                        if (i > bullets.length - 1) i = bullets.length - 1;
+                        break; // Move to next bullet after collision
+                    }
+                }
+            }
+
+            // Collision detection: Spaceship vs Asteroids
+            for (let i = asteroids.length - 1; i >= 0; i--) {
+                const asteroid = asteroids[i];
+                // Simple AABB collision for now
+                if (
+                    spaceship.x < asteroid.x + asteroid.radius &&
+                    spaceship.x + spaceship.width > asteroid.x - asteroid.radius &&
+                    spaceship.y < asteroid.y + asteroid.radius &&
+                    spaceship.y + spaceship.height > asteroid.y - asteroid.radius
+                ) {
+                    endSpaceMinerGame(); // Game over if spaceship hits asteroid
+                    return; // Exit update loop immediately
+                }
+            }
+
+            // Automatic shooting for touch if touch is active and not moving
+            if (touchMoving === false && (keys['Space'] || touchShootTimer)) { // Only shoot if space is pressed or touch shoot is active
+                shootBullet();
+            }
+        }
+
+        function spawnAsteroid() {
+            const radius = randomTime(ASTEROID_RADIUS_MIN, ASTEROID_RADIUS_MAX);
+            const x = Math.random() * (spaceMinerCanvas.width - radius * 2) + radius;
+            const y = -radius; // Start above canvas
+            const speed = randomTime(ASTEROID_SPEED_MIN * 10, ASTEROID_SPEED_MAX * 10) / 10;
+            asteroids.push({ x, y, radius, speed });
+        }
+
+        function shootBullet() {
+            const currentTime = Date.now();
+            if (currentTime - lastShotTime > SHOOT_COOLDOWN) {
+                const x = spaceship.x + spaceship.width / 2;
+                const y = spaceship.y;
+                bullets.push({ x, y, radius: BULLET_RADIUS });
+                lastShotTime = currentTime;
+                if (isAudioReady && shootSound && Tone.context.state === 'running') {
+                    shootSound.triggerAttackRelease("C5", "32n");
+                }
+            }
+        }
+
+        function handleSpaceMinerKeyDown(e) {
+            if (!spaceMinerGameActive) return;
+            keys[e.key] = true;
+            if (e.key === ' ') { // Prevent scrolling when space is pressed
+                e.preventDefault();
+            }
+        }
+
+        function handleSpaceMinerKeyUp(e) {
+            if (!spaceMinerGameActive) return;
+            keys[e.key] = false;
+        }
+
+        function handleSpaceMinerTouchStart(e) {
+            if (!spaceMinerGameActive) return;
+            e.preventDefault(); // Prevent scrolling/zooming
+
+            touchStartX = e.touches[0].clientX;
+            touchMoveX = e.touches[0].clientX;
+            touchMoving = false; // Assume not moving initially
+
+            // Start continuous shooting on touch
+            if (!touchShootTimer) {
+                touchShootTimer = setInterval(shootBullet, SHOOT_COOLDOWN);
+            }
+        }
+
+        function handleSpaceMinerTouchMove(e) {
+            if (!spaceMinerGameActive) return;
+            e.preventDefault();
+
+            const currentX = e.touches[0].clientX;
+            const deltaX = currentX - touchMoveX;
+
+            // Move spaceship based on touch delta
+            spaceship.x += deltaX * 0.5; // Adjust sensitivity
+            
+            // Clamp spaceship position
+            if (spaceship.x < 0) spaceship.x = 0;
+            if (spaceship.x + spaceship.width > spaceMinerCanvas.width) spaceship.x = spaceMinerCanvas.width - spaceship.width;
+
+            touchMoveX = currentX;
+            touchMoving = true; // User is actively moving
+        }
+
+        function handleSpaceMinerTouchEnd(e) {
+            if (!spaceMinerGameActive) return;
+            // Stop continuous shooting on touch end
+            if (touchShootTimer) {
+                clearInterval(touchShootTimer);
+                touchShootTimer = null;
+            }
+            touchMoving = false; // Reset moving flag
+        }
+
+        function endSpaceMinerGame() {
+            spaceMinerGameActive = false;
+            if (animationFrameIdSpaceMiner) {
+                cancelAnimationFrame(animationFrameIdSpaceMiner);
+            }
+            if (touchShootTimer) {
+                clearInterval(touchShootTimer);
+                touchShootTimer = null;
+            }
+
+            spaceMinerFinalScoreDisplay.textContent = spaceMinerScore;
+            if (spaceMinerScore > spaceMinerHighScore) {
+                spaceMinerHighScore = spaceMinerScore;
+                localStorage.setItem('spaceMinerHighScore', spaceMinerHighScore);
+            }
+            dynamicGameContainer.querySelector('#space-miner-game-over-high-score').textContent = spaceMinerHighScore;
+            spaceMinerGameOverScreen.classList.add('active');
+            spaceMinerStartButton.disabled = false; // Re-enable start button
+            spaceMinerResetButton.disabled = false; // Ensure reset button is enabled
+
+            if (spaceMinerBackgroundMusicLoop && spaceMinerBackgroundMusicLoop.state === 'started') {
+                spaceMinerBackgroundMusicLoop.stop();
+            }
+        }
+
+        // Subway Sprint Game Logic
+        let subwaySprintCanvas, subwaySprintCtx;
+        let subwayPlayer;
+        let subwayObstacles = [];
+        let subwayCoins = [];
+        let subwayScore = 0;
+        let subwayHighScore = 0;
+        let subwayGameActive = false;
+        let animationFrameIdSubwaySprint;
+        let subwayKeys = {}; // To track pressed keys for Subway Sprint
+        let lastObstacleSpawnFrameSubway = 0;
+        let lastSpeedIncreaseTimeSubway = 0;
+        let subwaySwipeStartX = 0;
+        let subwaySwipeStartY = 0;
+        let subwaySwipeEndX = 0;
+        let subwaySwipeEndY = 0;
+        let gameSpeed; // Declare gameSpeed globally for Subway Sprint
+
+        // Subway Sprint Elements
+        let subwaySprintScoreDisplay, subwaySprintHighScoreDisplay, subwaySprintGameOverScreen, subwaySprintFinalScoreDisplay, subwaySprintStartButton, subwaySprintResetButton, subwaySprintBackToGamesButton;
+
+        // Subway Sprint Constants
+        const SUBWAY_CANVAS_WIDTH = 400; // Define for direct use
+        const SUBWAY_LANE_WIDTH = SUBWAY_CANVAS_WIDTH / 3; // Canvas width / 3
+        const SUBWAY_PLAYER_WIDTH = 40;
+        const SUBWAY_PLAYER_HEIGHT = 60;
+        const SUBWAY_OBSTACLE_WIDTH = 80;
+        const SUBWAY_OBSTACLE_HEIGHT_TRAIN = 150;
+        const SUBWAY_OBSTACLE_HEIGHT_LOW_BARRIER = 50;
+        const SUBWAY_OBSTACLE_HEIGHT_HIGH_BARRIER = 80; // For sliding under
+        const SUBWAY_COIN_SIZE = 20;
+        const SUBWAY_PLAYER_JUMP_VELOCITY = -8;
+        const SUBWAY_GRAVITY = 0.3;
+        const SUBWAY_INITIAL_GAME_SPEED = 3;
+        const SUBWAY_MAX_GAME_SPEED = 8; // Adjusted for balance
+        const SUBWAY_SPEED_INCREASE_INTERVAL = 10000; // Increase speed every 10 seconds
+        const SUBWAY_OBSTACLE_SPAWN_INTERVAL_MIN = 80; // frames
+        const SUBWAY_OBSTACLE_SPAWN_INTERVAL_MAX = 150; // frames
+        const SUBWAY_COIN_SPAWN_CHANCE = 0.7; // Chance to spawn coins with obstacles
+        const SUBWAY_SWIPE_THRESHOLD = 50; // Pixels for swipe detection
+        const SUBWAY_PLAYER_JUMP_DURATION = 30; // frames for jump animation/state
+        const SUBWAY_PLAYER_SLIDE_DURATION = 60; // frames for slide animation/state
+
+        function initializeSubwaySprintGame() {
+            stopAllGameMusic();
+            if (isAudioReady && subwaySprintBackgroundMusicLoop && subwaySprintBackgroundMusicLoop.state !== 'started') {
+                subwaySprintBackgroundMusicLoop.start();
+            }
+
+            const subwaySprintHtmlFragment = `
+                <div class="game-container subway-sprint-game">
+                    <h1>Subway Sprint</h1>
+                    <div class="game-stats">
+                        Score: <span id="subway-sprint-score">0</span> | High Score: <span id="subway-sprint-high-score">0</span>
+                    </div>
+                    <canvas id="subwaySprintCanvas" class="game-canvas" width="400" height="600"></canvas>
+                    <div class="game-controls">
+                        <button id="subway-sprint-start-button" class="button button-primary">Start Game</button>
+                        <button id="subway-sprint-reset-button" class="button button-primary">Reset</button>
+                    </div>
+                    <button id="subway-sprint-back-to-games-button" class="button button-primary" style="margin-top: 20px;">Back to Games</button>
+
+                    <div class="ad-placement glass-effect" style="margin-top: 20px;">
+                        <p>Google Ad Placeholder: Subway Sprint Ad (e.g., 300x250)</p>
+                    </div>
+
+                    <div class="subway-sprint-game-over" id="subway-sprint-game-over">
+                        <h2>Game Over!</h2>
+                        <p>Final Score: <span id="subway-sprint-final-score">0</span></p>
+                        <p>High Score: <span id="subway-sprint-game-over-high-score">0</span></p>
+                        <button id="subway-sprint-restart-button" class="button button-primary">Play Again</button>
+                    </div>
+                </div>
+            `;
+            dynamicGameContainer.innerHTML = subwaySprintHtmlFragment;
+
+            subwaySprintCanvas = dynamicGameContainer.querySelector('#subwaySprintCanvas');
+            subwaySprintCtx = subwaySprintCanvas.getContext('2d');
+            subwaySprintScoreDisplay = dynamicGameContainer.querySelector('#subway-sprint-score');
+            subwaySprintHighScoreDisplay = dynamicGameContainer.querySelector('#subway-sprint-high-score');
+            subwaySprintGameOverScreen = dynamicGameContainer.querySelector('#subway-sprint-game-over');
+            subwaySprintFinalScoreDisplay = dynamicGameContainer.querySelector('#subway-sprint-final-score');
+            subwaySprintStartButton = dynamicGameContainer.querySelector('#subway-sprint-start-button');
+            subwaySprintResetButton = dynamicGameContainer.querySelector('#subway-sprint-reset-button');
+            subwaySprintBackToGamesButton = dynamicGameContainer.querySelector('#subway-sprint-back-to-games-button');
+
+            subwaySprintStartButton.addEventListener('click', startSubwaySprintGame);
+            subwaySprintResetButton.addEventListener('click', resetSubwaySprintGame);
+            // Changed this line: The "Play Again" button should reset and then start the game
+            subwaySprintGameOverScreen.querySelector('#subway-sprint-restart-button').addEventListener('click', () => {
+                resetSubwaySprintGame(); // Reset game state
+                startSubwaySprintGame(); // Start a new game
+            });
+            subwaySprintBackToGamesButton.addEventListener('click', () => {
+                stopAllGameMusic();
+                if (typeof showPage === 'function') {
+                    showPage('game-selection-page');
+                } else {
+                    console.warn("showPage function not found. Cannot navigate back to game selection.");
+                    dynamicGameContainer.innerHTML = '';
+                }
+            });
+
+            // Keyboard controls
+            document.addEventListener('keydown', handleSubwaySprintKeyDown);
+            document.addEventListener('keyup', handleSubwaySprintKeyUp);
+
+            // Touch controls
+            subwaySprintCanvas.addEventListener('touchstart', handleSubwaySprintTouchStart);
+            subwaySprintCanvas.addEventListener('touchmove', handleSubwaySprintTouchMove);
+            subwaySprintCanvas.addEventListener('touchend', handleSubwaySprintTouchEnd);
+
+            resetSubwaySprintGame(); // Initial setup
+        }
+
+        function resetSubwaySprintGame() {
+            if (animationFrameIdSubwaySprint) {
+                cancelAnimationFrame(animationFrameIdSubwaySprint);
+            }
+            subwayGameActive = false;
+            subwayPlayer = {
+                x: SUBWAY_LANE_WIDTH + (SUBWAY_LANE_WIDTH - SUBWAY_PLAYER_WIDTH) / 2, // Start in center lane
+                y: subwaySprintCanvas.height - SUBWAY_PLAYER_HEIGHT - 10,
+                lane: 1, // 0: left, 1: center, 2: right
+                dy: 0,
+                isJumping: false,
+                isSliding: false,
+                slideTimer: 0,
+                jumpTimer: 0
+            };
+            subwayObstacles = [];
+            subwayCoins = [];
+            subwayScore = 0;
+            subwaySprintScoreDisplay.textContent = subwayScore;
+            subwayHighScore = parseInt(localStorage.getItem('subwaySprintHighScore') || '0');
+            subwaySprintHighScoreDisplay.textContent = subwayHighScore;
+            subwaySprintGameOverScreen.classList.remove('active'); // Ensure it's hidden
+            subwaySprintStartButton.disabled = false;
+            subwaySprintResetButton.disabled = false;
+            gameSpeed = SUBWAY_INITIAL_GAME_SPEED;
+            frameCount = 0;
+            lastObstacleSpawnFrameSubway = 0;
+            lastSpeedIncreaseTimeSubway = 0;
+            subwayKeys = {};
+            subwaySwipeStartX = 0;
+            subwaySwipeStartY = 0;
+            subwaySwipeEndX = 0;
+            subwaySwipeEndY = 0;
+
+            if (subwaySprintBackgroundMusicLoop && subwaySprintBackgroundMusicLoop.state === 'started') {
+                subwaySprintBackgroundMusicLoop.stop();
+            }
+        }
+
+        function startSubwaySprintGame() {
+            if (subwayGameActive) return;
+            subwayGameActive = true;
+            subwaySprintStartButton.disabled = true;
+            subwaySprintResetButton.disabled = false;
+            subwaySprintGameOverScreen.classList.remove('active');
+            subwayScore = 0;
+            subwaySprintScoreDisplay.textContent = subwayScore;
+            subwayObstacles = [];
+            subwayCoins = [];
+            gameSpeed = SUBWAY_INITIAL_GAME_SPEED;
+            frameCount = 0;
+            lastObstacleSpawnFrameSubway = 0;
+            lastSpeedIncreaseTimeSubway = Date.now();
+
+            if (isAudioReady && subwaySprintBackgroundMusicLoop && subwaySprintBackgroundMusicLoop.state !== 'started') {
+                subwaySprintBackgroundMusicLoop.start();
+            }
+
+            subwayGameLoop();
+        }
+
+        function subwayGameLoop() {
+            if (!subwayGameActive) return;
+
+            updateSubwaySprintGame();
+            drawSubwaySprintGame();
+
+            animationFrameIdSubwaySprint = requestAnimationFrame(subwayGameLoop);
+        }
+
+        function drawSubwaySprintGame() {
+            subwaySprintCtx.clearRect(0, 0, subwaySprintCanvas.width, subwaySprintCanvas.height);
+
+            // Draw lanes
+            subwaySprintCtx.fillStyle = '#444'; // Darker gray for track
+            subwaySprintCtx.fillRect(0, 0, subwaySprintCanvas.width, subwaySprintCanvas.height);
+
+            // Lane dividers
+            subwaySprintCtx.strokeStyle = '#888'; // Lighter gray for dividers
+            subwaySprintCtx.lineWidth = 5;
+            subwaySprintCtx.beginPath();
+            subwaySprintCtx.moveTo(SUBWAY_LANE_WIDTH, 0);
+            subwaySprintCtx.lineTo(SUBWAY_LANE_WIDTH, subwaySprintCanvas.height);
+            subwaySprintCtx.moveTo(2 * SUBWAY_LANE_WIDTH, 0);
+            subwaySprintCtx.lineTo(2 * SUBWAY_LANE_WIDTH, subwaySprintCanvas.height);
+            subwaySprintCtx.stroke();
+
+            // Draw player
+            subwaySprintCtx.fillStyle = 'blue';
+            let playerDrawHeight = SUBWAY_PLAYER_HEIGHT;
+            let playerDrawY = subwayPlayer.y;
+            if (subwayPlayer.isSliding) {
+                playerDrawHeight = SUBWAY_PLAYER_HEIGHT / 2;
+                playerDrawY = subwayPlayer.y + SUBWAY_PLAYER_HEIGHT / 2;
+            }
+            subwaySprintCtx.fillRect(subwayPlayer.x, playerDrawY, SUBWAY_PLAYER_WIDTH, playerDrawHeight);
+
+            // Draw obstacles
+            subwayObstacles.forEach(obs => {
+                subwaySprintCtx.fillStyle = obs.type === 'train' ? '#8B0000' : (obs.type === 'low_barrier' ? '#FF4500' : '#FFD700'); // DarkRed, OrangeRed, Gold
+                subwaySprintCtx.fillRect(obs.x, obs.y, obs.width, obs.height);
+            });
+
+            // Draw coins
+            subwayCoins.forEach(coin => {
+                subwaySprintCtx.fillStyle = 'yellow';
+                subwaySprintCtx.beginPath();
+                subwaySprintCtx.arc(coin.x + SUBWAY_COIN_SIZE / 2, coin.y + SUBWAY_COIN_SIZE / 2, SUBWAY_COIN_SIZE / 2, 0, Math.PI * 2);
+                subwaySprintCtx.fill();
+                subwaySprintCtx.closePath();
+            });
+        }
+
+        function updateSubwaySprintGame() {
+            frameCount++;
+            subwayScore += Math.floor(gameSpeed / 2); // Score based on distance/speed
+            subwaySprintScoreDisplay.textContent = subwayScore;
+
+            // Increase game speed over time
+            if (Date.now() - lastSpeedIncreaseTimeSubway > SUBWAY_SPEED_INCREASE_INTERVAL) {
+                gameSpeed = Math.min(SUBWAY_MAX_GAME_SPEED, gameSpeed + 0.5);
+                lastSpeedIncreaseTimeSubway = Date.now();
+            }
+
+            // Player vertical movement (jump/slide)
+            if (subwayPlayer.isJumping) {
+                subwayPlayer.y += subwayPlayer.dy;
+                subwayPlayer.dy += SUBWAY_GRAVITY;
+                if (subwayPlayer.y >= subwaySprintCanvas.height - SUBWAY_PLAYER_HEIGHT - 10) {
+                    subwayPlayer.y = subwaySprintCanvas.height - SUBWAY_PLAYER_HEIGHT - 10;
+                    subwayPlayer.isJumping = false;
+                    subwayPlayer.dy = 0;
+                }
+            }
+
+            if (subwayPlayer.isSliding) {
+                subwayPlayer.slideTimer--;
+                if (subwayPlayer.slideTimer <= 0) {
+                    subwayPlayer.isSliding = false;
+                }
+            }
+
+            // Move obstacles
+            subwayObstacles.forEach((obs, index) => {
+                obs.y += gameSpeed;
+                if (obs.y > subwaySprintCanvas.height) {
+                    subwayObstacles.splice(index, 1);
+                }
+
+                // Collision detection
+                let playerHitboxY = subwayPlayer.y;
+                let playerHitboxHeight = SUBWAY_PLAYER_HEIGHT;
+
+                if (subwayPlayer.isSliding) {
+                    playerHitboxY = subwayPlayer.y + SUBWAY_PLAYER_HEIGHT / 2;
+                    playerHitboxHeight = SUBWAY_PLAYER_HEIGHT / 2;
+                } else if (subwayPlayer.isJumping) {
+                    // Adjust hitbox for jumping (e.g., make it smaller at the bottom)
+                    // For simplicity, we'll keep the full height but check against obstacle type
+                }
+
+                if (
+                    obs.lane === subwayPlayer.lane &&
+                    subwayPlayer.x < obs.x + obs.width &&
+                    subwayPlayer.x + SUBWAY_PLAYER_WIDTH > obs.x &&
+                    playerHitboxY < obs.y + obs.height &&
+                    playerHitboxY + playerHitboxHeight > obs.y
+                ) {
+                    // Handle specific obstacle types
+                    if (obs.type === 'train') {
+                        endSubwaySprintGame();
+                        if (isAudioReady && subwayCollisionSound && Tone.context.state === 'running') {
+                            subwayCollisionSound.triggerAttackRelease("C1", "8n");
+                        }
+                    } else if (obs.type === 'low_barrier') {
+                        if (!subwayPlayer.isJumping) {
+                            endSubwaySprintGame();
+                            if (isAudioReady && subwayCollisionSound && Tone.context.state === 'running') {
+                                subwayCollisionSound.triggerAttackRelease("C1", "8n");
+                            }
+                        }
+                    } else if (obs.type === 'high_barrier') {
+                        if (!subwayPlayer.isSliding) {
+                            endSubwaySprintGame();
+                            if (isAudioReady && subwayCollisionSound && Tone.context.state === 'running') {
+                                subwayCollisionSound.triggerAttackRelease("C1", "8n");
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Move coins
+            subwayCoins.forEach((coin, index) => {
+                coin.y += gameSpeed;
+                if (coin.y > subwaySprintCanvas.height) {
+                    subwayCoins.splice(index, 1);
+                }
+
+                // Coin collection
+                if (
+                    coin.lane === subwayPlayer.lane &&
+                    subwayPlayer.x < coin.x + SUBWAY_COIN_SIZE &&
+                    subwayPlayer.x + SUBWAY_PLAYER_WIDTH > coin.x &&
+                    subwayPlayer.y < coin.y + SUBWAY_COIN_SIZE &&
+                    subwayPlayer.y + SUBWAY_PLAYER_HEIGHT > coin.y
+                ) {
+                    subwayScore += 100; // Each coin is 100 points
+                    subwaySprintScoreDisplay.textContent = subwayScore;
+                    if (isAudioReady && subwayCoinSound && Tone.context.state === 'running') {
+                        subwayCoinSound.triggerAttackRelease("E5", "32n");
+                    }
+                    subwayCoins.splice(index, 1);
+                }
+            });
+
+            // Spawn new obstacles/coins
+            if (frameCount - lastObstacleSpawnFrameSubway > getRandomInt(SUBWAY_OBSTACLE_SPAWN_INTERVAL_MIN, SUBWAY_OBSTACLE_SPAWN_INTERVAL_MAX)) {
+                let lane = getRandomInt(0, 2);
+                let obstacleType;
+                let obstacleHeight;
+
+                // Randomly choose obstacle type
+                const rand = Math.random();
+                if (rand < 0.5) { // 50% chance for train
+                    obstacleType = 'train';
+                    obstacleHeight = SUBWAY_OBSTACLE_HEIGHT_TRAIN;
+                } else if (rand < 0.75) { // 25% chance for low barrier
+                    obstacleType = 'low_barrier';
+                    obstacleHeight = SUBWAY_OBSTACLE_HEIGHT_LOW_BARRIER;
+                } else { // 25% chance for high barrier
+                    obstacleType = 'high_barrier';
+                    obstacleHeight = SUBWAY_OBSTACLE_HEIGHT_HIGH_BARRIER;
+                }
+
+                subwayObstacles.push({
+                    x: lane * SUBWAY_LANE_WIDTH + (SUBWAY_LANE_WIDTH - SUBWAY_OBSTACLE_WIDTH) / 2,
+                    y: -obstacleHeight, // Start above canvas
+                    lane: lane,
+                    width: SUBWAY_OBSTACLE_WIDTH,
+                    height: obstacleHeight,
+                    type: obstacleType
+                });
+                lastObstacleSpawnFrameSubway = frameCount;
+
+                // Spawn coins in adjacent lanes or same lane if obstacle is jumpable/slideable
+                if (Math.random() < SUBWAY_COIN_SPAWN_CHANCE) {
+                    let coinLane = getRandomInt(0, 2);
+                    // Try to avoid spawning coins directly on top of solid obstacles
+                    if (obstacleType === 'train' && coinLane === lane) {
+                        // If train is in this lane, try another lane for coin
+                        coinLane = (lane + 1) % 3; // Cycle to next lane
+                        if (coinLane === lane) coinLane = (lane + 2) % 3; // If still same, try third lane
+                    }
+                    subwayCoins.push({
+                        x: coinLane * SUBWAY_LANE_WIDTH + (SUBWAY_LANE_WIDTH - SUBWAY_COIN_SIZE) / 2,
+                        y: -getRandomInt(50, 200), // Randomize coin Y position above screen
+                        lane: coinLane
+                    });
+                }
+            }
+        }
+
+        function endSubwaySprintGame() {
+            subwayGameActive = false;
+            if (animationFrameIdSubwaySprint) {
+                cancelAnimationFrame(animationFrameIdSubwaySprint);
+            }
+
+            subwaySprintFinalScoreDisplay.textContent = subwayScore;
+            if (subwayScore > subwayHighScore) {
+                subwayHighScore = subwayScore;
+                localStorage.setItem('subwaySprintHighScore', subwayHighScore);
+            }
+            dynamicGameContainer.querySelector('#subway-sprint-game-over-high-score').textContent = subwayHighScore;
+            subwaySprintGameOverScreen.classList.add('active');
+            subwaySprintStartButton.disabled = false; // Re-enable start button
+            subwaySprintResetButton.disabled = false; // Ensure reset button is enabled
+
+            if (subwaySprintBackgroundMusicLoop && subwaySprintBackgroundMusicLoop.state === 'started') {
+                subwaySprintBackgroundMusicLoop.stop();
+            }
+        }
+
+        function handleSubwaySprintKeyDown(e) {
+            if (!subwayGameActive) return;
+
+            const oldLane = subwayPlayer.lane;
+
+            if (e.key === 'ArrowLeft' || e.key === 'a') {
+                if (subwayPlayer.lane > 0) {
+                    subwayPlayer.lane--;
+                }
+            } else if (e.key === 'ArrowRight' || e.key === 'd') {
+                if (subwayPlayer.lane < 2) {
+                    subwayPlayer.lane++;
+                }
+            } else if (e.key === 'ArrowUp' || e.key === 'w' || e.key === ' ') {
+                if (!subwayPlayer.isJumping && !subwayPlayer.isSliding) {
+                    subwayPlayer.isJumping = true;
+                    subwayPlayer.dy = SUBWAY_PLAYER_JUMP_VELOCITY;
+                    if (isAudioReady && subwayJumpSound && Tone.context.state === 'running') {
+                        subwayJumpSound.triggerAttackRelease("C5", "16n");
+                    }
+                }
+            } else if (e.key === 'ArrowDown' || e.key === 's') {
+                if (!subwayPlayer.isSliding && !subwayPlayer.isJumping) {
+                    subwayPlayer.isSliding = true;
+                    subwayPlayer.slideTimer = SUBWAY_PLAYER_SLIDE_DURATION;
+                    if (isAudioReady && subwaySlideSound && Tone.context.state === 'running') {
+                        subwaySlideSound.triggerAttackRelease("8n");
+                    }
+                }
+            }
+
+            // Update player's x position immediately after lane change
+            if (subwayPlayer.lane !== oldLane) {
+                subwayPlayer.x = subwayPlayer.lane * SUBWAY_LANE_WIDTH + (SUBWAY_LANE_WIDTH - SUBWAY_PLAYER_WIDTH) / 2;
+            }
+
+            // Prevent default scrolling for arrow keys and spacebar
+            if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' ', 'a', 'd', 'w', 's'].includes(e.key)) {
+                e.preventDefault();
+            }
+        }
+
+        function handleSubwaySprintKeyUp(e) {
+            // No specific key up actions needed for continuous movement, but good to have.
+        }
+
+        function handleSubwaySprintTouchStart(e) {
+            if (!subwayGameActive) return;
+            e.preventDefault(); // Prevent scrolling/zooming
+
+            subwaySwipeStartX = e.touches[0].clientX;
+            subwaySwipeStartY = e.touches[0].clientY;
+        }
+
+        function handleSubwaySprintTouchMove(e) {
+            if (!subwayGameActive) return;
+            e.preventDefault();
+            // Not used for continuous movement, but could be for precise dragging if needed.
+        }
+
+        function handleSubwaySprintTouchEnd(e) {
+            if (!subwayGameActive) return;
+            subwaySwipeEndX = e.changedTouches[0].clientX;
+            subwaySwipeEndY = e.changedTouches[0].clientY;
+
+            const dx = subwaySwipeEndX - subwaySwipeStartX;
+            const dy = subwaySwipeEndY - subwaySwipeStartY;
+
+            const oldLane = subwayPlayer.lane; // Store old lane to check if it changed
+
+            if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > SUBWAY_SWIPE_THRESHOLD) {
+                // Horizontal swipe
+                if (dx > 0) { // Swipe right
+                    if (subwayPlayer.lane < 2) {
+                        subwayPlayer.lane++;
+                    }
+                } else { // Swipe left
+                    if (subwayPlayer.lane > 0) {
+                        subwayPlayer.lane--;
+                    }
+                }
+            } else if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > SUBWAY_SWIPE_THRESHOLD) {
+                // Vertical swipe
+                if (dy < 0) { // Swipe up (jump)
+                    if (!subwayPlayer.isJumping && !subwayPlayer.isSliding) {
+                        subwayPlayer.isJumping = true;
+                        subwayPlayer.dy = SUBWAY_PLAYER_JUMP_VELOCITY;
+                        if (isAudioReady && subwayJumpSound && Tone.context.state === 'running') {
+                            subwayJumpSound.triggerAttackRelease("C5", "16n");
+                        }
+                    }
+                } else { // Swipe down (slide)
+                    if (!subwayPlayer.isSliding && !subwayPlayer.isJumping) {
+                        subwayPlayer.isSliding = true;
+                        subwayPlayer.slideTimer = SUBWAY_PLAYER_SLIDE_DURATION;
+                        if (isAudioReady && subwaySlideSound && Tone.context.state === 'running') {
+                            subwaySlideSound.triggerAttackRelease("8n");
+                        }
+                    }
+                }
+            }
+
+            // Update player's x position immediately after lane change due to swipe
+            if (subwayPlayer.lane !== oldLane) {
+                subwayPlayer.x = subwayPlayer.lane * SUBWAY_LANE_WIDTH + (SUBWAY_LANE_WIDTH - SUBWAY_PLAYER_WIDTH) / 2;
+            }
+        }
+
+        function getRandomInt(min, max) {
+            min = Math.ceil(min);
+            max = Math.floor(max);
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+
         document.addEventListener('DOMContentLoaded', () => {
-            // Assign DOM elements to global variables
+            // Assign DOM elements to global variables (Flappy Bird)
             canvas = document.getElementById('gameCanvas');
             ctx = canvas.getContext('2d');
             scoreDisplay = document.getElementById('score-display');
@@ -2054,28 +3895,23 @@
             levelUpDisplay = document.getElementById('level-up-display');
             rotationHint = document.getElementById('rotation-hint');
             homePage = document.getElementById('home-page');
-            gameSelectionPage = document.getElementById('game-selection-page'); // New
             gamePage = document.getElementById('game-page');
-            gameStartOverlay = document.getElementById('game-start-overlay'); // New
+            gameSelectionPage = document.getElementById('game-selection-page'); // Get game selection page
+            gameStartOverlay = document.getElementById('game-start-overlay');
+            dynamicGameContainer = document.getElementById('dynamic-game-container'); // Get the new container
 
-            // Game control buttons
+            // Game control buttons (Flappy Bird)
             pauseResumeButton = document.getElementById('pause-resume-button');
             stopButton = document.getElementById('stop-button');
-            rotateButton = document.getElementById('rotate-button'); // New rotate button
+            rotateButton = document.getElementById('rotate-button');
+            flappyBirdGameElements = document.querySelectorAll('.flappy-bird-game-elements'); // Get all Flappy Bird specific elements
 
-            const playPortraitButton = document.getElementById('play-portrait-button'); // New
-            const rotateAndPlayButton = document.getElementById('rotate-and-play-button'); // New
-            const selectFlappyBirdButton = document.getElementById('select-flappy-bird'); // New
-            const scrollDownButton = document.getElementById('scroll-down-button'); // New scroll button
+            const playPortraitButton = document.getElementById('play-portrait-button');
+            const rotateAndPlayButton = document.getElementById('rotate-and-play-button');
 
             // User profile elements
-            userIdDisplay = document.getElementById('user-id-display');
             proBadge = document.getElementById('pro-badge');
             toggleProButton = document.getElementById('toggle-pro-button');
-
-            // Live Updates elements
-            liveUpdatesMessage = document.getElementById('live-updates-message');
-            generateUpdateButton = document.getElementById('generate-update-button');
 
             // Sidebar elements
             const sidebar = document.getElementById('sidebar');
@@ -2088,29 +3924,31 @@
             const bottomNavbar = document.getElementById('bottomNavbar');
             const navLinks = document.querySelectorAll('.sidebar nav ul li a, .bottom-navbar-container .bottom-nav-item');
             const playGameButton = document.getElementById('play-game-button');
+            const gameCards = document.querySelectorAll('.game-card'); // Get all game cards
 
 
             // Attach event listeners to start audio context on first interaction
-            document.addEventListener('click', startAudioContext, { once: true });
-            document.addEventListener('keydown', startAudioContext, { once: true });
-            document.addEventListener('touchstart', startAudioContext, { once: true });
+            document.addEventListener('click', startAudioContext); 
+            document.addEventListener('keydown', startAudioContext); 
+            document.addEventListener('touchstart', startAudioContext); 
 
-            // Event Listeners for game
+            // Event Listeners for Flappy Bird
             document.addEventListener('keydown', (e) => {
-                // Prevent default scrolling for Space and Enter keys
-                if (e.code === 'Space' || e.key === 'Enter') {
-                    e.preventDefault();
-                }
-
-                if (e.code === 'Space') {
-                    // Only jump if game is playing or on start overlay
-                    if (currentGameState === GAME_STATES.PLAYING || currentGameState === GAME_STATES.GAME_START_OVERLAY) {
+                // Prevent default scrolling for Space, Enter, and Arrow keys when game page is active
+                if (gamePage.classList.contains('active') && gamePage.classList.contains('flappy-bird-active')) {
+                    if (e.code === 'Space' || e.key === 'Enter' || 
+                        e.key === 'ArrowUp' || e.key === 'ArrowDown' || 
+                        e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                        e.preventDefault();
+                    }
+                    // Only jump if Flappy Bird is playing or on start overlay
+                    if (e.code === 'Space' && (currentGameState === GAME_STATES.PLAYING || currentGameState === GAME_STATES.GAME_START_OVERLAY)) {
                         jump();
                     }
                 }
             });
 
-            // Unified click/tap handler for game jump (now also triggers game start overlay logic)
+            // Unified click/tap handler for Flappy Bird jump (now also triggers game start overlay logic)
             gameStartOverlay.addEventListener('click', jump);
             gameStartOverlay.addEventListener('touchstart', (e) => {
                 e.preventDefault(); // Prevent scrolling on touch
@@ -2127,7 +3965,7 @@
             // Restart button now directly re-initializes the game (which starts countdown)
             restartButton.addEventListener('click', initGame);
 
-            // Game control button event listeners
+            // Game control button event listeners (Flappy Bird)
             if (pauseResumeButton) {
                 pauseResumeButton.addEventListener('click', togglePauseResume);
             }
@@ -2138,50 +3976,63 @@
                 rotateButton.addEventListener('click', toggleRotation);
             }
 
-            // Scroll Down button event listener
-            if (scrollDownButton) {
-                scrollDownButton.addEventListener('click', scrollMainContentToBottom);
-            }
-
-            // Generate Update button event listener
-            if (generateUpdateButton) {
-                generateUpdateButton.addEventListener('click', displayLiveUpdate);
-            }
-
             // User Profile and Pro status
-            if (userIdDisplay) {
-                // Load or generate user ID
-                let storedUserId = localStorage.getItem('userId');
-                if (!storedUserId) {
-                    storedUserId = generateUserId();
-                    localStorage.setItem('userId', storedUserId);
-                }
-                userIdDisplay.textContent = storedUserId;
-
-                // Load Pro status
-                isProUser = JSON.parse(localStorage.getItem('isProUser')) || false;
-                if (isProUser) {
-                    proBadge.classList.add('active');
-                    toggleProButton.textContent = 'Downgrade to Free';
-                } else {
-                    proBadge.classList.remove('active');
-                    toggleProButton.textContent = 'Upgrade to Pro';
-                }
+            let isProUser = JSON.parse(localStorage.getItem('isProUser')) || false;
+            if (isProUser) {
+                proBadge.classList.add('active');
+                toggleProButton.textContent = 'Downgrade to Free';
+            } else {
+                proBadge.classList.remove('active');
+                toggleProButton.textContent = 'Upgrade to Pro';
             }
+            
             if (toggleProButton) {
                 toggleProButton.addEventListener('click', toggleProStatus);
             }
 
-
-            // Play Game button on Home page
+            // Play Game button on Home page now navigates to game selection
             if (playGameButton) {
                 playGameButton.addEventListener('click', () => showPage('game-selection-page'));
             }
 
-            // Game Selection buttons
-            if (selectFlappyBirdButton) {
-                selectFlappyBirdButton.addEventListener('click', () => showPage('game-page'));
-            }
+            // Game card click handlers
+            gameCards.forEach(card => {
+                card.addEventListener('click', async (e) => { // Made async to await fetch
+                    e.preventDefault();
+                    const gameId = card.dataset.game;
+                    showPage('game-page'); // Always navigate to game-page first
+
+                    if (gameId === 'flappy-bird') {
+                        // Show Flappy Bird elements and initialize
+                        flappyBirdGameElements.forEach(el => el.style.display = '');
+                        gamePage.classList.add('flappy-bird-active');
+                        dynamicGameContainer.innerHTML = ''; // Clear other game content
+                        await initGame(); // Initialize Flappy Bird
+                    } else if (gameId === 'whack-a-mole') {
+                        // Hide Flappy Bird elements
+                        flappyBirdGameElements.forEach(el => el.style.display = 'none');
+                        gamePage.classList.remove('flappy-bird-active');
+                        // Initialize Whack-a-Mole
+                        initializeWhackAMoleGame();
+                    } else if (gameId === 'space-miner') {
+                        // Hide Flappy Bird elements
+                        flappyBirdGameElements.forEach(el => el.style.display = 'none');
+                        gamePage.classList.remove('flappy-bird-active');
+                        // Initialize Space Miner
+                        initializeSpaceMinerGame();
+                    } else if (gameId === 'subway-sprint') {
+                        // Hide Flappy Bird elements
+                        flappyBirdGameElements.forEach(el => el.style.display = 'none');
+                        gamePage.classList.remove('flappy-bird-active');
+                        // Initialize Subway Sprint
+                        initializeSubwaySprintGame();
+                    }
+                    else {
+                        // For other games, show a message box (instead of alert)
+                        showMessageBox(`The game "${card.querySelector('h3').textContent}" is coming soon!`);
+                    }
+                });
+            });
 
             // Rotation hint buttons
             if (playPortraitButton) {
@@ -2190,7 +4041,6 @@
                     userPrefersRotation = false; // User explicitly opted out of rotation
                     localStorage.setItem('userPrefersRotation', false); // Save preference
                     rotationHint.classList.remove('active');
-                    checkOrientation(); // Re-check orientation to apply non-rotated view
                     gameStartOverlay.classList.add('hidden'); // Hide "Tap to Play"
                     startCountdown(); // Start the game
                 });
@@ -2201,12 +4051,10 @@
                     userPrefersRotation = true; // User explicitly opted in for rotation
                     localStorage.setItem('userPrefersRotation', true); // Save preference
                     rotationHint.classList.remove('active');
-                    checkOrientation(); // Re-check orientation to apply rotated view
                     gameStartOverlay.classList.add('hidden'); // Hide "Tap to Play"
                     startCountdown(); // Start the game
                 });
             }
-
 
             // Navigation links
             navLinks.forEach(link => {
@@ -2289,6 +4137,62 @@
             // Initial check on load, after all elements are ready
             checkOrientation(); 
         });
+
+        // Custom Message Box (replacement for alert/confirm)
+        function showMessageBox(message, type = 'info', duration = 3000) {
+            let messageBox = document.getElementById('custom-message-box');
+            if (!messageBox) {
+                messageBox = document.createElement('div');
+                messageBox.id = 'custom-message-box';
+                messageBox.style.cssText = `
+                    position: fixed;
+                    bottom: 100px; /* Above bottom navbar */
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background-color: var(--primary-color);
+                    color: white;
+                    padding: 15px 25px;
+                    border-radius: 10px;
+                    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                    font-size: 1.1em;
+                    font-weight: 600;
+                    z-index: 1000;
+                    opacity: 0;
+                    visibility: hidden;
+                    transition: opacity 0.3s ease, transform 0.3s ease;
+                    max-width: 90vw;
+                    text-align: center;
+                `;
+                document.body.appendChild(messageBox);
+            }
+
+            messageBox.textContent = message;
+            messageBox.style.backgroundColor = type === 'error' ? 'var(--danger-color)' : (type === 'success' ? 'var(--success-color)' : 'var(--primary-color)');
+            messageBox.style.opacity = '1';
+            messageBox.style.visibility = 'visible';
+            messageBox.style.transform = 'translateX(-50%) translateY(0)';
+
+            setTimeout(() => {
+                messageBox.style.opacity = '0';
+                messageBox.style.transform = 'translateX(-50%) translateY(20px)';
+                messageBox.addEventListener('transitionend', function handler() {
+                    messageBox.style.visibility = 'hidden';
+                    messageBox.removeEventListener('transitionend', handler);
+                });
+            }, duration);
+        }
+
+        // Custom Font Awesome icon for Flappy Bird
+        // This is a workaround as Font Awesome doesn't have a direct flappy bird icon.
+        // We'll use a generic bird and style it.
+        // Or, better, use an inline SVG for better control.
+        // For simplicity and consistency with Font Awesome, we'll keep the generic bird for now.
+        // If a custom icon is needed, it would be an SVG.
+        // For now, let's just use a generic bird icon for Flappy Bird.
+        // The fas fa-flappy-bird class is a placeholder and won't render unless defined.
+        // We will use fas fa-bird or fas fa-dove or create a custom SVG.
+        // Let's use fas fa-feather-alt as it's more abstract and fits the game theme.
+        // Update: Changed fas fa-flappy-bird to fas fa-feather-alt in HTML.
     </script>
 </body>
 </html>
