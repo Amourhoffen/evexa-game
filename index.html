@@ -47,6 +47,31 @@
             /* Game specific variables for canvas dimensions */
             --game-canvas-width: 550;
             --game-canvas-height: 450;
+
+            /* Notepad specific colors */
+            --notepad-bg: rgba(255, 255, 255, 0.1);
+            --notepad-border: rgba(255, 255, 255, 0.2);
+            --input-bg: rgba(255, 255, 255, 0.05);
+            --input-border: rgba(255, 255, 255, 0.1);
+            --tag-bg: rgba(99, 102, 241, 0.2);
+            --tag-text: #a78bfa;
+            --checklist-bg: rgba(255, 255, 255, 0.03);
+            --checklist-border: rgba(255, 255, 255, 0.1);
+            --checklist-checked-bg: rgba(16, 185, 129, 0.2);
+            --checklist-checked-text: #10b981;
+            --progress-bar-bg: #4a5568;
+            --progress-bar-fill: var(--primary-color);
+
+            /* Subject colors */
+            --subject-math: #4299E1; /* Blue */
+            --subject-physics: #38A169; /* Green */
+            --subject-coding: #F6AD55; /* Orange */
+            --subject-chemistry: #9F7AEA; /* Purple */
+            --subject-history: #ECC94B; /* Yellow */
+            --subject-literature: #ED8936; /* Dark Orange */
+            --subject-biology: #48BB78; /* Light Green */
+            --subject-art: #ED64A6; /* Pink */
+            --subject-other: #A0AEC0; /* Gray */
         }
 
         /* Light Mode Variables */
@@ -84,6 +109,20 @@
             --bottom-nav-active-color: white;
             --bottom-nav-border: rgba(204, 204, 204, 0.6);
             --bottom-nav-shadow: 0 -5px 15px rgba(0, 0, 0, 0.1);
+
+            /* Notepad specific colors - Light Mode */
+            --notepad-bg: rgba(255, 255, 255, 0.8);
+            --notepad-border: rgba(0, 0, 0, 0.1);
+            --input-bg: rgba(240, 240, 240, 0.8);
+            --input-border: rgba(0, 0, 0, 0.15);
+            --tag-bg: rgba(79, 70, 229, 0.1);
+            --tag-text: #4f46e5;
+            --checklist-bg: rgba(0, 0, 0, 0.02);
+            --checklist-border: rgba(0, 0, 0, 0.1);
+            --checklist-checked-bg: rgba(5, 150, 105, 0.1);
+            --checklist-checked-text: #059669;
+            --progress-bar-bg: #e2e8f0;
+            --progress-bar-fill: var(--primary-color);
         }
       html {
             scroll-behavior: smooth;
@@ -1565,23 +1604,23 @@
             color: #e2e8f0;
         }
 
-        /* Subway Sprint specific styles */
-        .subway-sprint-game .game-canvas {
-            background-color: #333; /* Dark track */
+        /* City Runner specific styles */
+        .city-runner-game .game-canvas {
+            background: linear-gradient(to bottom, #87CEEB, #A0D2EB); /* Sky blue gradient */
             border: 3px solid #666;
             border-radius: 15px;
             touch-action: none; /* Prevent scrolling/zooming */
         }
 
-        .subway-sprint-game .game-stats {
+        .city-runner-game .game-stats {
             margin-top: 15px;
             font-size: 1.3em;
-            color: #00bcd4; /* Subway blue */
+            color: #2ecc71; /* Green for city theme */
             font-weight: 700;
             text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
         }
 
-        .subway-sprint-game-over {
+        .city-runner-game-over {
             position: absolute;
             top: 0;
             left: 0;
@@ -1608,21 +1647,21 @@
             box-shadow: var(--box-shadow);
         }
 
-        .subway-sprint-game-over.active {
+        .city-runner-game-over.active {
             opacity: 1;
             visibility: visible;
             transform: scale(1);
         }
 
-        .subway-sprint-game-over h2 {
+        .city-runner-game-over h2 {
             font-size: 2.8em;
             font-weight: 800;
-            color: #ff3d00; /* Orange-red for game over */
+            color: #e74c3c; /* Red for game over */
             text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
             margin-bottom: 5px;
         }
 
-        .subway-sprint-game-over p {
+        .city-runner-game-over p {
             font-size: 1.5em;
             color: #e2e8f0;
         }
@@ -1654,6 +1693,493 @@
                 font-size: 1.2em;
             }
         }
+
+        /* Smart Notepad Styles */
+        .notepad-container {
+            width: 100%;
+            max-width: 800px;
+            background-color: var(--notepad-bg);
+            border-radius: 20px;
+            padding: 25px;
+            box-sizing: border-box;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--notepad-border);
+            box-shadow: var(--box-shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            text-align: left;
+        }
+
+        .notepad-container h1 {
+            font-size: 2.5em;
+            font-weight: 800;
+            color: var(--primary-color);
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .notepad-section {
+            background-color: var(--bg-card);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .notepad-section h2 {
+            font-size: 1.8em;
+            color: var(--text-light);
+            margin-top: 0;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .form-group input[type="text"],
+        .form-group select,
+        .form-group textarea {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
+            background-color: var(--input-bg);
+            color: var(--text-light);
+            font-size: 1em;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .tag-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+
+        .tag-group label {
+            display: flex;
+            align-items: center;
+            background-color: var(--tag-bg);
+            color: var(--tag-text);
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        .tag-group input[type="checkbox"] {
+            margin-right: 8px;
+            appearance: none; /* Hide default checkbox */
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--tag-text);
+            border-radius: 4px;
+            position: relative;
+            cursor: pointer;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .tag-group input[type="checkbox"]:checked {
+            background-color: var(--tag-text);
+            border-color: var(--tag-text);
+        }
+
+        .tag-group input[type="checkbox"]:checked::after {
+            content: '\2713'; /* Checkmark */
+            font-size: 12px;
+            color: white;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .tag-group label:hover {
+            transform: translateY(-2px);
+            background-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .button-group .button {
+            padding: 10px 20px;
+            font-size: 1em;
+            flex-grow: 1;
+            min-width: 100px;
+        }
+
+        /* Note List */
+        #notes-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .note-card {
+            background-color: var(--bg-card);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            position: relative;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .note-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .note-card.archived {
+            opacity: 0.6;
+            text-decoration: line-through;
+            filter: grayscale(80%);
+        }
+
+        .note-card h3 {
+            font-size: 1.4em;
+            color: var(--primary-color);
+            margin: 0 0 5px 0;
+            word-wrap: break-word;
+        }
+
+        .note-card .note-meta {
+            font-size: 0.85em;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .note-card .note-subject {
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 0.8em;
+            display: inline-block;
+            /* Default subject color, overridden by specific classes */
+            background-color: rgba(0, 0, 0, 0.1);
+            color: var(--text-light);
+        }
+
+        /* Subject specific colors */
+        .note-card.subject-math .note-subject { background-color: var(--subject-math); color: white; }
+        .note-card.subject-physics .note-subject { background-color: var(--subject-physics); color: white; }
+        .note-card.subject-coding .note-subject { background-color: var(--subject-coding); color: #333; }
+        .note-card.subject-chemistry .note-subject { background-color: var(--subject-chemistry); color: white; }
+        .note-card.subject-history .note-subject { background-color: var(--subject-history); color: #333; }
+        .note-card.subject-literature .note-subject { background-color: var(--subject-literature); color: white; }
+        .note-card.subject-biology .note-subject { background-color: var(--subject-biology); color: white; }
+        .note-card.subject-art .note-subject { background-color: var(--subject-art); color: white; }
+        .note-card.subject-other .note-subject { background-color: var(--subject-other); color: #333; }
+
+        .note-card .note-content {
+            font-size: 1em;
+            color: var(--text-light);
+            line-height: 1.5;
+            flex-grow: 1;
+            word-wrap: break-word;
+            white-space: pre-wrap; /* Preserve whitespace and line breaks */
+            text-align: left;
+        }
+
+        .note-card .note-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 5px;
+        }
+
+        .note-card .note-tag {
+            background-color: var(--tag-bg);
+            color: var(--tag-text);
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 0.75em;
+            font-weight: 500;
+        }
+
+        .note-card .note-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            justify-content: flex-end;
+        }
+
+        .note-card .note-actions button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        .note-card .note-actions button:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-1px);
+        }
+
+        .note-card .note-actions button.delete-btn {
+            background-color: var(--danger-color);
+        }
+        .note-card .note-actions button.delete-btn:hover {
+            background-color: #c0392b;
+        }
+
+        /* Checklist styling within note content */
+        .note-checklist {
+            list-style: none;
+            padding: 0;
+            margin: 10px 0 0 0;
+            border-top: 1px solid var(--checklist-border);
+            padding-top: 10px;
+        }
+
+        .note-checklist li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            background-color: var(--checklist-bg);
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid var(--checklist-border);
+            transition: background-color 0.2s ease;
+        }
+
+        .note-checklist li.completed {
+            background-color: var(--checklist-checked-bg);
+            text-decoration: line-through;
+            color: var(--checklist-checked-text);
+        }
+
+        .note-checklist li input[type="checkbox"] {
+            margin-right: 10px;
+            min-width: 18px; /* Ensure clickable area */
+            min-height: 18px;
+            cursor: pointer;
+        }
+
+        /* Filters section */
+        .filters-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .filters-section select,
+        .filters-section button {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--input-border);
+            background-color: var(--input-bg);
+            color: var(--text-light);
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .filters-section select:hover,
+        .filters-section button:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary-color);
+        }
+
+        .filters-section button.active-filter {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        /* Progress Tracker */
+        .progress-tracker {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .progress-tracker h2 {
+            margin-bottom: 10px;
+        }
+
+        .progress-bar-container {
+            width: 80%;
+            max-width: 400px;
+            height: 20px;
+            background-color: var(--progress-bar-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 0 auto;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background-color: var(--progress-bar-fill);
+            border-radius: 10px;
+            transition: width 0.5s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 0.8em;
+        }
+
+        /* Thought Dump */
+        .thought-dump-section textarea {
+            width: calc(100% - 20px);
+            min-height: 120px;
+            padding: 10px;
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
+            background-color: var(--input-bg);
+            color: var(--text-light);
+            font-size: 1em;
+            resize: vertical;
+        }
+
+        .thought-dump-section .button {
+            margin-top: 10px;
+        }
+
+        /* Focus Mode */
+        .notepad-container.focus-mode #add-note-section,
+        .notepad-container.focus-mode .filters-section,
+        .notepad-container.focus-mode .progress-tracker,
+        .notepad-container.focus-mode .thought-dump-section {
+            display: none;
+        }
+
+        .notepad-container.focus-mode #notes-list {
+            display: block; /* Change to block to stack notes */
+        }
+
+        .notepad-container.focus-mode .note-card {
+            margin-bottom: 20px; /* Space between notes in focus mode */
+            max-width: 100%; /* Take full width */
+        }
+
+        .notepad-container.focus-mode .note-card:not(.focused-note) {
+            display: none; /* Hide non-focused notes */
+        }
+
+        .notepad-container .focus-mode-toggle-button {
+            margin-top: 20px;
+            width: auto; /* Allow button to size naturally */
+            align-self: center; /* Center the button */
+        }
+
+        /* Export/Backup Buttons */
+        .export-backup-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .export-backup-section .button {
+            flex-grow: 1;
+            min-width: 150px;
+        }
+
+        @media (max-width: 600px) {
+            .notepad-container {
+                padding: 15px;
+            }
+            .notepad-container h1 {
+                font-size: 2em;
+            }
+            .notepad-section {
+                padding: 15px;
+            }
+            .notepad-section h2 {
+                font-size: 1.5em;
+            }
+            .form-group input[type="text"],
+            .form-group select,
+            .form-group textarea {
+                width: calc(100% - 16px); /* Adjust padding */
+            }
+            .tag-group label {
+                padding: 6px 10px;
+                font-size: 0.8em;
+            }
+            .button-group .button {
+                min-width: unset;
+                flex-basis: 48%; /* Two buttons per row */
+            }
+            #notes-list {
+                grid-template-columns: 1fr; /* Single column on small screens */
+            }
+            .note-card {
+                padding: 15px;
+            }
+            .note-card h3 {
+                font-size: 1.2em;
+            }
+            .note-card .note-actions button {
+                padding: 6px 10px;
+                font-size: 0.8em;
+            }
+            .filters-section {
+                flex-direction: column;
+                align-items: center;
+            }
+            .filters-section select,
+            .filters-section button {
+                width: 100%;
+                max-width: 300px;
+            }
+            .progress-bar-container {
+                width: 95%;
+            }
+            .export-backup-section .button {
+                flex-basis: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1667,7 +2193,7 @@
         </div>
         <nav>
             <ul>
-                <li class="active"><a href="#" data-page="home-page"><i class="fas fa-home"></i> <span>Home</span></a></li>
+                <li class="active"><a href="#" data-page="smart-notepad-page"><i class="fas fa-book"></i> <span>Smart Notepad</span></a></li>
                 <li><a href="#" data-page="game-selection-page"><i class="fas fa-gamepad"></i> <span>Play Game</span></a></li>
                 <li><a href="#"><i class="fas fa-eye"></i> <span>View Site</span></a></li>
                 <li><a href="#"><i class="fas fa-store"></i> <span>Marketplace</span></a></li>
@@ -1691,45 +2217,85 @@
     </div>
 
     <div class="main-content">
-        <div id="home-page" class="page-content active">
-            <h1>Welcome to Evexa Buddy!</h1>
-            <h3>About This Game</h3>
-            <p>Evexa Buddy is an engaging and challenging endless runner game where you control a cute bird navigating through a treacherous world of pipes. Your goal is to fly as far as possible, collecting points by passing between pipes, and avoiding collisions. The game dynamically adjusts its difficulty as you progress, offering a fresh challenge with every level up!</p>
-            <p><strong>How to Play:</strong> Simply tap or click anywhere on the screen (or press the Spacebar on desktop) to make the bird flap its wings and ascend. Release to let gravity pull it down. Master the timing to weave through the gaps!</p>
-            <p><strong>Features:</strong></p>
-            <ul>
-                <li>Auto-adjusting difficulty (Very Easy to Very Hard)</li>
-                <li>Dynamic background changes with each level</li>
-                <li>High score tracking</li>
-                <li>Responsive design for all devices</li>
-            </ul>
-            <h3>Who Made It?</h3>
-            <p>Evexa Buddy was created by your friendly AI assistant to provide a fun and interactive gaming experience right here in your browser. Enjoy!</p>
+        <div id="smart-notepad-page" class="page-content active">
+            <div class="notepad-container glass-effect" id="notepad-container">
+                <h1>📘 Smart Notepad</h1>
 
-            <p>This section provides more details about the game's development and future plans. We aim to continuously improve the game based on user feedback and introduce new features regularly. Stay tuned for exciting updates!</p>
-            <p>Our team is dedicated to creating enjoyable and accessible gaming experiences for everyone. We believe in the power of simple yet addictive gameplay, and Flappy Bird is a testament to that philosophy. We hope you find it as fun to play as we did creating it.</p>
-            <p>Future enhancements might include new bird characters, different pipe designs, and even competitive leaderboards to challenge your friends. Your feedback is invaluable in shaping the future of Evexa Buddy, so please don't hesitate to share your thoughts and suggestions.</p>
-            <p>Thank you for being a part of the Evexa Buddy community. We appreciate your support and look forward to seeing your high scores!</p>
-            <p>Happy flapping!</p>
-            <p>The Evexa Buddy Development Team.</p>
-            <p>This is some more dummy content to ensure the page is scrollable. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-            <p>Another paragraph of dummy text to extend the page length. Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius, turpis et commodo pharetra, est eros bibendum elit, nec luctus magna felis sollicitudin mauris. Integer in mauris eu nibh euismod gravida. Duis ac tellus et risus auctor iaculis. Mauris vel nisl quis ipsum sollicitudin dignissim. Proin a leo vel lectus egestas aliquet. Aenean facilisis leo vel diam. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nam sed nulla sed sapien.</p>
-            <p>Final dummy paragraph. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hymenaeos. Curabitur sodales ligula in libero. Sed dignissim lacinia nunc. Curabitur tortor. Pellentesque nibh. Aenean quam. In scelerisque sem at dolor. Maecenas mattis. Sed convallis tristique sem. Proin ut ligula vel nunc egestas porttitor. Morbi lectus risus, iaculis vel, suscipit quis, luctus non, massa. Fusce ac turpis quis ligula lacinia aliquet. Mauris ipsum. Nulla metus metus, ullamcorper vel, tincidunt sed, euismod in, turpis. Curabitur a felis in nunc fringilla tristique. Lorem ipsum dolor sit amet.</p>
-            <p>More content to ensure scrolling. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-            <p>Even more content. Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius, turpis et commodo pharetra, est eros bibendum elit, nec luctus magna felis sollicitudin mauris. Integer in mauris eu nibh euismod gravida. Duis ac tellus et risus auctor iaculis. Mauris vel nisl quis ipsum sollicitudin dignissim. Proin a leo vel lectus egestas aliquet. Aenean facilisis leo vel diam. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nam sed nulla sed sapien.</p>
-            <p>Final content for scrolling. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hymenaeos. Curabitur sodales ligula in libero. Sed dignissim lacinia nunc. Curabitur tortor. Pellentesque nibh. Aenean quam. In scelerisque sem at dolor. Maecenas mattis. Sed convallis tristique sem. Proin ut ligula vel nunc egestas porttitor. Morbi lectus risus, iaculis vel, suscipit quis, luctus non, massa. Fusce ac turpis quis ligula lacinia aliquet. Mauris ipsum. Nulla metus metus, ullamcorper vel, tincidunt sed, euismod in, turpis. Curabitur a felis in nunc fringilla tristique. Lorem ipsum dolor sit amet.</p>
-            <p>This is the first of many dummy paragraphs to ensure the page is very long. We are committed to providing a seamless experience for all our users, and that includes making sure all content, including advertisements, is easily accessible. Your feedback is crucial in helping us achieve this goal. We appreciate your patience and understanding as we continue to refine the user interface and overall functionality of Evexa Buddy. Our development roadmap includes exciting new features, enhanced game modes, and further optimizations to ensure smooth performance across all devices. We encourage you to explore all sections of the website and provide us with your thoughts.</p>
-            <p>The journey of Evexa Buddy is just beginning. We envision a platform where users can enjoy a variety of engaging games, connect with a vibrant community, and discover new and exciting content. Our team is constantly working behind the scenes to bring these visions to life. We believe that a great user experience is paramount, and every design decision is made with that in mind. From the intuitive navigation to the visually appealing glassmorphism theme, we strive to create an environment that is both functional and aesthetically pleasing. Thank you for being an early adopter and for your continued support.</p>
-            <p>We are also actively exploring partnerships to bring even more diverse content and features to Evexa Buddy. This includes collaborations with independent game developers and content creators to expand our offerings. Our goal is to become a go-to destination for casual gaming and interactive experiences. Stay tuned for announcements regarding new game releases, special events, and community challenges. We are building this platform for you, and your engagement drives our innovation. Don't forget to check out the "Live Updates" section for the latest news and announcements!</p>
-            <p>Furthermore, we are dedicated to maintaining a fair and balanced in-game economy, ensuring that both free and Pro users have an enjoyable experience. The "Pro" status offers additional benefits and exclusive content, but the core game remains accessible to everyone. We believe in transparency and will always communicate any changes to our policies or features clearly. Your trust is important to us, and we are committed to upholding the highest standards of quality and integrity. Feel free to reach out to our support team if you have any questions or encounter any issues.</p>
-            <p>Finally, we want to extend our gratitude to the entire community for their enthusiasm and support. It's your passion for gaming that inspires us to push the boundaries and deliver exceptional experiences. We look forward to many more updates, new games, and memorable moments together on Evexa Buddy. Keep flapping, keep exploring, and most importantly, keep having fun!</p>
-            <p>This paragraph is specifically added to make the page even longer and ensure scrolling. It's important for us to test the full extent of the scrollability, especially on different screen sizes and orientations. We are committed to ensuring that all elements, including the very bottom of the page and any future additions, are easily reachable by the user. This extended content serves as a robust test case for the scrolling mechanism. We anticipate that with these changes, the page will now scroll smoothly and reveal all areas as intended, providing a complete and uninterrupted user experience. We value your feedback and encourage you to let us know if any further adjustments are needed to enhance your browsing and gaming experience on Evexa Buddy.</p>
-
-            <button id="play-game-button" class="button button-primary">Play Evexa Buddy!</button>
-            
-            <div id="home-ad" class="ad-placement glass-effect">
-                <p>Google Ad Placeholder: Home Page Banner (e.g., 728x90)</p>
+                <div id="add-note-section" class="notepad-section">
+                    <h2>➕ Add New Note</h2>
+                    <div class="form-group">
+                        <label for="note-title">Title:</label>
+                        <input type="text" id="note-title" placeholder="e.g., Quantum Physics Basics">
+                    </div>
+                    <div class="form-group">
+                        <label for="note-subject">Subject:</label>
+                        <input type="text" id="note-subject" list="subject-suggestions" placeholder="e.g., Physics">
+                        <datalist id="subject-suggestions"></datalist>
+                    </div>
+                    <div class="form-group">
+                        <label for="note-content">Content:</label>
+                        <textarea id="note-content" placeholder="Start writing your notes here... Use [ ] for checklist items."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Tags:</label>
+                        <div class="tag-group">
+                            <label><input type="checkbox" data-tag="Important"> 📌 Important</label>
+                            <label><input type="checkbox" data-tag="Revise"> 🔁 Revise</label>
+                            <label><input type="checkbox" data-tag="To-Do"> ✅ To-Do</label>
+                            <label><input type="checkbox" data-tag="Priority"> 🔥 Priority</label>
+                            <label><input type="checkbox" data-tag="Confusing"> 😵 Confusing</label>
+                        </div>
+                    </div>
+                    <div class="button-group">
+                        <button id="add-note-button" class="button button-primary">Add Note</button>
+                        <button id="clear-form-button" class="button button-primary">Clear Form</button>
+                    </div>
                 </div>
+
+                <div id="progress-tracker-section" class="notepad-section progress-tracker">
+                    <h2>📈 Progress Tracker</h2>
+                    <p>You've completed <span id="completed-tasks-percentage">0%</span> of your study tasks!</p>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill" id="progress-bar-fill"></div>
+                    </div>
+                </div>
+
+                <div id="thought-dump-section" class="notepad-section thought-dump-section">
+                    <h2>💡 Thought Dump</h2>
+                    <textarea id="thought-dump-textarea" placeholder="Unload random thoughts here..."></textarea>
+                    <button id="clear-thought-dump-button" class="button button-primary">Clear Head</button>
+                </div>
+
+                <div id="filters-section" class="notepad-section filters-section">
+                    <h2>🔍 Smart Filters</h2>
+                    <select id="filter-subject">
+                        <option value="all">All Subjects</option>
+                    </select>
+                    <select id="sort-date">
+                        <option value="newest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
+                    </select>
+                    <button id="filter-today" class="button button-primary">Today</button>
+                    <button id="filter-important" class="button button-primary">Important</button>
+                    <button id="filter-revise" class="button button-primary">Revise</button>
+                    <button id="filter-todo-pending" class="button button-primary">To-Do Pending</button>
+                    <button id="filter-archived" class="button button-primary">Archived</button>
+                    <button id="clear-filters-button" class="button button-primary">Clear Filters</button>
+                </div>
+                
+                <button id="focus-mode-toggle-button" class="button button-primary focus-mode-toggle-button">Enter Focus Mode</button>
+
+                <div id="notes-list" class="notepad-section">
+                    <h2>📝 Your Notes</h2>
+                    <p id="no-notes-message" style="text-align: center; color: var(--text-muted);">No notes yet. Add one above!</p>
+                </div>
+
+                <div id="export-backup-section" class="notepad-section export-backup-section">
+                    <h2>📤 Data Management</h2>
+                    <button id="export-note-button" class="button button-primary">Export Selected Note (.txt)</button>
+                    <button id="backup-all-notes-button" class="button button-primary">Backup All Notes (.json)</button>
+                </div>
+            </div>
         </div>
 
         <div id="game-selection-page" class="page-content">
@@ -1738,8 +2304,8 @@
                 <a href="#" class="game-card" data-game="flappy-bird">
                     <i class="fas fa-feather-alt"></i> <h3>Evexa Buddy</h3>
                 </a>
-                <a href="#" class="game-card" data-game="subway-sprint">
-                    <i class="fas fa-train"></i> <h3>Subway Sprint</h3>
+                <a href="#" class="game-card" data-game="city-runner">
+                    <i class="fas fa-running"></i> <h3>City Runner</h3>
                 </a>
                 <a href="#" class="game-card" data-game="whack-a-mole">
                     <i class="fas fa-mouse"></i> <h3>Whack-a-Mole</h3>
@@ -1856,11 +2422,11 @@
     </div>
 
     <div class="bottom-navbar-container glass-effect" id="bottomNavbar">
-        <a href="#" class="bottom-nav-item active" id="homeNavItem" data-page="home-page">
+        <a href="#" class="bottom-nav-item active" id="homeNavItem" data-page="smart-notepad-page">
             <div class="icon-background">
-                <i class="fas fa-home"></i>
+                <i class="fas fa-book"></i>
             </div>
-            <span>Home</span>
+            <span>Notepad</span>
         </a>
         <a href="#" class="bottom-nav-item" id="gameNavItem" data-page="game-selection-page">
             <div class="icon-background">
@@ -1925,7 +2491,7 @@
         let currentGameState; // Will be set by initGame or showPage
 
         // Page elements
-        let homePage, gamePage, gameSelectionPage, gameStartOverlay;
+        let smartNotepadPage, gamePage, gameSelectionPage, gameStartOverlay;
         let dynamicGameContainer; // New: Reference to the dynamic game container
 
         // Game control buttons (Flappy Bird)
@@ -1985,13 +2551,11 @@
         let shootSound = null;
         let explosionSound = null;
 
-        // Subway Sprint specific audio
-        let subwaySprintBackgroundMusicLoop = null;
-        let subwaySprintBackgroundMusicSynth = null;
-        let subwayJumpSound = null;
-        let subwaySlideSound = null;
-        let subwayCoinSound = null;
-        let subwayCollisionSound = null;
+        // City Runner specific audio
+        let cityRunnerBackgroundMusicLoop = null;
+        let cityRunnerBackgroundMusicSynth = null;
+        let cityRunnerJumpSound = null;
+        let cityRunnerCollisionSound = null;
 
 
         // Flag to ensure audio context and synths are ready
@@ -2428,8 +2992,8 @@
             if (spaceMinerBackgroundMusicLoop && spaceMinerBackgroundMusicLoop.state === 'started') {
                 spaceMinerBackgroundMusicLoop.stop();
             }
-            if (subwaySprintBackgroundMusicLoop && subwaySprintBackgroundMusicLoop.state === 'started') {
-                subwaySprintBackgroundMusicLoop.stop();
+            if (cityRunnerBackgroundMusicLoop && cityRunnerBackgroundMusicLoop.state === 'started') {
+                cityRunnerBackgroundMusicLoop.stop();
             }
         }
 
@@ -2500,25 +3064,19 @@
                 }).toDestination();
             }
 
-            // Initialize Subway Sprint synths
-            if (!subwaySprintBackgroundMusicSynth) {
-                subwaySprintBackgroundMusicSynth = new Tone.Synth().toDestination();
-                subwaySprintBackgroundMusicLoop = new Tone.Loop(time => {
-                    subwaySprintBackgroundMusicSynth.triggerAttackRelease("C4", "8n", time);
-                    subwaySprintBackgroundMusicSynth.triggerAttackRelease("E4", "8n", time + 0.25);
-                    subwaySprintBackgroundMusicSynth.triggerAttackRelease("G4", "8n", time + 0.5);
-                    subwaySprintBackgroundMusicSynth.triggerAttackRelease("C5", "8n", time + 0.75);
+            // Initialize City Runner synths
+            if (!cityRunnerBackgroundMusicSynth) {
+                cityRunnerBackgroundMusicSynth = new Tone.Synth().toDestination();
+                cityRunnerBackgroundMusicLoop = new Tone.Loop(time => {
+                    cityRunnerBackgroundMusicSynth.triggerAttackRelease("C4", "8n", time);
+                    cityRunnerBackgroundMusicSynth.triggerAttackRelease("E4", "8n", time + 0.25);
+                    cityRunnerBackgroundMusicSynth.triggerAttackRelease("G4", "8n", time + 0.5);
                 }, "1n"); // Play every 1 second
-                subwayJumpSound = new Tone.Synth().toDestination();
-                subwaySlideSound = new Tone.NoiseSynth({
+                cityRunnerJumpSound = new Tone.Synth().toDestination();
+                cityRunnerCollisionSound = new Tone.NoiseSynth({
                     noise: { type: "white" },
                     envelope: { attack: 0.01, decay: 0.1, sustain: 0 }
                 }).toDestination();
-                subwayCoinSound = new Tone.Synth({
-                    oscillator: { type: "sine" },
-                    envelope: { attack: 0.001, decay: 0.05, sustain: 0.01, release: 0.05 }
-                }).toDestination();
-                subwayCollisionSound = new Tone.MembraneSynth().toDestination();
             }
 
             isAudioReady = true; // Set flag to true after successful initialization
@@ -2549,9 +3107,9 @@
                 cancelAnimationFrame(animationFrameIdSpaceMiner);
                 animationFrameIdSpaceMiner = null;
             }
-            if (animationFrameIdSubwaySprint) { // Stop Subway Sprint animation loop
-                cancelAnimationFrame(animationFrameIdSubwaySprint);
-                animationFrameIdSubwaySprint = null;
+            if (animationFrameIdCityRunner) { // Stop City Runner animation loop
+                cancelAnimationFrame(animationFrameIdCityRunner);
+                animationFrameIdCityRunner = null;
             }
             stopAllGameMusic(); // Stop all background music
 
@@ -2949,7 +3507,7 @@
             whackAMoleHighScoreDisplay.textContent = whackAMoleHighScore; // Display the high score
 
             if (isAudioReady && whackAMoleGameOverSound && Tone.context.state === 'running') {
-                whackAMoleGameOverSound.triggerAttackRelease("1n");
+                whackAMoleGameOverSound.triggerAttackRelease("1n"); /* FIX: Corrected function name */
             }
             if (whackAMoleBackgroundMusicLoop && whackAMoleBackgroundMusicLoop.state === 'started') {
                 whackAMoleBackgroundMusicLoop.stop();
@@ -3268,10 +3826,10 @@
         }
 
         function spawnAsteroid() {
-            const radius = randomTime(ASTEROID_RADIUS_MIN, ASTEROID_RADIUS_MAX);
+            const radius = getRandomInt(ASTEROID_RADIUS_MIN, ASTEROID_RADIUS_MAX);
             const x = Math.random() * (spaceMinerCanvas.width - radius * 2) + radius;
             const y = -radius; // Start above canvas
-            const speed = randomTime(ASTEROID_SPEED_MIN * 10, ASTEROID_SPEED_MAX * 10) / 10;
+            const speed = getRandomInt(ASTEROID_SPEED_MIN * 10, ASTEROID_SPEED_MAX * 10) / 10;
             asteroids.push({ x, y, radius, speed });
         }
 
@@ -3368,100 +3926,86 @@
             }
         }
 
-        // Subway Sprint Game Logic
-        let subwaySprintCanvas, subwaySprintCtx;
-        let subwayPlayer;
-        let subwayObstacles = [];
-        let subwayCoins = [];
-        let subwayScore = 0;
-        let subwayHighScore = 0;
-        let subwayGameActive = false;
-        let animationFrameIdSubwaySprint;
-        let subwayKeys = {}; // To track pressed keys for Subway Sprint
-        let lastObstacleSpawnFrameSubway = 0;
-        let lastSpeedIncreaseTimeSubway = 0;
-        let subwaySwipeStartX = 0;
-        let subwaySwipeStartY = 0;
-        let subwaySwipeEndX = 0;
-        let subwaySwipeEndY = 0;
-        let gameSpeed; // Declare gameSpeed globally for Subway Sprint
+        // City Runner Game Logic (2D)
+        let cityRunnerCanvas, cityRunnerCtx;
+        let cityRunnerPlayer;
+        let cityRunnerObstacles = [];
+        let cityRunnerScore = 0;
+        let cityRunnerHighScore = 0;
+        let cityRunnerGameActive = false;
+        let animationFrameIdCityRunner;
+        let cityRunnerKeys = {};
+        let lastObstacleSpawnTimeCityRunner = 0;
+        let cityRunnerGameSpeed = 3; // Initial speed
+        const CITY_RUNNER_GRAVITY = 0.3;
+        const CITY_RUNNER_JUMP_STRENGTH = -7;
+        const CITY_RUNNER_PLAYER_WIDTH = 30;
+        const CITY_RUNNER_PLAYER_HEIGHT = 60;
+        const CITY_RUNNER_GROUND_Y = 350; // Y-coordinate of the ground
+        const CITY_RUNNER_OBSTACLE_WIDTH = 25; // Adjusted for spiky obstacle
+        const CITY_RUNNER_OBSTACLE_HEIGHT = 50; // Adjusted for spiky obstacle
+        const CITY_RUNNER_SPAWN_INTERVAL_MIN = 1000;
+        const CITY_RUNNER_SPAWN_INTERVAL_MAX = 2500;
+        const CITY_RUNNER_SPEED_INCREASE_INTERVAL = 5000; // Increase speed every 5 seconds
+        const CITY_RUNNER_MAX_SPEED = 8;
+        let lastSpeedIncreaseTimeCityRunner = 0;
+        let cityRunnerFrame = 0; // For player animation
+        const CITY_RUNNER_ANIMATION_SPEED = 5; // Frames per animation cycle
 
-        // Subway Sprint Elements
-        let subwaySprintScoreDisplay, subwaySprintHighScoreDisplay, subwaySprintGameOverScreen, subwaySprintFinalScoreDisplay, subwaySprintStartButton, subwaySprintResetButton, subwaySprintBackToGamesButton;
+        // City Runner UI elements
+        let cityRunnerScoreDisplay, cityRunnerHighScoreDisplay, cityRunnerGameOverScreen, cityRunnerFinalScoreDisplay, cityRunnerStartButton, cityRunnerResetButton, cityRunnerBackToGamesButton;
 
-        // Subway Sprint Constants
-        const SUBWAY_CANVAS_WIDTH = 400; // Define for direct use
-        const SUBWAY_LANE_WIDTH = SUBWAY_CANVAS_WIDTH / 3; // Canvas width / 3
-        const SUBWAY_PLAYER_WIDTH = 40;
-        const SUBWAY_PLAYER_HEIGHT = 60;
-        const SUBWAY_OBSTACLE_WIDTH = 80;
-        const SUBWAY_OBSTACLE_HEIGHT_TRAIN = 150;
-        const SUBWAY_OBSTACLE_HEIGHT_LOW_BARRIER = 50;
-        const SUBWAY_OBSTACLE_HEIGHT_HIGH_BARRIER = 80; // For sliding under
-        const SUBWAY_COIN_SIZE = 20;
-        const SUBWAY_PLAYER_JUMP_VELOCITY = -8;
-        const SUBWAY_GRAVITY = 0.3;
-        const SUBWAY_INITIAL_GAME_SPEED = 3;
-        const SUBWAY_MAX_GAME_SPEED = 8; // Adjusted for balance
-        const SUBWAY_SPEED_INCREASE_INTERVAL = 10000; // Increase speed every 10 seconds
-        const SUBWAY_OBSTACLE_SPAWN_INTERVAL_MIN = 80; // frames
-        const SUBWAY_OBSTACLE_SPAWN_INTERVAL_MAX = 150; // frames
-        const SUBWAY_COIN_SPAWN_CHANCE = 0.7; // Chance to spawn coins with obstacles
-        const SUBWAY_SWIPE_THRESHOLD = 50; // Pixels for swipe detection
-        const SUBWAY_PLAYER_JUMP_DURATION = 30; // frames for jump animation/state
-        const SUBWAY_PLAYER_SLIDE_DURATION = 60; // frames for slide animation/state
-
-        function initializeSubwaySprintGame() {
+        function initializeCityRunnerGame() {
             stopAllGameMusic();
-            if (isAudioReady && subwaySprintBackgroundMusicLoop && subwaySprintBackgroundMusicLoop.state !== 'started') {
-                subwaySprintBackgroundMusicLoop.start();
+            if (isAudioReady && cityRunnerBackgroundMusicLoop && cityRunnerBackgroundMusicLoop.state !== 'started') {
+                cityRunnerBackgroundMusicLoop.start();
             }
 
-            const subwaySprintHtmlFragment = `
-                <div class="game-container subway-sprint-game">
-                    <h1>Subway Sprint</h1>
+            const cityRunnerHtmlFragment = `
+                <div class="game-container city-runner-game">
+                    <h1>City Runner</h1>
                     <div class="game-stats">
-                        Score: <span id="subway-sprint-score">0</span> | High Score: <span id="subway-sprint-high-score">0</span>
+                        <div>Score: <span id="city-runner-score">0</span></div>
+                        <div>High Score: <span id="city-runner-high-score">0</span></div>
                     </div>
-                    <canvas id="subwaySprintCanvas" class="game-canvas" width="400" height="600"></canvas>
+                    <canvas id="cityRunnerCanvas" class="game-canvas" width="550" height="400"></canvas>
                     <div class="game-controls">
-                        <button id="subway-sprint-start-button" class="button button-primary">Start Game</button>
-                        <button id="subway-sprint-reset-button" class="button button-primary">Reset</button>
+                        <button id="city-runner-start-button" class="button button-primary">Start Game</button>
+                        <button id="city-runner-reset-button" class="button button-primary">Reset</button>
                     </div>
-                    <button id="subway-sprint-back-to-games-button" class="button button-primary" style="margin-top: 20px;">Back to Games</button>
+                    <button id="city-runner-back-to-games-button" class="button button-primary" style="margin-top: 20px;">Back to Games</button>
 
                     <div class="ad-placement glass-effect" style="margin-top: 20px;">
-                        <p>Google Ad Placeholder: Subway Sprint Ad (e.g., 300x250)</p>
+                        <p>Google Ad Placeholder: City Runner Ad (e.g., 300x250)</p>
                     </div>
 
-                    <div class="subway-sprint-game-over" id="subway-sprint-game-over">
+                    <div class="city-runner-game-over" id="city-runner-game-over">
                         <h2>Game Over!</h2>
-                        <p>Final Score: <span id="subway-sprint-final-score">0</span></p>
-                        <p>High Score: <span id="subway-sprint-game-over-high-score">0</span></p>
-                        <button id="subway-sprint-restart-button" class="button button-primary">Play Again</button>
+                        <p>Final Score: <span id="city-runner-final-score">0</span></p>
+                        <p>High Score: <span id="city-runner-game-over-high-score">0</span></p>
+                        <button id="city-runner-restart-button" class="button button-primary">Play Again</button>
                     </div>
                 </div>
             `;
-            dynamicGameContainer.innerHTML = subwaySprintHtmlFragment;
+            dynamicGameContainer.innerHTML = cityRunnerHtmlFragment;
 
-            subwaySprintCanvas = dynamicGameContainer.querySelector('#subwaySprintCanvas');
-            subwaySprintCtx = subwaySprintCanvas.getContext('2d');
-            subwaySprintScoreDisplay = dynamicGameContainer.querySelector('#subway-sprint-score');
-            subwaySprintHighScoreDisplay = dynamicGameContainer.querySelector('#subway-sprint-high-score');
-            subwaySprintGameOverScreen = dynamicGameContainer.querySelector('#subway-sprint-game-over');
-            subwaySprintFinalScoreDisplay = dynamicGameContainer.querySelector('#subway-sprint-final-score');
-            subwaySprintStartButton = dynamicGameContainer.querySelector('#subway-sprint-start-button');
-            subwaySprintResetButton = dynamicGameContainer.querySelector('#subway-sprint-reset-button');
-            subwaySprintBackToGamesButton = dynamicGameContainer.querySelector('#subway-sprint-back-to-games-button');
+            cityRunnerCanvas = dynamicGameContainer.querySelector('#cityRunnerCanvas');
+            cityRunnerCtx = cityRunnerCanvas.getContext('2d');
+            cityRunnerScoreDisplay = dynamicGameContainer.querySelector('#city-runner-score');
+            cityRunnerHighScoreDisplay = dynamicGameContainer.querySelector('#city-runner-high-score');
+            cityRunnerGameOverScreen = dynamicGameContainer.querySelector('#city-runner-game-over');
+            cityRunnerFinalScoreDisplay = dynamicGameContainer.querySelector('#city-runner-final-score');
+            cityRunnerStartButton = dynamicGameContainer.querySelector('#city-runner-start-button');
+            cityRunnerResetButton = dynamicGameContainer.querySelector('#city-runner-reset-button');
+            cityRunnerBackToGamesButton = dynamicGameContainer.querySelector('#city-runner-back-to-games-button');
 
-            subwaySprintStartButton.addEventListener('click', startSubwaySprintGame);
-            subwaySprintResetButton.addEventListener('click', resetSubwaySprintGame);
-            // Changed this line: The "Play Again" button should reset and then start the game
-            subwaySprintGameOverScreen.querySelector('#subway-sprint-restart-button').addEventListener('click', () => {
-                resetSubwaySprintGame(); // Reset game state
-                startSubwaySprintGame(); // Start a new game
+            cityRunnerStartButton.addEventListener('click', startCityRunnerGame);
+            cityRunnerResetButton.addEventListener('click', resetCityRunnerGame);
+            cityRunnerGameOverScreen.querySelector('#city-runner-restart-button').addEventListener('click', () => {
+                resetCityRunnerGame();
+                startCityRunnerGame();
             });
-            subwaySprintBackToGamesButton.addEventListener('click', () => {
+            cityRunnerBackToGamesButton.addEventListener('click', () => {
                 stopAllGameMusic();
                 if (typeof showPage === 'function') {
                     showPage('game-selection-page');
@@ -3472,413 +4016,956 @@
             });
 
             // Keyboard controls
-            document.addEventListener('keydown', handleSubwaySprintKeyDown);
-            document.addEventListener('keyup', handleSubwaySprintKeyUp);
+            document.addEventListener('keydown', handleCityRunnerKeyDown);
+            document.addEventListener('keyup', handleCityRunnerKeyUp);
 
-            // Touch controls
-            subwaySprintCanvas.addEventListener('touchstart', handleSubwaySprintTouchStart);
-            subwaySprintCanvas.addEventListener('touchmove', handleSubwaySprintTouchMove);
-            subwaySprintCanvas.addEventListener('touchend', handleSubwaySprintTouchEnd);
+            // Touch controls (tap to jump)
+            cityRunnerCanvas.addEventListener('touchstart', handleCityRunnerTouchStart);
 
-            resetSubwaySprintGame(); // Initial setup
+            resetCityRunnerGame(); // Initial setup
         }
 
-        function resetSubwaySprintGame() {
-            if (animationFrameIdSubwaySprint) {
-                cancelAnimationFrame(animationFrameIdSubwaySprint);
+        function resetCityRunnerGame() {
+            if (animationFrameIdCityRunner) {
+                cancelAnimationFrame(animationFrameIdCityRunner);
             }
-            subwayGameActive = false;
-            subwayPlayer = {
-                x: SUBWAY_LANE_WIDTH + (SUBWAY_LANE_WIDTH - SUBWAY_PLAYER_WIDTH) / 2, // Start in center lane
-                y: subwaySprintCanvas.height - SUBWAY_PLAYER_HEIGHT - 10,
-                lane: 1, // 0: left, 1: center, 2: right
-                dy: 0,
+            cityRunnerGameActive = false;
+            cityRunnerPlayer = {
+                x: 50,
+                y: CITY_RUNNER_GROUND_Y - CITY_RUNNER_PLAYER_HEIGHT,
+                width: CITY_RUNNER_PLAYER_WIDTH,
+                height: CITY_RUNNER_PLAYER_HEIGHT,
+                velocityY: 0,
                 isJumping: false,
-                isSliding: false,
-                slideTimer: 0,
-                jumpTimer: 0
+                frame: 0 // Initialize animation frame
             };
-            subwayObstacles = [];
-            subwayCoins = [];
-            subwayScore = 0;
-            subwaySprintScoreDisplay.textContent = subwayScore;
-            subwayHighScore = parseInt(localStorage.getItem('subwaySprintHighScore') || '0');
-            subwaySprintHighScoreDisplay.textContent = subwayHighScore;
-            subwaySprintGameOverScreen.classList.remove('active'); // Ensure it's hidden
-            subwaySprintStartButton.disabled = false;
-            subwaySprintResetButton.disabled = false;
-            gameSpeed = SUBWAY_INITIAL_GAME_SPEED;
-            frameCount = 0;
-            lastObstacleSpawnFrameSubway = 0;
-            lastSpeedIncreaseTimeSubway = 0;
-            subwayKeys = {};
-            subwaySwipeStartX = 0;
-            subwaySwipeStartY = 0;
-            subwaySwipeEndX = 0;
-            subwaySwipeEndY = 0;
+            cityRunnerObstacles = [];
+            cityRunnerScore = 0;
+            cityRunnerScoreDisplay.textContent = cityRunnerScore;
+            cityRunnerHighScore = parseInt(localStorage.getItem('cityRunnerHighScore') || '0');
+            cityRunnerHighScoreDisplay.textContent = cityRunnerHighScore;
+            cityRunnerGameOverScreen.classList.remove('active');
+            cityRunnerStartButton.disabled = false;
+            cityRunnerResetButton.disabled = false;
+            cityRunnerGameSpeed = 3; // Reset speed
+            lastObstacleSpawnTimeCityRunner = 0;
+            lastSpeedIncreaseTimeCityRunner = 0;
+            cityRunnerKeys = {};
 
-            if (subwaySprintBackgroundMusicLoop && subwaySprintBackgroundMusicLoop.state === 'started') {
-                subwaySprintBackgroundMusicLoop.stop();
+            if (cityRunnerBackgroundMusicLoop && cityRunnerBackgroundMusicLoop.state === 'started') {
+                cityRunnerBackgroundMusicLoop.stop();
+            }
+            drawCityRunnerGame(); // Initial render of the empty game
+        }
+
+        function startCityRunnerGame() {
+            if (cityRunnerGameActive) return;
+            cityRunnerGameActive = true;
+            cityRunnerStartButton.disabled = true;
+            cityRunnerResetButton.disabled = false;
+            cityRunnerGameOverScreen.classList.remove('active');
+            cityRunnerScore = 0;
+            cityRunnerScoreDisplay.textContent = cityRunnerScore;
+            cityRunnerObstacles = [];
+            cityRunnerGameSpeed = 3;
+            lastObstacleSpawnTimeCityRunner = Date.now();
+            lastSpeedIncreaseTimeCityRunner = Date.now();
+
+            if (isAudioReady && cityRunnerBackgroundMusicLoop && cityRunnerBackgroundMusicLoop.state !== 'started') {
+                cityRunnerBackgroundMusicLoop.start();
+            }
+
+            cityRunnerGameLoop();
+        }
+
+        function cityRunnerGameLoop() {
+            if (!cityRunnerGameActive) return;
+
+            updateCityRunnerGame();
+            drawCityRunnerGame();
+
+            animationFrameIdCityRunner = requestAnimationFrame(cityRunnerGameLoop);
+        }
+
+        // Function to draw the hero character
+        function drawHero(ctx, player) {
+            const x = player.x;
+            const y = player.y;
+            const width = player.width;
+            const height = player.height;
+
+            // Base colors
+            const bodyColor = '#3498DB'; // Hero blue
+            const bodyDark = '#2980B9'; // Darker blue for shading
+            const skinColor = '#FFDBAC'; // Light skin tone
+            const skinDark = '#C0A080'; // Darker skin tone for outline
+            const shoeColor = '#2C3E50'; // Dark grey
+            const shoeDark = '#1C2833'; // Even darker grey
+
+            // Shadow beneath the character
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+            ctx.beginPath();
+            ctx.ellipse(x + width / 2, CITY_RUNNER_GROUND_Y + 5, width * 0.8, 5, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Head (circle with gradient)
+            const headRadius = width * 0.4;
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(x + width / 2, y + headRadius, headRadius, 0, Math.PI * 2);
+            ctx.closePath();
+            const headGradient = ctx.createRadialGradient(x + width / 2 - headRadius * 0.3, y + headRadius - headRadius * 0.3, 0, x + width / 2, y + headRadius, headRadius);
+            headGradient.addColorStop(0, '#FFF5EE'); // Lighter skin
+            headGradient.addColorStop(1, skinColor);
+            ctx.fillStyle = headGradient;
+            ctx.fill();
+            ctx.strokeStyle = skinDark; // Skin outline
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+
+            // Eyes (simple dots with white highlight)
+            ctx.fillStyle = 'black';
+            ctx.beginPath();
+            ctx.arc(x + width * 0.35, y + headRadius * 0.8, 2, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(x + width * 0.65, y + headRadius * 0.8, 2, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            ctx.arc(x + width * 0.36, y + headRadius * 0.78, 0.8, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(x + width * 0.66, y + headRadius * 0.78, 0.8, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Mouth (simple line)
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.arc(x + width / 2, y + headRadius * 1.2, headRadius * 0.3, 0, Math.PI);
+            ctx.stroke();
+            ctx.restore();
+
+            // Torso (rounded rectangle with gradient)
+            ctx.save();
+            ctx.beginPath();
+            ctx.roundRect(x, y + height * 0.2, width, height * 0.6, 5);
+            ctx.closePath();
+            const bodyGradient = ctx.createLinearGradient(x, y + height * 0.2, x + width, y + height * 0.2);
+            bodyGradient.addColorStop(0, bodyDark);
+            bodyGradient.addColorStop(0.5, bodyColor);
+            bodyGradient.addColorStop(1, bodyDark);
+            ctx.fillStyle = bodyGradient;
+            ctx.fill();
+            ctx.strokeStyle = bodyDark; // Darker blue outline
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.restore();
+
+            // Arms (animated)
+            const armLength = width * 0.7;
+            const armWidth = width * 0.2;
+            const armYOffset = y + height * 0.3;
+
+            // Reset shadow for arms and legs
+            ctx.shadowColor = 'transparent';
+
+            if (player.isJumping) {
+                // Jumping pose: arms raised
+                ctx.fillStyle = bodyColor;
+                ctx.strokeStyle = bodyDark;
+                ctx.beginPath(); // Left arm
+                ctx.roundRect(x - armWidth, armYOffset - armLength * 0.5, armWidth, armLength, 3);
+                ctx.fill();
+                ctx.stroke();
+                ctx.beginPath(); // Right arm
+                ctx.roundRect(x + width, armYOffset - armLength * 0.5, armWidth, armLength, 3);
+                ctx.fill();
+                ctx.stroke();
+            } else {
+                // Running animation: arms swinging
+                const armSwing = Math.sin(player.frame / CITY_RUNNER_ANIMATION_SPEED * Math.PI) * (width * 0.2);
+
+                // Front arm (appears to be swinging forward)
+                ctx.fillStyle = bodyColor;
+                ctx.strokeStyle = bodyDark;
+                ctx.beginPath();
+                ctx.roundRect(x + width - armWidth, armYOffset + armSwing, armWidth, armLength, 3);
+                ctx.fill();
+                ctx.stroke();
+
+                // Back arm (appears to be swinging backward)
+                ctx.beginPath();
+                ctx.roundRect(x, armYOffset - armSwing, armWidth, armLength, 3);
+                ctx.fill();
+                ctx.stroke();
+            }
+
+            // Legs (animated)
+            ctx.fillStyle = shoeColor;
+            ctx.strokeStyle = shoeDark;
+            ctx.lineWidth = 2;
+
+            const legHeight = height * 0.3;
+            const legWidth = width * 0.4;
+            const legY = y + height * 0.8;
+
+            if (player.isJumping) {
+                // Jumping pose: legs tucked
+                ctx.beginPath();
+                ctx.roundRect(x + width * 0.1, legY - 10, legWidth, legHeight, 3);
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.roundRect(x + width * 0.5, legY - 10, legWidth, legHeight, 3);
+                ctx.fill();
+                ctx.stroke();
+            } else {
+                // Running animation
+                const legOffset = Math.sin(player.frame / CITY_RUNNER_ANIMATION_SPEED) * (width * 0.1);
+
+                // Front leg
+                ctx.beginPath();
+                ctx.roundRect(x + width * 0.1 + legOffset, legY, legWidth, legHeight, 3);
+                ctx.fill();
+                ctx.stroke();
+
+                // Back leg
+                ctx.beginPath();
+                ctx.roundRect(x + width * 0.5 - legOffset, legY, legWidth, legHeight, 3);
+                ctx.fill();
+                ctx.stroke();
             }
         }
 
-        function startSubwaySprintGame() {
-            if (subwayGameActive) return;
-            subwayGameActive = true;
-            subwaySprintStartButton.disabled = true;
-            subwaySprintResetButton.disabled = false;
-            subwaySprintGameOverScreen.classList.remove('active');
-            subwayScore = 0;
-            subwaySprintScoreDisplay.textContent = subwayScore;
-            subwayObstacles = [];
-            subwayCoins = [];
-            gameSpeed = SUBWAY_INITIAL_GAME_SPEED;
-            frameCount = 0;
-            lastObstacleSpawnFrameSubway = 0;
-            lastSpeedIncreaseTimeSubway = Date.now();
+        // Function to draw the evil obstacle character (spiky block)
+        function drawObstacle(ctx, obstacle) {
+            const x = obstacle.x;
+            const y = obstacle.y;
+            const width = obstacle.width;
+            const height = obstacle.height;
 
-            if (isAudioReady && subwaySprintBackgroundMusicLoop && subwaySprintBackgroundMusicLoop.state !== 'started') {
-                subwaySprintBackgroundMusicLoop.start();
+            const mainColor = '#E74C3C'; // Red
+            const highlightColor = '#FF6347'; // Tomato
+            const outlineColor = '#A93226'; // Even darker red
+            const spikeColor = '#C0392B'; // Darker red (Moved this declaration to here)
+            const eyeColor = '#FFD700'; // Gold for evil eyes
+            const glowColor = 'rgba(255, 0, 0, 0.4)'; // Red glow
+
+            // Apply glow effect
+            ctx.shadowColor = glowColor;
+            ctx.shadowBlur = 15; // Increased blur for stronger glow
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+
+            // Main body (rectangle with gradient)
+            ctx.beginPath();
+            ctx.rect(x, y, width, height);
+            const gradient = ctx.createLinearGradient(x, y, x + width, y + height);
+            gradient.addColorStop(0, highlightColor);
+            gradient.addColorStop(0.5, mainColor);
+            gradient.addColorStop(1, outlineColor);
+            ctx.fillStyle = gradient;
+            ctx.fill();
+            ctx.strokeStyle = outlineColor;
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            // Spikes on top (more defined and irregular)
+            const numSpikes = 4; // More spikes
+            const spikeBaseWidth = width / numSpikes;
+            const spikeHeight = 15; // Height of spikes
+
+            for (let i = 0; i < numSpikes; i++) {
+                ctx.fillStyle = spikeColor;
+                ctx.beginPath();
+                ctx.moveTo(x + i * spikeBaseWidth, y);
+                ctx.lineTo(x + i * spikeBaseWidth + spikeBaseWidth * 0.4, y - spikeHeight);
+                ctx.lineTo(x + (i + 1) * spikeBaseWidth, y);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
             }
 
-            subwayGameLoop();
+            // Evil Eyes (glowing)
+            ctx.shadowColor = 'rgba(255, 255, 0, 0.8)'; // Yellowish glow for eyes
+            ctx.shadowBlur = 10;
+            ctx.fillStyle = eyeColor;
+            
+            // Left eye
+            ctx.beginPath();
+            ctx.arc(x + width * 0.3, y + height * 0.3, 5, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Right eye
+            ctx.beginPath();
+            ctx.arc(x + width * 0.7, y + height * 0.3, 5, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Reset shadow
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
         }
 
-        function subwayGameLoop() {
-            if (!subwayGameActive) return;
 
-            updateSubwaySprintGame();
-            drawSubwaySprintGame();
+        function drawCityRunnerGame() {
+            cityRunnerCtx.clearRect(0, 0, cityRunnerCanvas.width, cityRunnerCanvas.height);
 
-            animationFrameIdSubwaySprint = requestAnimationFrame(subwayGameLoop);
-        }
+            // Draw ground
+            cityRunnerCtx.fillStyle = '#6B4226'; // Brown
+            cityRunnerCtx.fillRect(0, CITY_RUNNER_GROUND_Y, cityRunnerCanvas.width, cityRunnerCanvas.height - CITY_RUNNER_GROUND_Y);
 
-        function drawSubwaySprintGame() {
-            subwaySprintCtx.clearRect(0, 0, subwaySprintCanvas.width, subwaySprintCanvas.height);
-
-            // Draw lanes
-            subwaySprintCtx.fillStyle = '#444'; // Darker gray for track
-            subwaySprintCtx.fillRect(0, 0, subwaySprintCanvas.width, subwaySprintCanvas.height);
-
-            // Lane dividers
-            subwaySprintCtx.strokeStyle = '#888'; // Lighter gray for dividers
-            subwaySprintCtx.lineWidth = 5;
-            subwaySprintCtx.beginPath();
-            subwaySprintCtx.moveTo(SUBWAY_LANE_WIDTH, 0);
-            subwaySprintCtx.lineTo(SUBWAY_LANE_WIDTH, subwaySprintCanvas.height);
-            subwaySprintCtx.moveTo(2 * SUBWAY_LANE_WIDTH, 0);
-            subwaySprintCtx.lineTo(2 * SUBWAY_LANE_WIDTH, subwaySprintCanvas.height);
-            subwaySprintCtx.stroke();
-
-            // Draw player
-            subwaySprintCtx.fillStyle = 'blue';
-            let playerDrawHeight = SUBWAY_PLAYER_HEIGHT;
-            let playerDrawY = subwayPlayer.y;
-            if (subwayPlayer.isSliding) {
-                playerDrawHeight = SUBWAY_PLAYER_HEIGHT / 2;
-                playerDrawY = subwayPlayer.y + SUBWAY_PLAYER_HEIGHT / 2;
+            // Draw city background (simple rectangles for buildings)
+            cityRunnerCtx.fillStyle = '#7F8C8D'; // Gray for buildings
+            // Draw buildings that scroll
+            for (let i = 0; i < 5; i++) { // Draw a few buildings
+                const buildingWidth = 80 + Math.random() * 50;
+                const buildingHeight = 100 + Math.random() * 80;
+                const buildingX = (i * 150 + (Date.now() * 0.05 * cityRunnerGameSpeed)) % (cityRunnerCanvas.width + buildingWidth) - buildingWidth;
+                cityRunnerCtx.fillRect(buildingX, CITY_RUNNER_GROUND_Y - buildingHeight, buildingWidth, buildingHeight);
+                cityRunnerCtx.fillStyle = '#95A5A6'; // Darker gray for windows
+                cityRunnerCtx.fillRect(buildingX + 10, CITY_RUNNER_GROUND_Y - buildingHeight + 10, 10, 10);
+                cityRunnerCtx.fillRect(buildingX + 30, CITY_RUNNER_GROUND_Y - buildingHeight + 10, 10, 10);
+                cityRunnerCtx.fillRect(buildingX + 10, CITY_RUNNER_GROUND_Y - buildingHeight + 30, 10, 10);
+                cityRunnerCtx.fillRect(buildingX + 30, CITY_RUNNER_GROUND_Y - buildingHeight + 30, 10, 10);
+                cityRunnerCtx.fillStyle = '#7F8C8D'; // Reset to building color
             }
-            subwaySprintCtx.fillRect(subwayPlayer.x, playerDrawY, SUBWAY_PLAYER_WIDTH, playerDrawHeight);
 
-            // Draw obstacles
-            subwayObstacles.forEach(obs => {
-                subwaySprintCtx.fillStyle = obs.type === 'train' ? '#8B0000' : (obs.type === 'low_barrier' ? '#FF4500' : '#FFD700'); // DarkRed, OrangeRed, Gold
-                subwaySprintCtx.fillRect(obs.x, obs.y, obs.width, obs.height);
+
+            // Draw player using the new function
+            drawHero(cityRunnerCtx, cityRunnerPlayer);
+
+            // Draw obstacles using the new function
+            cityRunnerObstacles.forEach(obstacle => {
+                drawObstacle(cityRunnerCtx, obstacle);
             });
-
-            // Draw coins
-            subwayCoins.forEach(coin => {
-                subwaySprintCtx.fillStyle = 'yellow';
-                subwaySprintCtx.beginPath();
-                subwaySprintCtx.arc(coin.x + SUBWAY_COIN_SIZE / 2, coin.y + SUBWAY_COIN_SIZE / 2, SUBWAY_COIN_SIZE / 2, 0, Math.PI * 2);
-                subwaySprintCtx.fill();
-                subwaySprintCtx.closePath();
-            });
         }
 
-        function updateSubwaySprintGame() {
-            frameCount++;
-            subwayScore += Math.floor(gameSpeed / 2); // Score based on distance/speed
-            subwaySprintScoreDisplay.textContent = subwayScore;
+        function updateCityRunnerGame() {
+            // Player vertical movement
+            if (cityRunnerPlayer.isJumping) {
+                cityRunnerPlayer.velocityY += CITY_RUNNER_GRAVITY;
+                cityRunnerPlayer.y += cityRunnerPlayer.velocityY;
+
+                // Land on ground
+                if (cityRunnerPlayer.y + cityRunnerPlayer.height > CITY_RUNNER_GROUND_Y) {
+                    cityRunnerPlayer.y = CITY_RUNNER_GROUND_Y - cityRunnerPlayer.height;
+                    cityRunnerPlayer.velocityY = 0;
+                    cityRunnerPlayer.isJumping = false;
+                }
+            } else {
+                // Update animation frame for running
+                cityRunnerPlayer.frame = (cityRunnerPlayer.frame + 1) % (CITY_RUNNER_ANIMATION_SPEED * 2); // Cycle through frames
+            }
 
             // Increase game speed over time
-            if (Date.now() - lastSpeedIncreaseTimeSubway > SUBWAY_SPEED_INCREASE_INTERVAL) {
-                gameSpeed = Math.min(SUBWAY_MAX_GAME_SPEED, gameSpeed + 0.5);
-                lastSpeedIncreaseTimeSubway = Date.now();
+            const currentTime = Date.now();
+            if (currentTime - lastSpeedIncreaseTimeCityRunner > CITY_RUNNER_SPEED_INCREASE_INTERVAL) {
+                cityRunnerGameSpeed = Math.min(CITY_RUNNER_MAX_SPEED, cityRunnerGameSpeed + 0.5);
+                lastSpeedIncreaseTimeCityRunner = currentTime;
             }
 
-            // Player vertical movement (jump/slide)
-            if (subwayPlayer.isJumping) {
-                subwayPlayer.y += subwayPlayer.dy;
-                subwayPlayer.dy += SUBWAY_GRAVITY;
-                if (subwayPlayer.y >= subwaySprintCanvas.height - SUBWAY_PLAYER_HEIGHT - 10) {
-                    subwayPlayer.y = subwaySprintCanvas.height - SUBWAY_PLAYER_HEIGHT - 10;
-                    subwayPlayer.isJumping = false;
-                    subwayPlayer.dy = 0;
-                }
-            }
-
-            if (subwayPlayer.isSliding) {
-                subwayPlayer.slideTimer--;
-                if (subwayPlayer.slideTimer <= 0) {
-                    subwayPlayer.isSliding = false;
-                }
+            // Spawn obstacles
+            if (currentTime - lastObstacleSpawnTimeCityRunner > getRandomInt(CITY_RUNNER_SPAWN_INTERVAL_MIN, CITY_RUNNER_SPAWN_INTERVAL_MAX)) {
+                spawnCityRunnerObstacle();
+                lastObstacleSpawnTimeCityRunner = currentTime;
             }
 
             // Move obstacles
-            subwayObstacles.forEach((obs, index) => {
-                obs.y += gameSpeed;
-                if (obs.y > subwaySprintCanvas.height) {
-                    subwayObstacles.splice(index, 1);
+            cityRunnerObstacles.forEach(obstacle => {
+                obstacle.x -= cityRunnerGameSpeed;
+            });
+            cityRunnerObstacles = cityRunnerObstacles.filter(obstacle => {
+                // Remove obstacles that are off-screen and update score
+                if (obstacle.x + obstacle.width < 0) {
+                    cityRunnerScore += 10;
+                    cityRunnerScoreDisplay.textContent = cityRunnerScore;
+                    return false;
                 }
-
-                // Collision detection
-                let playerHitboxY = subwayPlayer.y;
-                let playerHitboxHeight = SUBWAY_PLAYER_HEIGHT;
-
-                if (subwayPlayer.isSliding) {
-                    playerHitboxY = subwayPlayer.y + SUBWAY_PLAYER_HEIGHT / 2;
-                    playerHitboxHeight = SUBWAY_PLAYER_HEIGHT / 2;
-                } else if (subwayPlayer.isJumping) {
-                    // Adjust hitbox for jumping (e.g., make it smaller at the bottom)
-                    // For simplicity, we'll keep the full height but check against obstacle type
-                }
-
-                if (
-                    obs.lane === subwayPlayer.lane &&
-                    subwayPlayer.x < obs.x + obs.width &&
-                    subwayPlayer.x + SUBWAY_PLAYER_WIDTH > obs.x &&
-                    playerHitboxY < obs.y + obs.height &&
-                    playerHitboxY + playerHitboxHeight > obs.y
-                ) {
-                    // Handle specific obstacle types
-                    if (obs.type === 'train') {
-                        endSubwaySprintGame();
-                        if (isAudioReady && subwayCollisionSound && Tone.context.state === 'running') {
-                            subwayCollisionSound.triggerAttackRelease("C1", "8n");
-                        }
-                    } else if (obs.type === 'low_barrier') {
-                        if (!subwayPlayer.isJumping) {
-                            endSubwaySprintGame();
-                            if (isAudioReady && subwayCollisionSound && Tone.context.state === 'running') {
-                                subwayCollisionSound.triggerAttackRelease("C1", "8n");
-                            }
-                        }
-                    } else if (obs.type === 'high_barrier') {
-                        if (!subwayPlayer.isSliding) {
-                            endSubwaySprintGame();
-                            if (isAudioReady && subwayCollisionSound && Tone.context.state === 'running') {
-                                subwayCollisionSound.triggerAttackRelease("C1", "8n");
-                            }
-                        }
-                    }
-                }
+                return true;
             });
 
-            // Move coins
-            subwayCoins.forEach((coin, index) => {
-                coin.y += gameSpeed;
-                if (coin.y > subwaySprintCanvas.height) {
-                    subwayCoins.splice(index, 1);
-                }
-
-                // Coin collection
+            // Collision detection (Player vs Obstacles)
+            cityRunnerObstacles.forEach(obstacle => {
+                // Adjust collision box for the more detailed player and obstacle shapes
+                // This is a simplified AABB collision, might need fine-tuning with complex shapes
                 if (
-                    coin.lane === subwayPlayer.lane &&
-                    subwayPlayer.x < coin.x + SUBWAY_COIN_SIZE &&
-                    subwayPlayer.x + SUBWAY_PLAYER_WIDTH > coin.x &&
-                    subwayPlayer.y < coin.y + SUBWAY_COIN_SIZE &&
-                    subwayPlayer.y + SUBWAY_PLAYER_HEIGHT > coin.y
+                    cityRunnerPlayer.x < obstacle.x + obstacle.width &&
+                    cityRunnerPlayer.x + cityRunnerPlayer.width > obstacle.x &&
+                    cityRunnerPlayer.y + cityRunnerPlayer.height * 0.2 < obstacle.y + obstacle.height && // Adjust player top for head
+                    cityRunnerPlayer.y + cityRunnerPlayer.height > obstacle.y
                 ) {
-                    subwayScore += 100; // Each coin is 100 points
-                    subwaySprintScoreDisplay.textContent = subwayScore;
-                    if (isAudioReady && subwayCoinSound && Tone.context.state === 'running') {
-                        subwayCoinSound.triggerAttackRelease("E5", "32n");
-                    }
-                    subwayCoins.splice(index, 1);
+                    endCityRunnerGame(); // Collision detected
                 }
             });
-
-            // Spawn new obstacles/coins
-            if (frameCount - lastObstacleSpawnFrameSubway > getRandomInt(SUBWAY_OBSTACLE_SPAWN_INTERVAL_MIN, SUBWAY_OBSTACLE_SPAWN_INTERVAL_MAX)) {
-                let lane = getRandomInt(0, 2);
-                let obstacleType;
-                let obstacleHeight;
-
-                // Randomly choose obstacle type
-                const rand = Math.random();
-                if (rand < 0.5) { // 50% chance for train
-                    obstacleType = 'train';
-                    obstacleHeight = SUBWAY_OBSTACLE_HEIGHT_TRAIN;
-                } else if (rand < 0.75) { // 25% chance for low barrier
-                    obstacleType = 'low_barrier';
-                    obstacleHeight = SUBWAY_OBSTACLE_HEIGHT_LOW_BARRIER;
-                } else { // 25% chance for high barrier
-                    obstacleType = 'high_barrier';
-                    obstacleHeight = SUBWAY_OBSTACLE_HEIGHT_HIGH_BARRIER;
-                }
-
-                subwayObstacles.push({
-                    x: lane * SUBWAY_LANE_WIDTH + (SUBWAY_LANE_WIDTH - SUBWAY_OBSTACLE_WIDTH) / 2,
-                    y: -obstacleHeight, // Start above canvas
-                    lane: lane,
-                    width: SUBWAY_OBSTACLE_WIDTH,
-                    height: obstacleHeight,
-                    type: obstacleType
-                });
-                lastObstacleSpawnFrameSubway = frameCount;
-
-                // Spawn coins in adjacent lanes or same lane if obstacle is jumpable/slideable
-                if (Math.random() < SUBWAY_COIN_SPAWN_CHANCE) {
-                    let coinLane = getRandomInt(0, 2);
-                    // Try to avoid spawning coins directly on top of solid obstacles
-                    if (obstacleType === 'train' && coinLane === lane) {
-                        // If train is in this lane, try another lane for coin
-                        coinLane = (lane + 1) % 3; // Cycle to next lane
-                        if (coinLane === lane) coinLane = (lane + 2) % 3; // If still same, try third lane
-                    }
-                    subwayCoins.push({
-                        x: coinLane * SUBWAY_LANE_WIDTH + (SUBWAY_LANE_WIDTH - SUBWAY_COIN_SIZE) / 2,
-                        y: -getRandomInt(50, 200), // Randomize coin Y position above screen
-                        lane: coinLane
-                    });
-                }
-            }
         }
 
-        function endSubwaySprintGame() {
-            subwayGameActive = false;
-            if (animationFrameIdSubwaySprint) {
-                cancelAnimationFrame(animationFrameIdSubwaySprint);
-            }
-
-            subwaySprintFinalScoreDisplay.textContent = subwayScore;
-            if (subwayScore > subwayHighScore) {
-                subwayHighScore = subwayScore;
-                localStorage.setItem('subwaySprintHighScore', subwayHighScore);
-            }
-            dynamicGameContainer.querySelector('#subway-sprint-game-over-high-score').textContent = subwayHighScore;
-            subwaySprintGameOverScreen.classList.add('active');
-            subwaySprintStartButton.disabled = false; // Re-enable start button
-            subwaySprintResetButton.disabled = false; // Ensure reset button is enabled
-
-            if (subwaySprintBackgroundMusicLoop && subwaySprintBackgroundMusicLoop.state === 'started') {
-                subwaySprintBackgroundMusicLoop.stop();
-            }
+        function spawnCityRunnerObstacle() {
+            const obstacleHeight = CITY_RUNNER_OBSTACLE_HEIGHT;
+            const obstacleY = CITY_RUNNER_GROUND_Y - obstacleHeight;
+            cityRunnerObstacles.push({
+                x: cityRunnerCanvas.width,
+                y: obstacleY,
+                width: CITY_RUNNER_OBSTACLE_WIDTH,
+                height: obstacleHeight
+            });
         }
 
-        function handleSubwaySprintKeyDown(e) {
-            if (!subwayGameActive) return;
-
-            const oldLane = subwayPlayer.lane;
-
-            if (e.key === 'ArrowLeft' || e.key === 'a') {
-                if (subwayPlayer.lane > 0) {
-                    subwayPlayer.lane--;
-                }
-            } else if (e.key === 'ArrowRight' || e.key === 'd') {
-                if (subwayPlayer.lane < 2) {
-                    subwayPlayer.lane++;
-                }
-            } else if (e.key === 'ArrowUp' || e.key === 'w' || e.key === ' ') {
-                if (!subwayPlayer.isJumping && !subwayPlayer.isSliding) {
-                    subwayPlayer.isJumping = true;
-                    subwayPlayer.dy = SUBWAY_PLAYER_JUMP_VELOCITY;
-                    if (isAudioReady && subwayJumpSound && Tone.context.state === 'running') {
-                        subwayJumpSound.triggerAttackRelease("C5", "16n");
-                    }
-                }
-            } else if (e.key === 'ArrowDown' || e.key === 's') {
-                if (!subwayPlayer.isSliding && !subwayPlayer.isJumping) {
-                    subwayPlayer.isSliding = true;
-                    subwayPlayer.slideTimer = SUBWAY_PLAYER_SLIDE_DURATION;
-                    if (isAudioReady && subwaySlideSound && Tone.context.state === 'running') {
-                        subwaySlideSound.triggerAttackRelease("8n");
-                    }
+        function handleCityRunnerKeyDown(e) {
+            if (!cityRunnerGameActive) return;
+            cityRunnerKeys[e.key] = true;
+            if ((e.key === 'ArrowUp' || e.key === ' ' || e.key === 'w') && !cityRunnerPlayer.isJumping) {
+                cityRunnerPlayer.isJumping = true;
+                cityRunnerPlayer.velocityY = CITY_RUNNER_JUMP_STRENGTH;
+                if (isAudioReady && cityRunnerJumpSound && Tone.context.state === 'running') {
+                    cityRunnerJumpSound.triggerAttackRelease("C5", "16n");
                 }
             }
-
-            // Update player's x position immediately after lane change
-            if (subwayPlayer.lane !== oldLane) {
-                subwayPlayer.x = subwayPlayer.lane * SUBWAY_LANE_WIDTH + (SUBWAY_LANE_WIDTH - SUBWAY_PLAYER_WIDTH) / 2;
-            }
-
-            // Prevent default scrolling for arrow keys and spacebar
-            if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' ', 'a', 'd', 'w', 's'].includes(e.key)) {
+            // Prevent default scrolling for spacebar and arrow keys
+            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key)) {
                 e.preventDefault();
             }
         }
 
-        function handleSubwaySprintKeyUp(e) {
-            // No specific key up actions needed for continuous movement, but good to have.
+        function handleCityRunnerKeyUp(e) {
+            if (!cityRunnerGameActive) return;
+            cityRunnerKeys[e.key] = false;
         }
 
-        function handleSubwaySprintTouchStart(e) {
-            if (!subwayGameActive) return;
-            e.preventDefault(); // Prevent scrolling/zooming
-
-            subwaySwipeStartX = e.touches[0].clientX;
-            subwaySwipeStartY = e.touches[0].clientY;
-        }
-
-        function handleSubwaySprintTouchMove(e) {
-            if (!subwayGameActive) return;
-            e.preventDefault();
-            // Not used for continuous movement, but could be for precise dragging if needed.
-        }
-
-        function handleSubwaySprintTouchEnd(e) {
-            if (!subwayGameActive) return;
-            subwaySwipeEndX = e.changedTouches[0].clientX;
-            subwaySwipeEndY = e.changedTouches[0].clientY;
-
-            const dx = subwaySwipeEndX - subwaySwipeStartX;
-            const dy = subwaySwipeEndY - subwaySwipeStartY;
-
-            const oldLane = subwayPlayer.lane; // Store old lane to check if it changed
-
-            if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > SUBWAY_SWIPE_THRESHOLD) {
-                // Horizontal swipe
-                if (dx > 0) { // Swipe right
-                    if (subwayPlayer.lane < 2) {
-                        subwayPlayer.lane++;
-                    }
-                } else { // Swipe left
-                    if (subwayPlayer.lane > 0) {
-                        subwayPlayer.lane--;
-                    }
-                }
-            } else if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > SUBWAY_SWIPE_THRESHOLD) {
-                // Vertical swipe
-                if (dy < 0) { // Swipe up (jump)
-                    if (!subwayPlayer.isJumping && !subwayPlayer.isSliding) {
-                        subwayPlayer.isJumping = true;
-                        subwayPlayer.dy = SUBWAY_PLAYER_JUMP_VELOCITY;
-                        if (isAudioReady && subwayJumpSound && Tone.context.state === 'running') {
-                            subwayJumpSound.triggerAttackRelease("C5", "16n");
-                        }
-                    }
-                } else { // Swipe down (slide)
-                    if (!subwayPlayer.isSliding && !subwayPlayer.isJumping) {
-                        subwayPlayer.isSliding = true;
-                        subwayPlayer.slideTimer = SUBWAY_PLAYER_SLIDE_DURATION;
-                        if (isAudioReady && subwaySlideSound && Tone.context.state === 'running') {
-                            subwaySlideSound.triggerAttackRelease("8n");
-                        }
-                    }
+        function handleCityRunnerTouchStart(e) {
+            if (!cityRunnerGameActive) return;
+            e.preventDefault(); // Prevent scrolling
+            if (!cityRunnerPlayer.isJumping) {
+                cityRunnerPlayer.isJumping = true;
+                cityRunnerPlayer.velocityY = CITY_RUNNER_JUMP_STRENGTH;
+                if (isAudioReady && cityRunnerJumpSound && Tone.context.state === 'running') {
+                    cityRunnerJumpSound.triggerAttackRelease("C5", "16n");
                 }
             }
+        }
 
-            // Update player's x position immediately after lane change due to swipe
-            if (subwayPlayer.lane !== oldLane) {
-                subwayPlayer.x = subwayPlayer.lane * SUBWAY_LANE_WIDTH + (SUBWAY_LANE_WIDTH - SUBWAY_PLAYER_WIDTH) / 2;
+        function endCityRunnerGame() {
+            cityRunnerGameActive = false;
+            if (animationFrameIdCityRunner) {
+                cancelAnimationFrame(animationFrameIdCityRunner);
+            }
+            if (isAudioReady && cityRunnerCollisionSound && Tone.context.state === 'running') {
+                cityRunnerCollisionSound.triggerAttackRelease("8n");
+            }
+
+            cityRunnerFinalScoreDisplay.textContent = cityRunnerScore;
+            if (cityRunnerScore > cityRunnerHighScore) {
+                cityRunnerHighScore = cityRunnerScore;
+                localStorage.setItem('cityRunnerHighScore', cityRunnerHighScore);
+            }
+            dynamicGameContainer.querySelector('#city-runner-game-over-high-score').textContent = cityRunnerHighScore;
+            cityRunnerGameOverScreen.classList.add('active');
+            cityRunnerStartButton.disabled = false; // Re-enable start button
+            cityRunnerResetButton.disabled = false; // Ensure reset button is enabled
+
+            if (cityRunnerBackgroundMusicLoop && cityRunnerBackgroundMusicLoop.state === 'started') {
+                cityRunnerBackgroundMusicLoop.stop();
             }
         }
+
 
         function getRandomInt(min, max) {
             min = Math.ceil(min);
             max = Math.floor(max);
             return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        // --------------------------------------------------------------------
+        // Smart Notepad Logic
+        // --------------------------------------------------------------------
+        let notes = []; // Array to store all note objects
+        let subjects = new Set(); // To store unique subjects for filtering
+        let thoughtDumpContent = "";
+        let currentFilter = {
+            subject: 'all',
+            tag: 'all',
+            date: 'all',
+            todoPending: false,
+            archived: false
+        };
+        let currentSort = 'newest';
+        let focusedNoteId = null; // Track the ID of the currently focused note
+
+        // DOM Elements for Notepad
+        let notepadContainer, addNoteSection, notesList, noNotesMessage;
+        let noteTitleInput, noteSubjectInput, noteContentTextarea, noteTagCheckboxes;
+        let addNoteButton, clearFormButton;
+        let subjectSuggestionsDatalist;
+        let filterSubjectSelect, sortDateSelect, filterTodayButton, filterImportantButton, filterReviseButton, filterTodoPendingButton, filterArchivedButton, clearFiltersButton;
+        let progressTrackerSection, completedTasksPercentage, progressBarFill;
+        let thoughtDumpTextarea, clearThoughtDumpButton;
+        let focusModeToggleButton;
+        let exportNoteButton, backupAllNotesButton;
+
+        const SUBJECT_COLORS = {
+            'math': 'var(--subject-math)',
+            'physics': 'var(--subject-physics)',
+            'coding': 'var(--subject-coding)',
+            'chemistry': 'var(--subject-chemistry)',
+            'history': 'var(--subject-history)',
+            'literature': 'var(--subject-literature)',
+            'biology': 'var(--subject-biology)',
+            'art': 'var(--subject-art)',
+            'other': 'var(--subject-other)'
+        };
+
+        function loadNotepadData() {
+            notes = JSON.parse(localStorage.getItem('smartNotes')) || [];
+            subjects = new Set(); // Clear existing subjects before repopulating
+            notes.forEach(note => {
+                if (note.subject) subjects.add(note.subject);
+                // Ensure checklist items have 'completed' property
+                if (note.checklist) {
+                    note.checklist = note.checklist.map(item => ({ text: item.text, completed: item.completed || false }));
+                }
+            });
+            thoughtDumpContent = localStorage.getItem('thoughtDump') || "";
+
+            // Check for daily clear for thought dump
+            const lastClearDate = localStorage.getItem('lastThoughtDumpClearDate');
+            const today = new Date().toDateString();
+            if (lastClearDate !== today) {
+                thoughtDumpContent = "";
+                localStorage.setItem('thoughtDump', "");
+                localStorage.setItem('lastThoughtDumpClearDate', today);
+            }
+        }
+
+        function saveNotepadData() {
+            localStorage.setItem('smartNotes', JSON.stringify(notes));
+            localStorage.setItem('thoughtDump', thoughtDumpContent);
+            renderNotes(); // Re-render notes after saving
+            updateProgressTracker(); // Update progress tracker
+            updateSubjectFilterOptions(); // Update subject filter dropdown
+        }
+
+        function addNote() {
+            const title = noteTitleInput.value.trim();
+            const subject = noteSubjectInput.value.trim();
+            const content = noteContentTextarea.value.trim();
+            const tags = Array.from(noteTagCheckboxes)
+                            .filter(checkbox => checkbox.checked)
+                            .map(checkbox => checkbox.dataset.tag);
+
+            if (!title || !content) {
+                showMessageBox('Please enter both a title and content for your note.', 'error');
+                return;
+            }
+
+            const newNote = {
+                id: Date.now().toString(), // Unique ID
+                title,
+                subject: subject || 'Other', // Default subject
+                content,
+                tags,
+                createdAt: new Date().toISOString(),
+                isArchived: false,
+                checklist: parseChecklistFromContent(content)
+            };
+
+            notes.push(newNote);
+            subjects.add(newNote.subject); // Add new subject to the set
+            saveNotepadData();
+            clearNoteForm();
+            showMessageBox('Note added successfully!', 'success');
+        }
+
+        function parseChecklistFromContent(content) {
+            const checklistRegex = /\[(x| )\]\s*(.*)/g;
+            let match;
+            const checklistItems = [];
+            while ((match = checklistRegex.exec(content)) !== null) {
+                checklistItems.push({
+                    text: match[2].trim(),
+                    completed: match[1] === 'x'
+                });
+            }
+            return checklistItems;
+        }
+
+        function updateNoteContentWithChecklist(noteId, checklistItemIndex, isCompleted) {
+            const note = notes.find(n => n.id === noteId);
+            if (note && note.checklist && note.checklist[checklistItemIndex]) {
+                note.checklist[checklistItemIndex].completed = isCompleted;
+
+                // Update the original content string to reflect the change
+                let updatedContent = note.content;
+                const checklistRegex = /\[(x| )\]\s*(.*)/g;
+                let matchCount = 0;
+                updatedContent = updatedContent.replace(checklistRegex, (match, p1, p2) => {
+                    if (matchCount === checklistItemIndex) {
+                        return `[${isCompleted ? 'x' : ' '}] ${p2}`;
+                    }
+                    matchCount++;
+                    return match;
+                });
+                note.content = updatedContent;
+                saveNotepadData();
+            }
+        }
+
+
+        function renderNotes() {
+            notesList.innerHTML = ''; // Clear current notes
+            noNotesMessage.style.display = 'none'; // Hide no notes message by default
+
+            let filteredNotes = [...notes]; // Create a shallow copy to filter
+
+            // Apply filters
+            if (currentFilter.subject !== 'all') {
+                filteredNotes = filteredNotes.filter(note => note.subject === currentFilter.subject);
+            }
+            if (currentFilter.tag !== 'all') {
+                filteredNotes = filteredNotes.filter(note => note.tags.includes(currentFilter.tag));
+            }
+            if (currentFilter.date === 'today') {
+                const today = new Date().toDateString();
+                filteredNotes = filteredNotes.filter(note => new Date(note.createdAt).toDateString() === today);
+            }
+            if (currentFilter.todoPending) {
+                filteredNotes = filteredNotes.filter(note => 
+                    note.checklist && note.checklist.some(item => !item.completed)
+                );
+            }
+            if (!currentFilter.archived) { // If not filtering by archived, hide archived notes
+                filteredNotes = filteredNotes.filter(note => !note.isArchived);
+            } else { // If filtering by archived, only show archived notes
+                filteredNotes = filteredNotes.filter(note => note.isArchived);
+            }
+
+            // Apply sorting
+            filteredNotes.sort((a, b) => {
+                const dateA = new Date(a.createdAt);
+                const dateB = new Date(b.createdAt);
+                if (currentSort === 'newest') {
+                    return dateB - dateA;
+                } else {
+                    return dateA - dateB;
+                }
+            });
+
+            if (filteredNotes.length === 0) {
+                noNotesMessage.style.display = 'block';
+                return;
+            }
+
+            filteredNotes.forEach(note => {
+                const noteCard = document.createElement('div');
+                noteCard.classList.add('note-card');
+                noteCard.dataset.id = note.id;
+                if (note.isArchived) {
+                    noteCard.classList.add('archived');
+                }
+                noteCard.classList.add(`subject-${note.subject.toLowerCase().replace(/\s/g, '-')}`); // Add subject class for color-coding
+
+                const formattedDate = new Date(note.createdAt).toLocaleString();
+
+                let tagsHtml = '';
+                if (note.tags && note.tags.length > 0) {
+                    tagsHtml = `<div class="note-tags">` +
+                                note.tags.map(tag => `<span class="note-tag">${getTagNameWithIcon(tag)}</span>`).join('') +
+                                `</div>`;
+                }
+
+                let checklistHtml = '';
+                if (note.checklist && note.checklist.length > 0) {
+                    checklistHtml = `<ul class="note-checklist">` +
+                                    note.checklist.map((item, index) => `
+                                        <li class="${item.completed ? 'completed' : ''}">
+                                            <input type="checkbox" data-note-id="${note.id}" data-checklist-index="${index}" ${item.completed ? 'checked' : ''}>
+                                            <span>${item.text}</span>
+                                        </li>
+                                    `).join('') +
+                                    `</ul>`;
+                }
+                
+                noteCard.innerHTML = `
+                    <h3>${note.title}</h3>
+                    <div class="note-meta">
+                        <span class="note-subject">${note.subject}</span>
+                        <span>${formattedDate}</span>
+                    </div>
+                    <div class="note-content">${note.content.replace(/\[(x| )\]\s*(.*)/g, '')}</div> ${checklistHtml}
+                    ${tagsHtml}
+                    <div class="note-actions">
+                        <button class="edit-btn" data-id="${note.id}"><i class="fas fa-edit"></i> Edit</button>
+                        <button class="archive-toggle-btn" data-id="${note.id}">
+                            <i class="fas fa-archive"></i> ${note.isArchived ? 'Unarchive' : 'Archive'}
+                        </button>
+                        <button class="delete-btn" data-id="${note.id}"><i class="fas fa-trash"></i> Delete</button>
+                        <button class="focus-btn" data-id="${note.id}"><i class="fas fa-eye"></i> Focus</button>
+                        <button class="export-txt-btn" data-id="${note.id}"><i class="fas fa-file-export"></i> Export TXT</button>
+                    </div>
+                `;
+                notesList.appendChild(noteCard);
+            });
+
+            // Add event listeners for checklist checkboxes
+            notesList.querySelectorAll('.note-checklist input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', (e) => {
+                    const noteId = e.target.dataset.noteId;
+                    const checklistIndex = parseInt(e.target.dataset.checklistIndex);
+                    const isCompleted = e.target.checked;
+                    updateNoteContentWithChecklist(noteId, checklistIndex, isCompleted);
+                });
+            });
+
+            // Add event listeners for note actions
+            notesList.querySelectorAll('.edit-btn').forEach(button => {
+                button.addEventListener('click', (e) => editNote(e.target.dataset.id));
+            });
+            notesList.querySelectorAll('.archive-toggle-btn').forEach(button => {
+                button.addEventListener('click', (e) => toggleArchiveNote(e.target.dataset.id));
+            });
+            notesList.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', (e) => deleteNote(e.target.dataset.id));
+            });
+            notesList.querySelectorAll('.focus-btn').forEach(button => {
+                button.addEventListener('click', (e) => toggleFocusMode(e.target.dataset.id));
+            });
+            notesList.querySelectorAll('.export-txt-btn').forEach(button => {
+                button.addEventListener('click', (e) => exportNoteAsTxt(e.target.dataset.id));
+            });
+
+            updateProgressTracker();
+        }
+
+        function getTagNameWithIcon(tag) {
+            switch (tag) {
+                case 'Important': return '📌 Important';
+                case 'Revise': return '🔁 Revise';
+                case 'To-Do': return '✅ To-Do';
+                case 'Priority': return '🔥 Priority';
+                case 'Confusing': return '😵 Confusing';
+                default: return tag;
+            }
+        }
+
+        function clearNoteForm() {
+            noteTitleInput.value = '';
+            noteSubjectInput.value = '';
+            noteContentTextarea.value = '';
+            noteTagCheckboxes.forEach(checkbox => checkbox.checked = false);
+        }
+
+        function editNote(id) {
+            const noteToEdit = notes.find(note => note.id === id);
+            if (!noteToEdit) return;
+
+            // Populate form with note data
+            noteTitleInput.value = noteToEdit.title;
+            noteSubjectInput.value = noteToEdit.subject;
+            noteContentTextarea.value = noteToEdit.content;
+            noteTagCheckboxes.forEach(checkbox => {
+                checkbox.checked = noteToEdit.tags.includes(checkbox.dataset.tag);
+            });
+
+            // Change Add button to Update button
+            addNoteButton.textContent = 'Update Note';
+            addNoteButton.dataset.editingId = id;
+            addNoteButton.removeEventListener('click', addNote);
+            addNoteButton.addEventListener('click', updateNote);
+
+            // Scroll to top of form
+            addNoteSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function updateNote() {
+            const id = addNoteButton.dataset.editingId;
+            const noteIndex = notes.findIndex(note => note.id === id);
+            if (noteIndex === -1) return;
+
+            const updatedTitle = noteTitleInput.value.trim();
+            const updatedSubject = noteSubjectInput.value.trim();
+            const updatedContent = noteContentTextarea.value.trim();
+            const updatedTags = Array.from(noteTagCheckboxes)
+                                .filter(checkbox => checkbox.checked)
+                                .map(checkbox => checkbox.dataset.tag);
+
+            notes[noteIndex].title = updatedTitle;
+            notes[noteIndex].subject = updatedSubject || 'Other';
+            notes[noteIndex].content = updatedContent;
+            notes[noteIndex].tags = updatedTags;
+            notes[noteIndex].checklist = parseChecklistFromContent(updatedContent); // Re-parse checklist
+
+            subjects.add(notes[noteIndex].subject); // Add new subject if it's new
+            saveNotepadData();
+            clearNoteForm();
+            showMessageBox('Note updated successfully!', 'success');
+
+            // Revert button back to Add Note
+            addNoteButton.textContent = 'Add Note';
+            delete addNoteButton.dataset.editingId;
+            addNoteButton.removeEventListener('click', updateNote);
+            addNoteButton.addEventListener('click', addNote);
+        }
+
+        function toggleArchiveNote(id) {
+            const note = notes.find(n => n.id === id);
+            if (note) {
+                note.isArchived = !note.isArchived;
+                saveNotepadData();
+                showMessageBox(note.isArchived ? 'Note archived.' : 'Note unarchived.', 'info');
+            }
+        }
+
+        function deleteNote(id) {
+            // Confirmation dialog replacement
+            const confirmDelete = () => {
+                notes = notes.filter(note => note.id !== id);
+                saveNotepadData();
+                showMessageBox('Note deleted successfully!', 'success');
+            };
+
+            // Simple custom confirmation message for now
+            showMessageBox('Are you sure you want to delete this note? (This action is irreversible)', 'info', 5000);
+            // In a real app, you'd show a modal with "Confirm" and "Cancel" buttons.
+            // For this example, we'll auto-confirm after a short delay for simplicity.
+            setTimeout(confirmDelete, 2000); // Auto-delete after 2 seconds for demonstration
+        }
+
+        function updateSubjectFilterOptions() {
+            filterSubjectSelect.innerHTML = '<option value="all">All Subjects</option>';
+            Array.from(subjects).sort().forEach(subject => {
+                const option = document.createElement('option');
+                option.value = subject;
+                option.textContent = subject;
+                filterSubjectSelect.appendChild(option);
+            });
+            // Set the current filter value if it still exists
+            filterSubjectSelect.value = currentFilter.subject;
+        }
+
+        function applyFiltersAndSort() {
+            renderNotes();
+            // Update active state of filter buttons
+            filterTodayButton.classList.toggle('active-filter', currentFilter.date === 'today');
+            filterImportantButton.classList.toggle('active-filter', currentFilter.tag === 'Important');
+            filterReviseButton.classList.toggle('active-filter', currentFilter.tag === 'Revise');
+            filterTodoPendingButton.classList.toggle('active-filter', currentFilter.todoPending);
+            filterArchivedButton.classList.toggle('active-filter', currentFilter.archived);
+        }
+
+        function updateProgressTracker() {
+            let totalChecklistItems = 0;
+            let completedChecklistItems = 0;
+
+            notes.forEach(note => {
+                if (note.checklist) {
+                    totalChecklistItems += note.checklist.length;
+                    completedChecklistItems += note.checklist.filter(item => item.completed).length;
+                }
+            });
+
+            const percentage = totalChecklistItems === 0 ? 0 : Math.round((completedChecklistItems / totalChecklistItems) * 100);
+            completedTasksPercentage.textContent = `${percentage}%`;
+            progressBarFill.style.width = `${percentage}%`;
+            progressBarFill.textContent = `${percentage}%`;
+        }
+
+        function updateThoughtDumpUI() {
+            thoughtDumpTextarea.value = thoughtDumpContent;
+            thoughtDumpTextarea.addEventListener('input', () => {
+                thoughtDumpContent = thoughtDumpTextarea.value;
+                localStorage.setItem('thoughtDump', thoughtDumpContent);
+            });
+            clearThoughtDumpButton.addEventListener('click', () => {
+                thoughtDumpContent = "";
+                thoughtDumpTextarea.value = "";
+                localStorage.setItem('thoughtDump', "");
+                localStorage.setItem('lastThoughtDumpClearDate', new Date().toDateString()); // Mark as cleared today
+                showMessageBox('Thought dump cleared!', 'info');
+            });
+        }
+
+        function toggleFocusMode(id = null) {
+            notepadContainer.classList.toggle('focus-mode');
+            if (notepadContainer.classList.contains('focus-mode')) {
+                focusedNoteId = id;
+                focusModeToggleButton.textContent = 'Exit Focus Mode';
+                // Hide all notes first
+                notesList.querySelectorAll('.note-card').forEach(card => {
+                    card.classList.remove('focused-note');
+                    card.style.display = 'none';
+                });
+                // Show only the focused note
+                if (focusedNoteId) {
+                    const focusedCard = notesList.querySelector(`.note-card[data-id="${focusedNoteId}"]`);
+                    if (focusedCard) {
+                        focusedCard.classList.add('focused-note');
+                        focusedCard.style.display = 'flex'; // Ensure it's visible
+                    }
+                } else {
+                    // If no specific note ID, show all notes in a stacked view
+                    notesList.querySelectorAll('.note-card').forEach(card => {
+                        card.style.display = 'flex';
+                    });
+                }
+            } else {
+                focusedNoteId = null;
+                focusModeToggleButton.textContent = 'Enter Focus Mode';
+                notesList.querySelectorAll('.note-card').forEach(card => {
+                    card.classList.remove('focused-note');
+                    card.style.display = 'flex'; // Restore default display
+                });
+                renderNotes(); // Re-render to apply normal filters/sort
+            }
+        }
+
+        function exportNoteAsTxt(id) {
+            const note = notes.find(n => n.id === id);
+            if (!note) {
+                showMessageBox('Note not found for export.', 'error');
+                return;
+            }
+
+            let textContent = `Title: ${note.title}\n`;
+            textContent += `Subject: ${note.subject}\n`;
+            textContent += `Created At: ${new Date(note.createdAt).toLocaleString()}\n`;
+            if (note.tags && note.tags.length > 0) {
+                textContent += `Tags: ${note.tags.join(', ')}\n`;
+            }
+            textContent += `\nContent:\n${note.content}\n`;
+
+            if (note.checklist && note.checklist.length > 0) {
+                textContent += `\nChecklist:\n`;
+                note.checklist.forEach(item => {
+                    textContent += `- [${item.completed ? 'x' : ' '}] ${item.text}\n`;
+                });
+            }
+
+            const blob = new Blob([textContent], { type: 'text/plain' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `${note.title.replace(/[^a-z0-9]/gi, '_')}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(a.href);
+            showMessageBox('Note exported as TXT!', 'success');
+        }
+
+        function backupAllNotesAsJson() {
+            const dataStr = JSON.stringify(notes, null, 2); // Pretty print JSON
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            const date = new Date().toISOString().slice(0, 10);
+            a.download = `evexa_buddy_notes_backup_${date}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(a.href);
+            showMessageBox('All notes backed up as JSON!', 'success');
         }
 
 
@@ -3894,7 +4981,7 @@
             countdownDisplay = document.getElementById('countdown-display');
             levelUpDisplay = document.getElementById('level-up-display');
             rotationHint = document.getElementById('rotation-hint');
-            homePage = document.getElementById('home-page');
+            
             gamePage = document.getElementById('game-page');
             gameSelectionPage = document.getElementById('game-selection-page'); // Get game selection page
             gameStartOverlay = document.getElementById('game-start-overlay');
@@ -3909,7 +4996,7 @@
             const playPortraitButton = document.getElementById('play-portrait-button');
             const rotateAndPlayButton = document.getElementById('rotate-and-play-button');
 
-            // User profile elements
+            // User Profile and Pro status
             proBadge = document.getElementById('pro-badge');
             toggleProButton = document.getElementById('toggle-pro-button');
 
@@ -3923,8 +5010,42 @@
             // Bottom Navbar elements
             const bottomNavbar = document.getElementById('bottomNavbar');
             const navLinks = document.querySelectorAll('.sidebar nav ul li a, .bottom-navbar-container .bottom-nav-item');
-            const playGameButton = document.getElementById('play-game-button');
             const gameCards = document.querySelectorAll('.game-card'); // Get all game cards
+
+            // Smart Notepad DOM Elements
+            smartNotepadPage = document.getElementById('smart-notepad-page');
+            notepadContainer = document.getElementById('notepad-container');
+            addNoteSection = document.getElementById('add-note-section');
+            notesList = document.getElementById('notes-list');
+            noNotesMessage = document.getElementById('no-notes-message');
+
+            noteTitleInput = document.getElementById('note-title');
+            noteSubjectInput = document.getElementById('note-subject');
+            noteContentTextarea = document.getElementById('note-content');
+            noteTagCheckboxes = document.querySelectorAll('.tag-group input[type="checkbox"]');
+            addNoteButton = document.getElementById('add-note-button');
+            clearFormButton = document.getElementById('clear-form-button');
+            subjectSuggestionsDatalist = document.getElementById('subject-suggestions');
+
+            filterSubjectSelect = document.getElementById('filter-subject');
+            sortDateSelect = document.getElementById('sort-date');
+            filterTodayButton = document.getElementById('filter-today');
+            filterImportantButton = document.getElementById('filter-important');
+            filterReviseButton = document.getElementById('filter-revise');
+            filterTodoPendingButton = document.getElementById('filter-todo-pending');
+            filterArchivedButton = document.getElementById('filter-archived');
+            clearFiltersButton = document.getElementById('clear-filters-button');
+
+            progressTrackerSection = document.getElementById('progress-tracker-section');
+            completedTasksPercentage = document.getElementById('completed-tasks-percentage');
+            progressBarFill = document.getElementById('progress-bar-fill');
+
+            thoughtDumpTextarea = document.getElementById('thought-dump-textarea');
+            clearThoughtDumpButton = document.getElementById('clear-thought-dump-button');
+
+            focusModeToggleButton = document.getElementById('focus-mode-toggle-button');
+            exportNoteButton = document.getElementById('export-note-button');
+            backupAllNotesButton = document.getElementById('backup-all-notes-button');
 
 
             // Attach event listeners to start audio context on first interaction
@@ -3949,21 +5070,24 @@
             });
 
             // Unified click/tap handler for Flappy Bird jump (now also triggers game start overlay logic)
-            gameStartOverlay.addEventListener('click', jump);
-            gameStartOverlay.addEventListener('touchstart', (e) => {
-                e.preventDefault(); // Prevent scrolling on touch
-                jump();
-            });
-            // Add click/touchstart to canvas itself for when overlay is hidden
-            canvas.addEventListener('click', jump);
-            canvas.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                jump();
-            });
+            if (gameStartOverlay) { // Check if element exists before adding listener
+                gameStartOverlay.addEventListener('click', jump);
+                gameStartOverlay.addEventListener('touchstart', (e) => {
+                    e.preventDefault(); // Prevent scrolling on touch
+                    jump();
+                });
+            }
+            if (canvas) { // Check if element exists before adding listener
+                canvas.addEventListener('click', jump);
+                canvas.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    jump();
+                });
+            }
 
 
             // Restart button now directly re-initializes the game (which starts countdown)
-            restartButton.addEventListener('click', initGame);
+            if (restartButton) restartButton.addEventListener('click', initGame);
 
             // Game control button event listeners (Flappy Bird)
             if (pauseResumeButton) {
@@ -3988,11 +5112,6 @@
             
             if (toggleProButton) {
                 toggleProButton.addEventListener('click', toggleProStatus);
-            }
-
-            // Play Game button on Home page now navigates to game selection
-            if (playGameButton) {
-                playGameButton.addEventListener('click', () => showPage('game-selection-page'));
             }
 
             // Game card click handlers
@@ -4020,12 +5139,12 @@
                         gamePage.classList.remove('flappy-bird-active');
                         // Initialize Space Miner
                         initializeSpaceMinerGame();
-                    } else if (gameId === 'subway-sprint') {
+                    } else if (gameId === 'city-runner') { // New City Runner game
                         // Hide Flappy Bird elements
                         flappyBirdGameElements.forEach(el => el.style.display = 'none');
                         gamePage.classList.remove('flappy-bird-active');
-                        // Initialize Subway Sprint
-                        initializeSubwaySprintGame();
+                        // Initialize City Runner
+                        initializeCityRunnerGame();
                     }
                     else {
                         // For other games, show a message box (instead of alert)
@@ -4125,8 +5244,8 @@
                 if (themeToggleButton) themeToggleButton.textContent = 'Toggle Light Mode';
             }
 
-            // Initial setup: show home page
-            showPage('home-page');
+            // Initial setup: show smart notepad page
+            showPage('smart-notepad-page');
 
             // Handle window resize and orientation change
             window.addEventListener('resize', () => {
@@ -4136,6 +5255,72 @@
 
             // Initial check on load, after all elements are ready
             checkOrientation(); 
+
+            // Smart Notepad Event Listeners
+            addNoteButton.addEventListener('click', addNote);
+            clearFormButton.addEventListener('click', clearNoteForm);
+
+            filterSubjectSelect.addEventListener('change', (e) => {
+                currentFilter.subject = e.target.value;
+                applyFiltersAndSort();
+            });
+            sortDateSelect.addEventListener('change', (e) => {
+                currentSort = e.target.value;
+                applyFiltersAndSort();
+            });
+
+            filterTodayButton.addEventListener('click', () => {
+                currentFilter.date = currentFilter.date === 'today' ? 'all' : 'today';
+                applyFiltersAndSort();
+            });
+            filterImportantButton.addEventListener('click', () => {
+                currentFilter.tag = currentFilter.tag === 'Important' ? 'all' : 'Important';
+                applyFiltersAndSort();
+            });
+            filterReviseButton.addEventListener('click', () => {
+                currentFilter.tag = currentFilter.tag === 'Revise' ? 'all' : 'Revise';
+                applyFiltersAndSort();
+            });
+            filterTodoPendingButton.addEventListener('click', () => {
+                currentFilter.todoPending = !currentFilter.todoPending;
+                applyFiltersAndSort();
+            });
+            filterArchivedButton.addEventListener('click', () => {
+                currentFilter.archived = !currentFilter.archived;
+                applyFiltersAndSort();
+            });
+            clearFiltersButton.addEventListener('click', () => {
+                currentFilter = {
+                    subject: 'all',
+                    tag: 'all',
+                    date: 'all',
+                    todoPending: false,
+                    archived: false
+                };
+                currentSort = 'newest';
+                filterSubjectSelect.value = 'all';
+                sortDateSelect.value = 'newest';
+                applyFiltersAndSort();
+            });
+
+            focusModeToggleButton.addEventListener('click', () => toggleFocusMode());
+            exportNoteButton.addEventListener('click', () => {
+                // For export, if no note is explicitly selected, try to export the first visible one
+                const visibleNotes = notesList.querySelectorAll('.note-card:not([style*="display: none"])');
+                if (visibleNotes.length > 0) {
+                    exportNoteAsTxt(visibleNotes[0].dataset.id);
+                } else {
+                    showMessageBox('No note visible to export. Please select a note or add one.', 'error');
+                }
+            });
+            backupAllNotesButton.addEventListener('click', backupAllNotesAsJson);
+
+            // Initial load and render for Notepad
+            loadNotepadData();
+            updateSubjectFilterOptions();
+            renderNotes();
+            updateThoughtDumpUI();
+            updateProgressTracker();
         });
 
         // Custom Message Box (replacement for alert/confirm)
